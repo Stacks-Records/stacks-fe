@@ -1,0 +1,35 @@
+.album-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem;
+}
+
+.album-detail img {
+    max-width: 18.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.album-detail h1,
+.album-detail h2 {
+    margin: 0.625rem 0;
+}
+
+.album-detail p {
+    margin: 0.3125rem 0;
+}
+
+.album-detail a {
+    margin-top: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    background-color: #0073e6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.album-detail a:hover {
+    background-color: #005bb5;
+}

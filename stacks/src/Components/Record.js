@@ -1,22 +1,24 @@
-import '../CSS/Record.css'
+import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {useNavigate} from 'react-router-dom'
+import '../CSS/Record.css'
 
-function Album({album}) {
+function Album({ album }) {
     const navigate = useNavigate()
 
     const handleClick = () => {
-        navigate(`/${album.id}`)
+        navigate(`/album/${album.id}`)
     }
-}
 
-return (
-    <div className="album-cards" onClick={handleClick}>
-        <img src={album.imgURL} alt={`${album.title} cover`} />
-        <h3>{album.artist}</h3>
-        <h4>{album.albumName}</h4>
-    </div>
-)
+
+    return (
+        <div className="album-cards" onClick={handleClick}>
+            <img src={album.imgURL} alt={`${album.title} cover`} />
+            <h3>{album.artist}</h3>
+            <h4>{album.albumName}</h4>
+            <p>{album.genre}</p>
+        </div>
+    )
+}
 
 Album.propTypes = {
     album: PropTypes.shape({

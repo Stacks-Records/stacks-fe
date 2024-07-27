@@ -1,0 +1,55 @@
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem;
+}
+
+.filters {
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 0.625rem;
+}
+
+.filters input,
+.filters select {
+    padding: 0.625rem;
+    font-size: 1rem;
+}
+
+.album-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 75rem;
+}
+
+.album-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.album-cards:hover {
+    transform: translateY(-0.3125rem);
+    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.2);
+}
+
+.album-cards img {
+    max-width: 100%;
+    border-radius: 0.5rem;
+    margin-bottom: 0.625rem;
+}
+
+.album-cards h3,
+.album-cards h4 {
+    margin: 0.3125rem 0;
+    text-align: center;
+}

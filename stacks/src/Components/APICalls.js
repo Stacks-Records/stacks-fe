@@ -1,7 +1,7 @@
 const getRecords = async () => {
 
     try {
-        const res = await fetch('https://stacks-api-6hnx.onrender.com/')
+        const res = await fetch('https://stacks-api-6hnx.onrender.com/albums')
         if (!res.ok) {
             throw new Error('Failed to fetch Records.')
         }
