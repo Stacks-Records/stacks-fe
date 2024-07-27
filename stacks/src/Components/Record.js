@@ -6,16 +6,18 @@ function Album({ album }) {
     const navigate = useNavigate()
 
     const handleClick = () => {
-        navigate(`/album/${album.id}`)
+        navigate(`/${album.id}`)
     }
 
 
     return (
         <div className="album-cards" onClick={handleClick}>
             <img src={album.imgURL} alt={`${album.title} cover`} />
-            <h3>{album.artist}</h3>
-            <h4>{album.albumName}</h4>
-            <p>{album.genre}</p>
+            <div className="album-info">
+                <h3>{album.artist}</h3>
+                <h4>{album.albumName}</h4>
+                <p>{album.genre}</p>
+            </div>
         </div>
     )
 }
