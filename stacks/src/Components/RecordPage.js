@@ -3,6 +3,12 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../CSS/RecordPage.css';
 
+function getYouTubeVideoID(url) {
+    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+}
+
 const RecordPage = ({ records = [] }) => {
     const { id } = useParams();
     const record = records.find(record => record.id === id);
@@ -25,26 +31,15 @@ const RecordPage = ({ records = [] }) => {
         albumsSold = 0
     } = record;
 
-    const getYoutubeEmbedURL = (url) => {
-        const urlParams = new URLSearchParams(new URL(url).search)
-        const videoId = urlParams.get('v')
-        const listId = urlParams.get('list')
-        let embedUrl = 'https://www.youtube.com/embed/${videoId}'
-        if (listId) {
-            embedUrl += `?list=${listId}`
-        }
-        return embedUrl
-    }
-
-    const embedUrl = getYoutubeEmbedURL(youTubeAlbumURL)
-
+    const videoID = getYouTubeVideoID(youTubeAlbumURL)
+   
     return (
         <div className="record-page">
             {youTubeAlbumURL && (
                 <iframe
                     width="560"
                     height="315"
-                    src={embedUrl}
+                    src={`https://www.youtube.com/embed/${videoID}`}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
