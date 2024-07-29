@@ -9,7 +9,7 @@
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     overflow: hidden;
-    width: 12rem; /* Adjust as needed */
+    width: 12rem; 
     height: 12rem; 
     position: relative;
 }

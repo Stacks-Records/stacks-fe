@@ -59,6 +59,8 @@ function LandingPage() {
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
                     <option value="Hip-Hop">Hip-Hop</option>
+                    <option value="Country">Country</option>
+                    <option value="Folk">Folk </option>
                     <option value="Jazz">Jazz</option>
                     <option value="Classical">Classical</option>
                 </select> 
