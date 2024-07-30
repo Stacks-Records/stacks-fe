@@ -27,11 +27,11 @@ function LandingPage() {
         }
         fetchRecords()
         if(error) {
-            return <div>Error: Failed to fetch your records. Please refresh</div>
+            return <div>Error: Failed to fetch your records. Please refresh. </div>
         }
-        // if(!records) {
-        //     return <div>Loading your turntable...</div>
-        // }
+        if(!albums) {
+            return <div className="error-message">Your records are loading on the turntable...</div>
+        }
      }, [])
 
     useEffect(() => {
