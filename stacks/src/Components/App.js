@@ -4,6 +4,7 @@ import LandingPage from './LandingPage'
 import RecordPage from './RecordPage'
 import Header from './Header'
 import Footer from './Footer'
+import AddStack from './AddStack'
 import { getRecords } from './APICalls';
 import '../CSS/App.css';
 
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage records={records} />} />
           <Route path="/:id" element={<RecordPage records={records} />} />
+          <Route path="/add-stack" element={<AddStack />} />
         </Routes>
       </div>
       <Footer />

@@ -23,7 +23,7 @@ const Header = () => {
                         <Link to="/mystack">My Stack</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/addtostack">Add to Stacks</Link>
+                        <Link to="/add-stack">Add to Stacks</Link>
                     </li>
                 </ul>
             </nav>
