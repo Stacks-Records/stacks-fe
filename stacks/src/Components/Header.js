@@ -14,7 +14,7 @@ const Header = () => {
             <Link to='/' className="header-link">
                 <h1>Stacks</h1>
             </Link>
-            {/* <nav className={`nav ${isOpen ? 'open' : ''}`}>
+            <nav className={`nav ${isOpen ? 'open' : ''}`}>
                 <ul className="nav-list">
                     <li className="nav-item">
                         <Link to="/myreviews">My Reviews</Link>
@@ -31,7 +31,7 @@ const Header = () => {
                 <span className="bar"></span>
                 <span className="bar"></span>
                 <span className="bar"></span>
-            </button> */}
+            </button>
         </header>
     );
 };
