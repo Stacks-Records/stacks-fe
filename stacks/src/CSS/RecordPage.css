@@ -1,0 +1,87 @@
+.record-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem;
+    background-color: rgba(7, 7, 7, 0.708);
+    height:100vh;
+    width:100vw;
+
+}
+
+.image-container {
+    position: relative;
+    max-width: 22.5rem;
+    padding:3rem;
+    margin-bottom: 1.25rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background-color: rgb(255, 255, 255); }
+
+.record-page img {
+    width: 100%;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease; 
+}
+
+.album-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 95%;
+    background-color: rgba(0, 0, 0, .9); 
+    color: #fff;
+    text-align: center;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
+    opacity: 0; 
+    transform: translateY(20px); 
+    transition: opacity 0.3s ease, transform 0.3s ease; 
+}
+
+.image-container:hover .album-info {
+    opacity: 1; 
+    transform: translateY(0); 
+}
+
+.image-container:hover img {
+    transform: scale(1.05); 
+}
+
+.record-page h1,
+.record-page h2 {
+    margin: 0.625rem 0;
+}
+
+.record-page p {
+    margin: 0.3125rem 0;
+}
+
+.record-page iframe {
+    margin-top: 1.25rem;
+    border-radius: 0.5rem;
+    padding:3rem;
+    margin-bottom:3rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: rgb(255, 255, 255); 
+}
+
+.album-info h1 {
+    margin: 0.3125rem 0;
+    font-size: 1.5rem;
+}
+
+.album-info h2 {
+    margin: 0.3125rem 0;
+    font-size: 1rem;
+}
+
+.album-info p {
+    margin: 0.3125rem 0;
+    font-size: 0.875rem;
+}
+

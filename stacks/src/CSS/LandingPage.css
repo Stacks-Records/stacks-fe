@@ -1,0 +1,29 @@
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem;
+    background-color: rgba(7, 7, 7, 0.708);
+    height:100vh;
+    width:100vw;
+}
+
+.filters {
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 0.625rem;
+}
+
+.filters input,
+.filters select {
+    padding: 0.625rem;
+    font-size: 1rem;
+}
+
+.album-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 75rem;
+}
