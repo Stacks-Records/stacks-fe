@@ -31,7 +31,7 @@ function AddStack() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const response = await fetch('http://localhost:3000/', {
+            const response = await fetch('http://localhost:3000/add-stack', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ function AddStack() {
             console.log('Album added:', result)
             navigate('/')
         } catch (error) {
-            console.error('Error:', error)
+            console.error('Error:', error.message)
             setError('Failed to add album. Please try again')
         }
     }
