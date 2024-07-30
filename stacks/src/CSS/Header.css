@@ -1,0 +1,22 @@
+.header {
+    background-image: url('../Images/Stacks HEADER.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+.header-link {
+    text-decoration:underline;
+    color: rgb(255, 255, 255);
+}
+
+.header h1 {
+    font-size: 8rem;
+    font-weight: bold;
+    margin: 0;
+    color: inherit;
+}

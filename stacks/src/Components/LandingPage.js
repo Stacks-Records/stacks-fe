@@ -1,6 +1,8 @@
 import Album from './Record'
 import { getRecords } from './APICalls'
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
+import {useNavigate} from 'react-router-dom'
+import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 
 
@@ -9,31 +11,39 @@ function LandingPage() {
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
     const [filteredAlbums, setFilteredAlbums] = useState([])
+    const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchRecords = async () => {
             try {
                 const records = await getRecords()
-                        setAlbums(records)  
-            } catch(error) {
+                setAlbums(records)
+            } catch (error) {
                 console.error(error)
-                setError('Could not find your records. Please refresh.')
+                setError(true)
             }
         }
         fetchRecords()
-    }, [])
+        if(error) {
+            return <div>Error: Failed to fetch your records. Please refresh</div>
+        }
+        // if(!records) {
+        //     return <div>Loading your turntable...</div>
+        // }
+     }, [])
 
     useEffect(() => {
         const filterAlbums = () => {
             let filtered = albums
             if (search) {
-                filtered = filtered.filter(album => 
+                filtered = filtered.filter(album =>
                     album.albumName.toLowerCase().includes(search.toLowerCase())
                 )
             }
             if (genre) {
-                filtered = filtered.filter(album => 
+                filtered = filtered.filter(album =>
                     album.genre.toLowerCase() === genre.toLowerCase()
                 )
             }
@@ -42,19 +52,49 @@ function LandingPage() {
         filterAlbums()
     }, [search, genre, albums])
 
+    const handleSearch = (e) => {
+        const query = e.target.value
+        setSearch(query)
+
+        if (query) {
+            const results = albums.filter(album =>
+                album.albumName.toLowerCase().includes(query.toLowerCase())
+            )
+            setFilteredSearch(results)
+        } else {
+            setFilteredSearch([])
+        }
+    }
+
+    const handleSelectResult = (result) => {
+        setSearch(result.albumName)
+        setFilteredSearch([])
+    }
+
     return (
         <div className="landing-page">
             <div className="filters">
-               <input 
-               type="text"
-               placeholder="What would you like to listen to?"
-               value={search}
-               onChange={(e) => setSearch(e.target.value)}
-               />
-               <select
-               value={genre}
-               onChange={(e) => setGenre(e.target.value)}
-               >
+                <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="What would you like to listen to?"
+                        value={search}
+                        onChange={handleSearch}
+                    />
+                    {filteredSearch.length > 0 && (
+                        <ul className="search-results">
+                            {filteredSearch.map(result => (
+                                <li key={result.id} onClick={() => handleSelectResult(result)}>
+                                    {result.albumName}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <select
+                    value={genre}
+                    onChange={(e) => setGenre(e.target.value)}
+                >
                     <option value="">All Genres</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
@@ -63,7 +103,7 @@ function LandingPage() {
                     <option value="Folk">Folk </option>
                     <option value="Jazz">Jazz</option>
                     <option value="Classical">Classical</option>
-                </select> 
+                </select>
             </div>
             <div className="album-list">
                 {filteredAlbums.map(album => (
