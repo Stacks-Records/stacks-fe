@@ -32,7 +32,7 @@ const RecordPage = ({ records = [] }) => {
     } = record;
 
     const videoID = getYouTubeVideoID(youTubeAlbumURL)
-   
+
     return (
         <div className="record-page">
             {youTubeAlbumURL && (
@@ -46,6 +46,10 @@ const RecordPage = ({ records = [] }) => {
                     allowFullScreen
                 ></iframe>
             )}
+            <div className="buttons-containter">
+                <button>Add Your Review</button>
+                <button>Add To Your Stack</button>
+            </div>
             <div className="image-container">
                 <img src={imgURL} alt={`${albumName} cover`} />
                 <div className="album-info">

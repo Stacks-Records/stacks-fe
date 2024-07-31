@@ -1,0 +1,41 @@
+/* AddStack.css */
+.add-stack {
+    padding: 1.25rem;
+    max-width: 40rem;
+    margin: auto;
+  }
+  
+  .add-stack h1 {
+    text-align: center;
+  }
+  
+  .add-stack form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-stack label {
+    margin-bottom: .75rem;
+  }
+  
+  .add-stack input[type="text"],
+  .add-stack input[type="number"] {
+    width: 100%;
+    padding: .5rem;
+    margin-top: .3rem;
+  }
+  
+  .add-stack button {
+    padding: .75rem;
+    margin-top: 1.25rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .add-stack .error {
+    color: red;
+    margin-top: .75rem;
+  }
+  
