@@ -9,9 +9,10 @@ function getYouTubeVideoID(url) {
     return match ? match[1] : null;
 }
 
-const RecordPage = ({ records = [] }) => {
+const RecordPage = ({ records, addToStack }) => {
     const { id } = useParams();
     const record = records.find(record => record.id === id);
+
 
     if (!record) {
         return <p>Record not found.</p>;
@@ -47,8 +48,7 @@ const RecordPage = ({ records = [] }) => {
                 ></iframe>
             )}
             <div className="buttons-containter">
-                <button>Add Your Review</button>
-                <button>Add To Your Stack</button>
+                <button onClick={() => addToStack(record)}>Add To My Stack</button>
             </div>
             <div className="image-container">
                 <img src={imgURL} alt={`${albumName} cover`} />
@@ -71,22 +71,23 @@ const RecordPage = ({ records = [] }) => {
 
 RecordPage.propTypes = {
     records: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            albumName: PropTypes.string.isRequired,
-            artist: PropTypes.string.isRequired,
-            releaseDate: PropTypes.string,
-            genre: PropTypes.string.isRequired,
-            bandMembers: PropTypes.arrayOf(PropTypes.string).isRequired,
-            label: PropTypes.string.isRequired,
-            isBandTogether: PropTypes.bool.isRequired,
-            rollingStoneReview: PropTypes.string,
-            youTubeAlbumURL: PropTypes.string.isRequired,
-            imgURL: PropTypes.string.isRequired,
-            albumsSold: PropTypes.number
-        })
-    )
-};
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        albumName: PropTypes.string.isRequired,
+        artist: PropTypes.string.isRequired,
+        releaseDate: PropTypes.string,
+        genre: PropTypes.string.isRequired,
+        bandMembers: PropTypes.arrayOf(PropTypes.string).isRequired,
+        label: PropTypes.string.isRequired,
+        isBandTogether: PropTypes.bool.isRequired,
+        rollingStoneReview: PropTypes.string,
+        youTubeAlbumURL: PropTypes.string.isRequired,
+        imgURL: PropTypes.string.isRequired,
+        albumsSold: PropTypes.number
+      })
+    ).isRequired,
+    addToStack: PropTypes.func.isRequired,
+  };
 
 
 export default RecordPage;

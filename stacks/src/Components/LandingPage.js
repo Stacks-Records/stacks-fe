@@ -6,14 +6,16 @@ import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 
 
-function LandingPage() {
-    const [albums, setAlbums] = useState([])
+function LandingPage({records, addToStack}) {
+    const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
-    const [filteredAlbums, setFilteredAlbums] = useState([])
+    const [filteredAlbums, setFilteredAlbums] = useState(records)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const navigate = useNavigate()
+
+
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -32,7 +34,7 @@ function LandingPage() {
         if(!albums) {
             return <div className="error-message">Your records are loading on the turntable...</div>
         }
-     }, [])
+     }, [error, albums])
 
     useEffect(() => {
         const filterAlbums = () => {
@@ -58,7 +60,7 @@ function LandingPage() {
 
         if (query) {
             const results = albums.filter(album =>
-                album.albumName.toLowerCase().includes(query.toLowerCase())
+                album.artist.toLowerCase().includes(query.toLowerCase())
             )
             setFilteredSearch(results)
         } else {
@@ -86,7 +88,7 @@ function LandingPage() {
                         <ul className="search-results">
                             {filteredSearch.map(result => (
                                 <li key={result.id} onClick={() => handleSelectResult(result)}>
-                                    {result.albumName}
+                                    {result.artist}
                                 </li>
                             ))}
                         </ul>
@@ -108,11 +110,16 @@ function LandingPage() {
             </div>
             <div className="album-list">
                 {filteredAlbums.map(album => (
-                    <Album key={album.id} album={album}/>
+                    <Album key={album.id} album={album} addToStack={addToStack}/>
                 ))}
             </div>
         </div>
     )
 }
+
+LandingPage.propTypes = {
+    records: PropTypes.arrayOf(PropTypes.object).isRequired,
+    addToStack: PropTypes.func.isRequired,
+  }
 
 export default LandingPage
