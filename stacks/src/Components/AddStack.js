@@ -9,7 +9,7 @@ function AddStack() {
         artist: '',
         releaseDate: '',
         genre: '',
-        bandMembers: '',
+        bandMembers: [],
         label: '',
         isBandTogether: false,
         rollingStoneReview: '',
@@ -18,6 +18,7 @@ function AddStack() {
         albumsSold: ''
     })
 
+    const [bandMember, setBandMember] = useState('')
     const [error, setError] = useState('')
     const navigate = useNavigate()
 
@@ -28,7 +29,16 @@ function AddStack() {
             [name]: type === 'checkbox' ? checked : value
         })
     }
-
+    const handleAddMember = (e) => {
+        e.preventDefault()
+        if (bandMember.trim()) {
+            setAlbum({
+                ...album,
+                bandMembers:[...album.bandMembers, bandMember]
+            })
+            setBandMember('')
+        }
+    }
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -58,10 +68,10 @@ return (
                             {key}
                         </label>
                     </div>
-                ) : (
+                ) : key !== 'bandMembers' ? (
                     <div key={key}>
                         <label>
-                            {key}:
+                            {key.toUpperCase()}:
                             <input
                                 type={key === 'albumsSold' ? 'number' : 'text'}
                                 name={key}
@@ -69,9 +79,25 @@ return (
                                 onChange={handleChange}
                             />
                         </label>
-                    </div>
-                )
+                    </div> 
+                ) : null
             ))}
+            <div>
+                <label>
+                    BAND MEMBERS: 
+                    <input
+                    type="text"
+                    value={bandMember}
+                    onChange={(e) => setBandMember(e.target.value)}
+                    />
+                    <button onClick={handleAddMember}>Add Members</button>
+                    <ul>
+                        {album.bandMembers.map((member, index) => (
+                            <li key={index}>{member}</li>
+                        ))}
+                    </ul>
+                </label>
+            </div>
             <button type="submit">Add Album</button>
             {error && <p className="error">{error}</p>}
         </form>

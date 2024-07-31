@@ -32,12 +32,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(80, 80, 80, 0.3);
+    background-color: rgba(80, 80, 80, 0.5);
     color: #fff;
     text-align: center;
     padding: 0.625rem;
@@ -67,3 +66,47 @@
     margin: 0.3125rem 0;
     font-size: 0.875rem;
 }
+
+
+.record-button {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height:3.75rem;
+    width:7rem;
+    appearance: none;
+    background-color: #0000002b;
+    border:.2rem solid white;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    outline: none;
+    padding: 1rem;
+    margin:2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 8rem;
+    will-change: transform;
+  }
+  
+  button:disabled {
+    pointer-events: none;
+  }
+  
+  button:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+  }
+  
+  button:active {
+    box-shadow: none;
+    transform: translateY(0);
+  }

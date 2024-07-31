@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import '../CSS/Record.css'
 
-function Album({ album }) {
+function Album({ album, handleFavorite }) {
     const navigate = useNavigate()
 
     const handleClick = () => {
@@ -17,6 +17,7 @@ function Album({ album }) {
                 <h3>{album.artist}</h3>
                 <h4>{album.albumName}</h4>
                 <p>{album.genre}</p>
+                <button className="record-button"onClick={handleFavorite}>Add to My Stack</button>
             </div>
         </div>
     )
@@ -27,15 +28,7 @@ Album.propTypes = {
         id: PropTypes.string.isRequired,
         albumName: PropTypes.string.isRequired,
         artist: PropTypes.string.isRequired,
-        releaseDate: PropTypes.string,
         genre: PropTypes.string.isRequired,
-        bandMembers: PropTypes.arrayOf(PropTypes.string).isRequired,
-        label: PropTypes.string.isRequired,
-        isBandTogether: PropTypes.bool.isRequired,
-        rollingStoneReview: PropTypes.string,
-        youTubeAlbumURL: PropTypes.string.isRequired,
-        imgURL: PropTypes.string.isRequired,
-        albumsSold: PropTypes.number,
     }).isRequired,
 };
 

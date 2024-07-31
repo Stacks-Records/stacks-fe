@@ -71,6 +71,7 @@ function LandingPage() {
         setFilteredSearch([])
     }
 
+
     return (
         <div className="landing-page">
             <div className="filters">
@@ -107,7 +108,7 @@ function LandingPage() {
             </div>
             <div className="album-list">
                 {filteredAlbums.map(album => (
-                    <Album key={album.id} album={album} />
+                    <Album key={album.id} album={album}/>
                 ))}
             </div>
         </div>
