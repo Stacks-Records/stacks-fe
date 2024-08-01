@@ -25,7 +25,11 @@ const MyStackPage = () => {
           <h1 className="my-stack-title"> My Stack </h1>
 
           {myStackRecords.length > 0 ? (
-            <div className="my-stack-wrapper">{myStackRecords}</div>
+            <div className="my-stack-wrapper">{myStackRecords}
+             <button className="back-to-main">
+                    <Link to="/" className="main-gallery-link">Go Pick Out Some More!</Link>
+                </button>
+            </div>
           ): (
             <div className="nav-wrap">
                 <p> No records in your stack... </p> 

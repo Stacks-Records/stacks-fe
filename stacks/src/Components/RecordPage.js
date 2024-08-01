@@ -1,5 +1,5 @@
 import { useStack } from './MyStack'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../CSS/RecordPage.css';
 
@@ -11,7 +11,8 @@ function getYouTubeVideoID(url) {
 
 const RecordPage = ({ records }) => {
     const { id } = useParams();
-    const [ myStack, setMyStack ] = useStack()
+    const navigate = useNavigate()
+    const [myStack, setMyStack] = useStack()
     const allRecords = [...records, ...myStack]
     const record = allRecords.find(record => record.id === id);
 
@@ -37,6 +38,11 @@ const RecordPage = ({ records }) => {
 
     const addToStack = (album) => {
         setMyStack([...myStack, album])
+        navigate('/my-stack')
+    }
+
+    const isAlbumInStack = (id) => {
+        return myStack.some(album => album.id === id)
     }
 
     return (
@@ -53,7 +59,11 @@ const RecordPage = ({ records }) => {
                 ></iframe>
             )}
             <div className="buttons-containter">
-                <button onClick={() => addToStack(record)}>Add To My Stack</button>
+                <button onClick={() => addToStack(record)}
+                    disabled={isAlbumInStack(record.id)}
+                >
+                    {isAlbumInStack(record.id) ? 'Already Got It' : 'Add To My Stack'}
+                </button>
             </div>
             <div className="image-container">
                 <img src={imgURL} alt={`${albumName} cover`} />

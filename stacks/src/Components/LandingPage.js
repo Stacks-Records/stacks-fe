@@ -19,7 +19,9 @@ function LandingPage({records}) {
 
     const addToStack = (album) => {
         setMyStack([...myStack, album])
+        navigate('/my-stack')
     }
+
 
     useEffect(() => {
         const fetchRecords = async () => {

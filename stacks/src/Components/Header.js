@@ -17,7 +17,7 @@ const Header = () => {
             <nav className={`nav ${isOpen ? 'open' : ''}`}>
                 <ul className="nav-list">
                     <li className="nav-item">
-                        <Link to="/mystack">My Stack</Link>
+                        <Link to="/my-stack">My Stack</Link>
                     </li>
                     <li className="nav-item">
                         <Link to="/add-stack">Add to Stacks</Link>
