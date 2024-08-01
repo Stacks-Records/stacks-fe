@@ -1,12 +1,12 @@
 import {createContext, useContext, useState} from 'react'
 
-const MyStack = createContext()
+const MyStackContext = createContext()
 
 export const useStack = () => {
-    return useContext(MyStack) 
+    return useContext(MyStackContext) 
 }
 
-export const MyStackGallery = ({children}) => {
+export const MyStackProvider = ({children}) => {
     const [myStack, setMyStack] = useState([])
 
     const addToStack = (newAlbum) => {
@@ -14,8 +14,8 @@ export const MyStackGallery = ({children}) => {
     }
 
     return (
-        <MyStack.Provider value={{myStack, addToStack}}>
+        <MyStackContext.Provider value={{myStack, addToStack}}>
             {children}
-        </MyStack.Provider>
+        </MyStackContext.Provider>
     )
 }

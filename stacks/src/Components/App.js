@@ -6,7 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import AddStack from './AddStack'
 import MyStack from './MyStackPage'
-import { MyStackGallery } from './MyStack'
+import { MyStackProvider } from './MyStack'
 import { getRecords } from './APICalls';
 import '../CSS/App.css';
 
@@ -20,20 +20,20 @@ function App() {
   }, []);
 
   return (
-    <MyStack>
+    <MyStackProvider>
       <Router>
         <Header />
         <div className="app">
           <Routes>
-            <Route path="/" element={<LandingPage records={records} addToStack={addToStack} />} />
-            <Route path="/:id" element={<RecordPage records={records} myStack={myStack} addToStack={addToStack} />} />
+            <Route path="/" element={<LandingPage records={records} />} />
+            <Route path="/:id" element={<RecordPage records={records} />} />
             <Route path="/add-stack" element={<AddStack />} />
-            <Route path="/my-stack" element={<MyStack myStack={myStack} />} />
+            <Route path="/mystack" element={<MyStack />} />
           </Routes>
         </div>
         <Footer />
       </Router>
-    </MyStack>
+    </MyStackProvider>
   );
 }
 

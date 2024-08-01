@@ -1,9 +1,14 @@
 import Album from './Record'
 import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
+// import Link from 'react-router-dom'
 
 const MyStack = () => {
     const { myStack } = useStack()
+
+    // const handleDelete = (id) => {
+    //     myStack.filter(record => record.id !== id)
+    // } 
 
     return (
         <div>

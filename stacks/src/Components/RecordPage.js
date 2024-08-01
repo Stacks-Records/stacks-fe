@@ -1,4 +1,4 @@
-import {useStack} from './MyStack'
+import { useStack } from './MyStack'
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../CSS/RecordPage.css';
@@ -14,7 +14,6 @@ const RecordPage = ({ records }) => {
     const { myStack, addToStack } = useStack()
     const allRecords = [...records, ...myStack]
     const record = allRecords.find(record => record.id === id);
-
 
     if (!record) {
         return <p>Record not found.</p>;
