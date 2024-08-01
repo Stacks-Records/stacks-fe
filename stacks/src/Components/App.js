@@ -6,7 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import AddStack from './AddStack'
 import MyStackPage from './MyStackPage'
-import { MyStackProvider, useStack } from './MyStack'
+import { MyStackProvider} from './MyStack'
 import { getRecords } from './APICalls';
 import '../CSS/App.css';
 

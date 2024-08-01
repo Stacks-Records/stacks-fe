@@ -30,7 +30,7 @@ function LandingPage({records}) {
                 setAlbums(records)
             } catch (error) {
                 console.error(error)
-                setError(true)
+                setError(error)
             }
         }
         fetchRecords()

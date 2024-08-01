@@ -1,9 +1,10 @@
 .app {
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+  background-color: rgba(7, 7, 7, 0.283);
   min-height: 100vh;
+  min-width:100vw;
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 }
 
