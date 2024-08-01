@@ -9,7 +9,7 @@ function Album({ album, addToStack }) {
         navigate(`/${album.id}`)
     }
 
-    const handleAddtoStack = (e) => {
+    const handleAddToStack = (e) => {
         e.stopPropagation()
        if(typeof addToStack === 'function') {
         addToStack(album)
@@ -26,7 +26,7 @@ function Album({ album, addToStack }) {
                 <h3>{album.artist}</h3>
                 <h4>{album.albumName}</h4>
                 <p>{album.genre}</p>
-                <button className="record-button"onClick={handleAddtoStack}>Add to My Stack</button>
+                <button className="record-button"onClick={handleAddToStack}>Add to My Stack</button>
             </div>
         </div>
     )

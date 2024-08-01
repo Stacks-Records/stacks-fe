@@ -59,13 +59,14 @@ return (
                 key === 'isBandTogether' ? (
                     <div key={key}>
                         <label>
+                            Are they still together?
                             <input
                                 type="checkbox"
                                 name={key}
                                 checked={album[key]}
                                 onChange={handleChange}
                             />
-                            {key}
+                            
                         </label>
                     </div>
                 ) : key !== 'bandMembers' ? (

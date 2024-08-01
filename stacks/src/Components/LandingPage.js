@@ -2,11 +2,12 @@ import Album from './Record'
 import { getRecords } from './APICalls'
 import { useState, useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
+import {useStack} from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 
 
-function LandingPage({records, addToStack}) {
+function LandingPage({records}) {
     const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
@@ -14,6 +15,7 @@ function LandingPage({records, addToStack}) {
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const navigate = useNavigate()
+    const { addToStack } = useStack()
 
 
 
@@ -28,13 +30,7 @@ function LandingPage({records, addToStack}) {
             }
         }
         fetchRecords()
-        if(error) {
-            return <div>Error: Failed to fetch your records. Please refresh. </div>
-        }
-        if(!albums) {
-            return <div className="error-message">Your records are loading on the turntable...</div>
-        }
-     }, [error, albums])
+     }, [])
 
     useEffect(() => {
         const filterAlbums = () => {
@@ -119,7 +115,6 @@ function LandingPage({records, addToStack}) {
 
 LandingPage.propTypes = {
     records: PropTypes.arrayOf(PropTypes.object).isRequired,
-    addToStack: PropTypes.func.isRequired,
   }
 
 export default LandingPage
