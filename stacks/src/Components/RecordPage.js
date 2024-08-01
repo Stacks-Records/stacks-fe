@@ -11,7 +11,7 @@ function getYouTubeVideoID(url) {
 
 const RecordPage = ({ records }) => {
     const { id } = useParams();
-    const { myStack, addToStack } = useStack()
+    const [ myStack, setMyStack ] = useStack()
     const allRecords = [...records, ...myStack]
     const record = allRecords.find(record => record.id === id);
 
@@ -34,6 +34,10 @@ const RecordPage = ({ records }) => {
     } = record;
 
     const videoID = getYouTubeVideoID(youTubeAlbumURL)
+
+    const addToStack = (album) => {
+        setMyStack([...myStack, album])
+    }
 
     return (
         <div className="record-page">

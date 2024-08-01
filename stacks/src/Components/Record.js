@@ -40,7 +40,6 @@ Album.propTypes = {
         genre: PropTypes.string.isRequired,
         imgURL: PropTypes.string.isRequired
     }).isRequired,
-    addToStack: PropTypes.func.isRequired
 }
 
 

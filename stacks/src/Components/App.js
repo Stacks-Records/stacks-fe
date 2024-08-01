@@ -1,17 +1,18 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import LandingPage from './LandingPage'
 import RecordPage from './RecordPage'
 import Header from './Header'
 import Footer from './Footer'
 import AddStack from './AddStack'
-import MyStack from './MyStackPage'
-import { MyStackProvider } from './MyStack'
+import MyStackPage from './MyStackPage'
+import { MyStackProvider, useStack } from './MyStack'
 import { getRecords } from './APICalls';
 import '../CSS/App.css';
 
 function App() {
   const [records, setRecords] = useState([])
+
 
   useEffect(() => {
     getRecords()
@@ -20,20 +21,20 @@ function App() {
   }, []);
 
   return (
-    <MyStackProvider>
-      <Router>
-        <Header />
-        <div className="app">
+    <Router>
+      <Header />
+      <div className="app">
+        <MyStackProvider>
           <Routes>
             <Route path="/" element={<LandingPage records={records} />} />
             <Route path="/:id" element={<RecordPage records={records} />} />
             <Route path="/add-stack" element={<AddStack />} />
-            <Route path="/mystack" element={<MyStack />} />
+            <Route path="/my-stack" element={<MyStackPage />} />
           </Routes>
-        </div>
-        <Footer />
-      </Router>
-    </MyStackProvider>
+        </MyStackProvider>
+      </div>
+      <Footer />
+    </Router>
   );
 }
 

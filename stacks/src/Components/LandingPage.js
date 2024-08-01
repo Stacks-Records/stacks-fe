@@ -1,8 +1,8 @@
 import Album from './Record'
 import { getRecords } from './APICalls'
 import { useState, useEffect } from 'react'
-import {useNavigate} from 'react-router-dom'
-import {useStack} from './MyStack'
+import { useNavigate } from 'react-router-dom'
+import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 
@@ -14,10 +14,12 @@ function LandingPage({records}) {
     const [filteredAlbums, setFilteredAlbums] = useState(records)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
+    const [myStack, setMyStack] = useStack()
     const navigate = useNavigate()
-    const { addToStack } = useStack()
 
-
+    const addToStack = (album) => {
+        setMyStack([...myStack, album])
+    }
 
     useEffect(() => {
         const fetchRecords = async () => {

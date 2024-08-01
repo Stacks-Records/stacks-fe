@@ -8,7 +8,7 @@ const MyStackAlbum = ({album, handleDelete}) => {
             <h3>{album.artist}</h3>
             <h4>{album.albumName}</h4>
             <p>{album.genre}</p>
-            <button className="delete-button"onClick={handleDelete(album.id)}>Toss This Record</button>
+            <button className="delete-button"onClick={() => handleDelete(album.id)}>Toss This Record</button>
         </div>
     </div>
     )
