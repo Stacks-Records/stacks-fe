@@ -14,6 +14,7 @@ function LandingPage({records}) {
     const [filteredAlbums, setFilteredAlbums] = useState(records)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const [myStack, setMyStack] = useStack()
     const navigate = useNavigate()
 
@@ -25,13 +26,16 @@ function LandingPage({records}) {
 
     useEffect(() => {
         const fetchRecords = async () => {
+            setLoading(true)
             try {
                 const records = await getRecords()
                 setAlbums(records)
+                setError('')
             } catch (error) {
                 console.error(error)
-                setError(error)
+                setError(error.message)
             }
+            setLoading(false)
         }
         fetchRecords()
      }, [])
@@ -76,6 +80,8 @@ function LandingPage({records}) {
 
     return (
         <div className="landing-page">
+            {loading && <p className="loading-message">Loading up your records on the turntable... </p>}
+            {error && <p className="error-message">Error: {error}</p>}
             <div className="filters">
                 <div className="search-container">
                     <input
