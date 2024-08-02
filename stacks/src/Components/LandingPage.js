@@ -100,11 +100,11 @@ function LandingPage({records}) {
                         </ul>
                     )}
                 </div>
+                <label>Select Your Genre:</label>
                 <select
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                 >
-                    <label for="genre-select">Select Your Genre:</label>
                     <option value="">All Genres</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
@@ -116,7 +116,7 @@ function LandingPage({records}) {
                 </select>
             </div>
             <div className="album-list">
-                {filteredAlbums.map(album => (
+                {filteredAlbums.map(album => (            
                     <Album key={album.id} album={album} addToStack={addToStack}/>
                 ))}
             </div>

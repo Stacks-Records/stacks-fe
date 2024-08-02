@@ -50,4 +50,5 @@ describe('Landing Page User Flow', () => {
     cy.url().should('include', '/my-stack')
     cy.get('.my-stack-gallery').should('contain', 'Wish You Were Here')
   })
+
 })

@@ -27,7 +27,9 @@
 .loading-message {
     color:white;
 }
-
+label {
+    color:white;
+}
 input {
     width: 15rem;
 }
