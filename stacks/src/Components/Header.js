@@ -24,7 +24,7 @@ const Header = () => {
                     </li>
                 </ul>
             </nav>
-            <button className="hamburger" onClick={toggleMenu}>
+            <button id="hamburger-button" className="hamburger-button" onClick={toggleMenu}>
                 <span className="bar"></span>
                 <span className="bar"></span>
                 <span className="bar"></span>

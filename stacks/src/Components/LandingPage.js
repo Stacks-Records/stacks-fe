@@ -98,6 +98,7 @@ function LandingPage({records}) {
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                 >
+                    <label for="genre-select">Select Your Genre:</label>
                     <option value="">All Genres</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
