@@ -1,0 +1,19 @@
+{
+  "id": "P-AL-33453-4L",
+  "albumName": "Wish You Were Here",
+  "artist": "Pink Floyd",
+  "releaseDate": "September 12th, 1975",
+  "genre": "Rock",
+  "bandMembers": [
+    "Roger Waters",
+    "David Gilmour",
+    "Rick Wright",
+    "Nick Mason"
+  ],
+  "label": "Harvest/Columbia",
+  "isBandTogether": false,
+  "rollingStoneReview": "*****",
+  "youTubeAlbumURL": "https://www.youtube.com/watch?v=TMy_mYkwl4M",
+  "imgURL": "https://upload.wikimedia.org/wikipedia/en/a/a4/Pink_Floyd%2C_Wish_You_Were_Here_%281975%29.png",
+  "albumsSold": 130000000
+}
