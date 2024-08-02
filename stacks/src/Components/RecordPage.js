@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useStack } from './MyStack'
+import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../CSS/RecordPage.css';
 
@@ -9,9 +9,12 @@ function getYouTubeVideoID(url) {
     return match ? match[1] : null;
 }
 
-const RecordPage = ({ records = [] }) => {
+const RecordPage = ({ records }) => {
     const { id } = useParams();
-    const record = records.find(record => record.id === id);
+    const navigate = useNavigate()
+    const [myStack, setMyStack] = useStack()
+    const allRecords = [...records, ...myStack]
+    const record = allRecords.find(record => record.id === id);
 
     if (!record) {
         return <p>Record not found.</p>;
@@ -33,6 +36,15 @@ const RecordPage = ({ records = [] }) => {
 
     const videoID = getYouTubeVideoID(youTubeAlbumURL)
 
+    const addToStack = (album) => {
+        setMyStack([...myStack, album])
+        navigate('/my-stack')
+    }
+
+    const isAlbumInStack = (id) => {
+        return myStack.some(album => album.id === id)
+    }
+
     return (
         <div className="record-page">
             {youTubeAlbumURL && (
@@ -47,8 +59,11 @@ const RecordPage = ({ records = [] }) => {
                 ></iframe>
             )}
             <div className="buttons-containter">
-                <button>Add Your Review</button>
-                <button>Add To Your Stack</button>
+                <button onClick={() => addToStack(record)}
+                    disabled={isAlbumInStack(record.id)}
+                >
+                    {isAlbumInStack(record.id) ? 'Already Got It' : 'Add To My Stack'}
+                </button>
             </div>
             <div className="image-container">
                 <img src={imgURL} alt={`${albumName} cover`} />
@@ -69,6 +84,7 @@ const RecordPage = ({ records = [] }) => {
     );
 };
 
+
 RecordPage.propTypes = {
     records: PropTypes.arrayOf(
         PropTypes.shape({
@@ -85,8 +101,8 @@ RecordPage.propTypes = {
             imgURL: PropTypes.string.isRequired,
             albumsSold: PropTypes.number
         })
-    )
-};
+    ).isRequired,
+}
 
 
 export default RecordPage;

@@ -1,19 +1,27 @@
 import Album from './Record'
 import { getRecords } from './APICalls'
 import { useState, useEffect } from 'react'
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 
 
-function LandingPage() {
-    const [albums, setAlbums] = useState([])
+function LandingPage({records}) {
+    const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
-    const [filteredAlbums, setFilteredAlbums] = useState([])
+    const [filteredAlbums, setFilteredAlbums] = useState(records)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
+    const [myStack, setMyStack] = useStack()
     const navigate = useNavigate()
+
+    const addToStack = (album) => {
+        setMyStack([...myStack, album])
+        navigate('/my-stack')
+    }
+
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -22,16 +30,10 @@ function LandingPage() {
                 setAlbums(records)
             } catch (error) {
                 console.error(error)
-                setError(true)
+                setError(error)
             }
         }
         fetchRecords()
-        if(error) {
-            return <div>Error: Failed to fetch your records. Please refresh. </div>
-        }
-        if(!albums) {
-            return <div className="error-message">Your records are loading on the turntable...</div>
-        }
      }, [])
 
     useEffect(() => {
@@ -58,7 +60,7 @@ function LandingPage() {
 
         if (query) {
             const results = albums.filter(album =>
-                album.albumName.toLowerCase().includes(query.toLowerCase())
+                album.artist.toLowerCase().includes(query.toLowerCase())
             )
             setFilteredSearch(results)
         } else {
@@ -86,7 +88,7 @@ function LandingPage() {
                         <ul className="search-results">
                             {filteredSearch.map(result => (
                                 <li key={result.id} onClick={() => handleSelectResult(result)}>
-                                    {result.albumName}
+                                    {result.artist}
                                 </li>
                             ))}
                         </ul>
@@ -96,6 +98,7 @@ function LandingPage() {
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                 >
+                    <label for="genre-select">Select Your Genre:</label>
                     <option value="">All Genres</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
@@ -108,11 +111,15 @@ function LandingPage() {
             </div>
             <div className="album-list">
                 {filteredAlbums.map(album => (
-                    <Album key={album.id} album={album}/>
+                    <Album key={album.id} album={album} addToStack={addToStack}/>
                 ))}
             </div>
         </div>
     )
 }
+
+LandingPage.propTypes = {
+    records: PropTypes.arrayOf(PropTypes.object).isRequired,
+  }
 
 export default LandingPage

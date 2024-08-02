@@ -17,17 +17,14 @@ const Header = () => {
             <nav className={`nav ${isOpen ? 'open' : ''}`}>
                 <ul className="nav-list">
                     <li className="nav-item">
-                        <Link to="/myreviews">My Reviews</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="/mystack">My Stack</Link>
+                        <Link to="/my-stack">My Stack</Link>
                     </li>
                     <li className="nav-item">
                         <Link to="/add-stack">Add to Stacks</Link>
                     </li>
                 </ul>
             </nav>
-            <button className="hamburger" onClick={toggleMenu}>
+            <button id="hamburger-button" className="hamburger-button" onClick={toggleMenu}>
                 <span className="bar"></span>
                 <span className="bar"></span>
                 <span className="bar"></span>
