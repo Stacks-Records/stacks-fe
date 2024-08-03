@@ -58,7 +58,7 @@ const RecordPage = ({ records }) => {
                     allowFullScreen
                 ></iframe>
             )}
-            <div className="buttons-containter">
+            <div className="buttons-container">
                 <button onClick={() => addToStack(record)}
                     disabled={isAlbumInStack(record.id)}
                 >
