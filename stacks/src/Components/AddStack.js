@@ -43,7 +43,6 @@ function AddStack() {
     e.preventDefault()
     try {
         const result = await addStack(album)
-        console.log('Album added:', result)
         navigate('/')
     } catch(error) {
         console.error('Error:', error.message)

@@ -1,0 +1,68 @@
+[
+    {
+      "id": "P-AL-33453-4L",
+      "albumName": "Wish You Were Here",
+      "artist": "Pink Floyd",
+      "releaseDate": "September 12th, 1975",
+      "genre": "Rock",
+      "bandMembers": [
+        "Roger Waters",
+        "David Gilmour",
+        "Rick Wright",
+        "Nick Mason"
+      ],
+      "label": "Harvest/Columbia",
+      "isBandTogether": false,
+      "rollingStoneReview": "*****",
+      "youTubeAlbumURL": "https://www.youtube.com/watch?v=TMy_mYkwl4M",
+      "imgURL": "https://upload.wikimedia.org/wikipedia/en/a/a4/Pink_Floyd%2C_Wish_You_Were_Here_%281975%29.png",
+      "albumsSold": 130000000
+    },
+    {
+      "id": "82876-50133-BB-SB-REI",
+      "albumName": "Speakerboxxx/The Love Below",
+      "artist": "Outkast",
+      "releaseDate": "September 23rd, 2003",
+      "genre": "Hip-Hop",
+      "bandMembers": [
+        "Antwan Andre Patton",
+        "Andre Lauren Benjamin"
+      ],
+      "label": "Arista",
+      "isBandTogether": true,
+      "rollingStoneReview": "***",
+      "youTubeAlbumURL": "https://www.youtube.com/watch?v=RWof0wCG0Mw&list=PLC80P4gsPr-btAs663t1glvlOmy7kCUTi",
+      "imgURL": "https://upload.wikimedia.org/wikipedia/en/5/54/Speakerboxxx-The_Love_Below.png",
+      "albumsSold": 11000000
+    },
+    {
+      "id": "07243-849608",
+      "albumName": "Discovery",
+      "artist": "Daft Punk",
+      "releaseDate": "March 12th, 2001",
+      "genre": "Pop",
+      "bandMembers": [
+        "Thomas Bangalter",
+        "Guy-Manuel de Homem-Christo"
+      ],
+      "label": "Daft House",
+      "isBandTogether": true,
+      "rollingStoneReview": "***",
+      "youTubeAlbumURL": "https://www.youtube.com/watch?v=A2VpR8HahKc&list=PLSdoVPM5WnndSQEXRz704yQkKwx76GvPV",
+      "imgURL": "https://upload.wikimedia.org/wikipedia/en/2/27/Daft_Punk_-_Discovery.png",
+      "albumsSold": 2856000
+    },
+    {
+        "albumName": "Test Album",
+        "artist": "Test Artist",
+        "releaseDate": "2024-01-01",
+        "genre": "Test Genre",
+        "bandMembers": ["Member 1", "Member 2"],
+        "label": "Test Label",
+        "isBandTogether": true,
+        "rollingStoneReview": "****",
+        "youTubeAlbumURL": "https://www.youtube.com/test",
+        "imgURL": "https://www.example.com/test.png",
+        "albumsSold": "1000000"
+      }
+  ]
