@@ -5,6 +5,7 @@ A comprehensive vinyl record marketplace application built with React.
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Preview](#preview)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
