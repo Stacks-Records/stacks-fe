@@ -64,5 +64,5 @@ Contributions are welcome! Please contact me with the links provided below befor
 ## Contact
 Kyle Boomer
  [Github](https://www.github.com/kylemboomer)
-[LinkedIn](https://www.linkedin/in/kylemboomer)
+[LinkedIn](https://www.linkedin.com/in/kylemboomer/)
    
