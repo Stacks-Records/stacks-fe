@@ -19,7 +19,8 @@ A comprehensive vinyl record marketplace application built with React.
 
 Welcome to Stacks! This application allows users to browse, listen to, and keep a digital collection of vinyl records. It provides a user-friendly interface and a robust back-end to ensure a seamless experience.
 
-## Preview Click [here](https://kylemboomer.github.io/stacks/) to check it out for yourself.
+## Preview 
+### Click [here](https://kylemboomer.github.io/stacks/) to check it out for yourself.
 <img width="1329" alt="Screenshot 2024-08-06 at 10 57 39 AM" src="https://github.com/user-attachments/assets/0eff98d4-3670-410b-81c8-1c177f348a86">
 <img width="1197" alt="Screenshot 2024-08-06 at 11 00 57 AM" src="https://github.com/user-attachments/assets/1a7fb0f4-8b5d-47ef-a272-693a18081919">
 <img width="774" alt="Screenshot 2024-08-06 at 10 59 31 AM" src="https://github.com/user-attachments/assets/42c13c4d-9ecc-48d9-ae03-96e830e1ed72">
