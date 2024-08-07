@@ -46,7 +46,7 @@ describe('Add Stack Page', () => {
     cy.wait('@postAlbum').its('response.statusCode').should('eq', 201);
     cy.visit('http://localhost:3000/')
     cy.wait('@getAlbums')
-    // cy.get('.album-list').should('have.length', 4)
+    cy.get('.album-list').should('have.length', 4)
 
   });
 
