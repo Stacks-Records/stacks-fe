@@ -59,7 +59,7 @@ return (
                     <div key={key}>
                         <label>
                             Are they still together?
-                            <input
+                            <input required
                                 type="checkbox"
                                 name={key}
                                 checked={album[key]}
@@ -72,7 +72,7 @@ return (
                     <div key={key}>
                         <label>
                             {key.toUpperCase()}:
-                            <input
+                            <input required
                                 type={key === 'albumsSold' ? 'number' : 'text'}
                                 name={key}
                                 value={album[key]}
@@ -85,7 +85,7 @@ return (
             <div>
                 <label>
                     BAND MEMBERS: 
-                    <input
+                    <input required 
                     type="text"
                     value={bandMember}
                     onChange={(e) => setBandMember(e.target.value)}
