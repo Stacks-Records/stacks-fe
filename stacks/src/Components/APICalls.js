@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:10000'
+const BASE_URL = 'stacks-api-nine.vercel.app'
 
 export const getRecords = async () => {
 
