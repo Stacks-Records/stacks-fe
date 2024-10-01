@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/stacks">
       <Header />
       <div className="app">
         <MyStackProvider>
