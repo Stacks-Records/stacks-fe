@@ -11,7 +11,7 @@ const Header = () => {
 
     return (
         <header className="header">
-            <Link to='/' className="header-link">
+            <Link to='/landing' className="header-link">
                 <h1>Stacks</h1>
             </Link>
             <nav className={`nav ${isOpen ? 'open' : ''}`}>

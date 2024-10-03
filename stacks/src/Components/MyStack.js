@@ -7,7 +7,6 @@ export const useStack = () => useContext(MyStackContext)
 export const MyStackProvider = ({children}) => {
     const [myStack, setMyStack] = useState([])
 
-
     return (
         <MyStackContext.Provider value={[myStack, setMyStack]}>
             {children}

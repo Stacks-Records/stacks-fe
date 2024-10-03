@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import LandingPage from './LandingPage'
+import LoginPage from './LoginPage'
 import RecordPage from './RecordPage'
 import Header from './Header'
 import Footer from './Footer'
@@ -21,12 +22,13 @@ function App() {
   }, []);
 
   return (
-    <Router basename="/stacks">
+    <>
       <Header />
       <div className="app">
         <MyStackProvider>
           <Routes>
-            <Route path="/" element={<LandingPage records={records} />} />
+            <Route path='/' element={<LoginPage />}/>
+            <Route path="/landing" element={<LandingPage records={records} />} />
             <Route path="/:id" element={<RecordPage records={records} />} />
             <Route path="/add-stack" element={<AddStack />} />
             <Route path="/my-stack" element={<MyStackPage />} />
@@ -34,7 +36,7 @@ function App() {
         </MyStackProvider>
       </div>
       <Footer />
-    </Router>
+    </>
   );
 }
 
