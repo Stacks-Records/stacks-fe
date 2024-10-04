@@ -1,70 +1,69 @@
-# Getting Started with Create React App
+# Stacks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive vinyl record marketplace application built with React.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Introduction](#introduction)
+- [Preview](#preview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Wins](#wins)
+- [Challenges](#challenges)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-### `npm start`
+## Introduction
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Welcome to Stacks! This application allows users to browse, listen to, and keep a digital collection of vinyl records. It provides a user-friendly interface and a robust back-end to ensure a seamless experience.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Preview 
+### Click [here](https://kylemboomer.github.io/stacks/) to check it out for yourself.
+<img width="1329" alt="Screenshot 2024-08-06 at 10 57 39 AM" src="https://github.com/user-attachments/assets/0eff98d4-3670-410b-81c8-1c177f348a86">
+<img width="1197" alt="Screenshot 2024-08-06 at 11 00 57 AM" src="https://github.com/user-attachments/assets/1a7fb0f4-8b5d-47ef-a272-693a18081919">
+<img width="774" alt="Screenshot 2024-08-06 at 10 59 31 AM" src="https://github.com/user-attachments/assets/42c13c4d-9ecc-48d9-ae03-96e830e1ed72">
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features
 
-### `npm run build`
+- User authentication and profile management
+- Browse and search for vinyl records
+- Add records to personal stack
+- User reviews and ratings
+- Responsive design for various devices
+- Cypress tests for critical user flows
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository:
+   git clone https://github.com/kylemboomer/stacks.git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Then type this into your terminal: 
+cd stacks && npm i
 
-### `npm run eject`
+3. Allow the dependencies to install, then: npm start
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Usage
+- Peruse the records available, including a feature that enables users to listen to them from the single record page.
+- Users may create My Stack, their own collection of records, either from the Landing Page or Single Record Page. Toss one out if you don't like it anymore.
+- Users may post their own albums, provided they do their homework for all the input fields, and add it to My Stack.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Wins
+- Built the back-end from scratch
+- Deepened understanding of React
+- Successfully built the entire application solo
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Challenges 
+- Implementing Cypress testing for POST functionality
+- Adding YouTube functionality for various video types
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributing
+Contributions are welcome! Please contact me with the links provided below before you begin any work.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contact
+Kyle Boomer
+ [Github](https://www.github.com/kylemboomer)
+[LinkedIn](https://www.linkedin.com/in/kylemboomer/)
+   
