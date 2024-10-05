@@ -7,6 +7,7 @@ import AddStack from './AddStack'
 import MyStackPage from './MyStackPage'
 import { MyStackProvider } from './MyStack'
 import { getRecords } from './APICalls';
+import { Routes, Route} from 'react-router-dom';
 import '../CSS/App.css';
 
 function App() {
