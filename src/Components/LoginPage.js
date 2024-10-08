@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { getToken } from './APICalls';
 const LoginPage = () => {
   const { isAuthenticated } = useAuth0();
-
+  
   return (
     <div className='login-page'>
         <LogoutButton/> 

@@ -1,11 +1,11 @@
 import Album from './Record'
-import { getRecords } from './APICalls'
+import { getRecords, getUsers } from './APICalls'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
-
+import {useAuth0} from '@auth0/auth0-react'
 
 function LandingPage({records}) {
     const [albums, setAlbums] = useState(records)
@@ -16,6 +16,8 @@ function LandingPage({records}) {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [myStack, setMyStack] = useStack()
+    const [authCode, setAuthCode] = useStack()
+    const {getAccessTokenSilently} = useAuth0()
     const navigate = useNavigate()
 
     const addToStack = (album) => {
@@ -25,10 +27,12 @@ function LandingPage({records}) {
 
 
     useEffect(() => {
-        const fetchRecords = async () => {
+        const token = getAccessTokenSilently()
+        setAuthCode(token)
+        const fetchRecords = async (token) => {
             setLoading(true)
             try {
-                const records = await getRecords()
+                const records = await getRecords(token)
                 setAlbums(records)
                 setError('')
             } catch (error) {
@@ -37,9 +41,13 @@ function LandingPage({records}) {
             }
             setLoading(false)
         }
-        fetchRecords()
+        fetchRecords(token);
+        // getUsers()
+        // .then(resp => resp.json())
+        // .then(data => console.log(data))
+        // .catch(err => console.log(err))
      }, [])
-
+     
     useEffect(() => {
         const filterAlbums = () => {
             let filtered = albums

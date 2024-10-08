@@ -12,19 +12,16 @@ import '../CSS/App.css';
 import { Routes, Route} from 'react-router-dom';
 function App() {
   const [records, setRecords] = useState([])
-  useEffect(() => {
-    getToken()
-    .then(resp => console.log(resp))
-  },[]) 
+  // useEffect(() => {
+  //   getToken()
+  //   .then(resp => console.log(resp))
+  // },[]) 
 
   // useEffect(() => {
   //   getRecords()
-  //     .then(data => setRecords(data)
-  //     ).catch(error => console.log(error.message));
-  //   // getUsers()
-  //   // .then(resp => resp.json())
-  //   // .then(data => console.log(data))
-  //   // .catch(err => console.log(err))
+  //     .then(data => setRecords(data))
+  //     .catch(error => console.log(error.message));
+ 
   // }, []);
   return (
     <>
