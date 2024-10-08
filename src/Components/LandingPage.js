@@ -27,12 +27,13 @@ function LandingPage({records}) {
 
 
     useEffect(() => {
-        const token = getAccessTokenSilently()
-        setAuthCode(token)
-        const fetchRecords = async (token) => {
+        const token = getAccessTokenSilently().then(resp => {
+            setAuthCode(resp)
+        })
+        const fetchRecords = async (authCode) => {
             setLoading(true)
             try {
-                const records = await getRecords(token)
+                const records = await getRecords(authCode)
                 setAlbums(records)
                 setError('')
             } catch (error) {
@@ -41,7 +42,7 @@ function LandingPage({records}) {
             }
             setLoading(false)
         }
-        fetchRecords(token);
+        fetchRecords(authCode);
         // getUsers()
         // .then(resp => resp.json())
         // .then(data => console.log(data))
