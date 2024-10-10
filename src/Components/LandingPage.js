@@ -9,7 +9,7 @@ import {useAuth0} from '@auth0/auth0-react'
 
 function LandingPage() {
     const [myStack, setMyStack, albums,authCode] = useStack()
-    // const [albums, setAlbums] = useState(records)
+
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
