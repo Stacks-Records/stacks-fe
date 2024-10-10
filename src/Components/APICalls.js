@@ -1,19 +1,12 @@
-const BASE_URL = 'http://localhost:3001'
+const BASE_URL = 'https://localhost:3001'
 
-export const getRecords = async (token) => {
+export const getRecords = async () => {
+
     try {
-        const res = await fetch(`${BASE_URL}/albums`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type':'application/json'
-            }
-        })
-        
+        const res = await fetch(`${BASE_URL}/albums`)
         if (!res.ok) {
             throw new Error('Failed to fetch Records.')
         }
-
         const data = await res.json()
         return data
     } catch (error) {

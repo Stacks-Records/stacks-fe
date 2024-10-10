@@ -6,8 +6,8 @@
 
 
 .my-stack-title {
-    text-decoration: underline;
     justify-items: center;
+    color: white;
 }
 
 .nav-wrap {
@@ -21,7 +21,7 @@ margin:2rem 2rem ;
 
 
 p {
-    font-size: x-large;
+color: red;
 }
 
 .main-gallery-link {

@@ -1,28 +1,44 @@
 import Album from './Record'
-import { getRecords, getUsers } from './APICalls'
+import { getRecords } from './APICalls'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
-import {useAuth0} from '@auth0/auth0-react'
 
-function LandingPage() {
-    const [myStack, setMyStack, albums,authCode] = useStack()
 
+function LandingPage({records}) {
+    const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
-    const [filteredAlbums, setFilteredAlbums] = useState(albums)
+    const [filteredAlbums, setFilteredAlbums] = useState(records)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-
+    const [myStack, setMyStack] = useStack()
     const navigate = useNavigate()
-    const auth0 = useAuth0();
+
     const addToStack = (album) => {
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
+
+
+    useEffect(() => {
+        const fetchRecords = async () => {
+            setLoading(true)
+            try {
+                const records = await getRecords()
+                setAlbums(records)
+                setError('')
+            } catch (error) {
+                console.error(error)
+                setError(error.message)
+            }
+            setLoading(false)
+        }
+        fetchRecords()
+     }, [])
 
     useEffect(() => {
         const filterAlbums = () => {
@@ -42,7 +58,6 @@ function LandingPage() {
         filterAlbums()
     }, [search, genre, albums])
 
-    
     const handleSearch = (e) => {
         const query = e.target.value
         setSearch(query)
@@ -109,5 +124,8 @@ function LandingPage() {
     )
 }
 
+LandingPage.propTypes = {
+    records: PropTypes.arrayOf(PropTypes.object).isRequired,
+  }
 
 export default LandingPage

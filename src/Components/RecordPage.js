@@ -85,4 +85,24 @@ const RecordPage = ({ records }) => {
 };
 
 
+RecordPage.propTypes = {
+    records: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            albumName: PropTypes.string.isRequired,
+            artist: PropTypes.string.isRequired,
+            releaseDate: PropTypes.string,
+            genre: PropTypes.string.isRequired,
+            bandMembers: PropTypes.arrayOf(PropTypes.string).isRequired,
+            label: PropTypes.string.isRequired,
+            isBandTogether: PropTypes.bool.isRequired,
+            rollingStoneReview: PropTypes.string,
+            youTubeAlbumURL: PropTypes.string.isRequired,
+            imgURL: PropTypes.string.isRequired,
+            albumsSold: PropTypes.number
+        })
+    ).isRequired,
+}
+
+
 export default RecordPage;
