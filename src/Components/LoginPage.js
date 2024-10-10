@@ -5,18 +5,28 @@ import LoginButton from './LoginButton'
 import Profile from './Profile';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
-import { getToken } from './APICalls';
+import { getRecords, getToken } from './APICalls';
 import { useStack } from './MyStack'
 const LoginPage = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [authCode, setAuthCode] = useStack()
+  const [authCode, setAuthCode, albums, setAlbums] = useStack();
   useEffect(() => {
+
     const getAccessToken = async() => {
       var token = await getAccessTokenSilently()
       setAuthCode(token)
     }
     getAccessToken()
   },[isAuthenticated])
+  useEffect(() => {
+    if (authCode) {
+      getRecords(authCode)
+      .then(data => setAlbums(data))
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  },[authCode])
   return (
     <div className='login-page'>
         <LogoutButton/> 

@@ -7,16 +7,15 @@ import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 import {useAuth0} from '@auth0/auth0-react'
 
-function LandingPage({records,changeRecords}) {
-    const [albums, setAlbums] = useState(records)
+function LandingPage() {
+    const [myStack, setMyStack, albums,authCode] = useStack()
+    // const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
-    const [filteredAlbums, setFilteredAlbums] = useState(records)
+    const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [myStack, setMyStack] = useStack()
-    const [authCode] = useStack()
 
     const navigate = useNavigate()
     const auth0 = useAuth0();
@@ -25,17 +24,6 @@ function LandingPage({records,changeRecords}) {
         navigate('/my-stack')
     }
 
-    useEffect(() => {
-       getRecords(authCode)
-       .then(data => {
-        console.log(data)
-        changeRecords(data)
-       })
-       .catch(err => {
-        console.log(err)
-       })
-     }, [])
-     
     useEffect(() => {
         const filterAlbums = () => {
             let filtered = albums
@@ -121,8 +109,5 @@ function LandingPage({records,changeRecords}) {
     )
 }
 
-LandingPage.propTypes = {
-    records: PropTypes.arrayOf(PropTypes.object).isRequired,
-  }
 
 export default LandingPage
