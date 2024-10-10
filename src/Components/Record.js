@@ -6,7 +6,6 @@ import '../CSS/Record.css'
 function Album({ album, addToStack }) {
     const navigate = useNavigate()
     const [myStack] = useStack()
-
     const handleClick = () => {
         navigate(`/${album.id}`)
     }

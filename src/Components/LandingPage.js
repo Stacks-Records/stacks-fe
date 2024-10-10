@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 import {useAuth0} from '@auth0/auth0-react'
 
-function LandingPage({records}) {
+function LandingPage({records,changeRecords}) {
     const [albums, setAlbums] = useState(records)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
@@ -16,37 +16,24 @@ function LandingPage({records}) {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [myStack, setMyStack] = useStack()
-    const [authCode, setAuthCode] = useStack()
-    const {getAccessTokenSilently} = useAuth0()
-    const navigate = useNavigate()
+    const [authCode] = useStack()
 
+    const navigate = useNavigate()
+    const auth0 = useAuth0();
     const addToStack = (album) => {
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
 
-
     useEffect(() => {
-        const token = getAccessTokenSilently().then(resp => {
-            setAuthCode(resp)
-        })
-        const fetchRecords = async (authCode) => {
-            setLoading(true)
-            try {
-                const records = await getRecords(authCode)
-                setAlbums(records)
-                setError('')
-            } catch (error) {
-                console.error(error)
-                setError(error.message)
-            }
-            setLoading(false)
-        }
-        fetchRecords(authCode);
-        // getUsers()
-        // .then(resp => resp.json())
-        // .then(data => console.log(data))
-        // .catch(err => console.log(err))
+       getRecords(authCode)
+       .then(data => {
+        console.log(data)
+        changeRecords(data)
+       })
+       .catch(err => {
+        console.log(err)
+       })
      }, [])
      
     useEffect(() => {
@@ -67,6 +54,7 @@ function LandingPage({records}) {
         filterAlbums()
     }, [search, genre, albums])
 
+    
     const handleSearch = (e) => {
         const query = e.target.value
         setSearch(query)

@@ -9,14 +9,19 @@ import { BrowserRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const domain = process.env.REACT_APP_DOMAIN
 const clientId = process.env.REACT_APP_CLIENT_ID
+const audience = process.env.REACT_APP_AUDIENCE
+
 root.render(
   <BrowserRouter>
     <Auth0Provider
       domain={domain}
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
+        audience: audience
       }}
+
+      scope="openid profile email"
       >
       <App />
     </Auth0Provider>
