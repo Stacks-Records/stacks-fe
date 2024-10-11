@@ -63,9 +63,9 @@ const RecordPage = () => {
             )}
             <div className="buttons-container">
                 <button onClick={() => addToStack(record)}
-                    // disabled={isAlbumInStack(record.id)}
+                    disabled={isAlbumInStack(record.id)}
                 >
-                    {/* {isAlbumInStack(record.id) ? 'Already Got It' : 'Add To My Stack'} */}
+                    {isAlbumInStack(record.id) ? 'Already Got It' : 'Add To My Stack'}
                 </button>
             </div>
             <div className="image-container">
