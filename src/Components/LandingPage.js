@@ -1,15 +1,17 @@
 import Album from './Record'
-import { getRecords, getUsers } from './APICalls'
-import { useState, useEffect } from 'react'
+import { getUsers } from './APICalls'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 import {useAuth0} from '@auth0/auth0-react'
+import MyStackContext from '../Context/MyStack'
+import AuthAlbumContext from '../Context/AuthAlbumContext'
 
 function LandingPage() {
-    const [myStack, setMyStack, albums,authCode] = useStack()
 
+    const {myStack, setMyStack} = useContext(MyStackContext)
+    const {albums, setAlbums} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
@@ -18,7 +20,6 @@ function LandingPage() {
     const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
-    const auth0 = useAuth0();
     const addToStack = (album) => {
         setMyStack([...myStack, album])
         navigate('/my-stack')

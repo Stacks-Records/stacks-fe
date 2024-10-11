@@ -64,29 +64,20 @@ export const getUsers = async () => {
         console.log({ error: error.message })
     }
 }
-
-export const getToken = async () => {
+export const postUser = (user) => {
     try {
-        var options = {
+        fetch(`${BASE_URL}/api/v1/users`, {
             method: 'POST',
-            url: process.env.REACT_APP_DOMAIN,
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
-            data: new URLSearchParams({
-                grant_type: 'client_credentials',
-                client_id: process.env.REACT_APP_CLIENT_ID,
-                client_secret: process.env.REACT_APP_CLIENT_SECRET,
-                audience: process.env.REACT_APP_AUDIENCE
-            })
-        };
-        const url = process.env.REACT_APP_DOMAIN
-        const accessToken = await fetch(url, options)
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({user})
+        })
     }
     catch (error) {
         console.log({error: error.message})
     }
 }
-
-
 
 // axios.request(options).then(function (response) {
 //   console.log(response.data);
