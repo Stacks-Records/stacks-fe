@@ -4,7 +4,6 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
-import {useAuth0} from '@auth0/auth0-react'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 

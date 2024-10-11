@@ -5,7 +5,6 @@ import '../CSS/Record.css'
 import { useContext } from 'react'
 function Album({ album, addToStack }) {
     const navigate = useNavigate()
-    // const [myStack, setMyStack, authCode] = useStack()
     const {myStack, setMyStack} = useContext(MyStackContext)
     const handleClick = () => {
         navigate(`/${album.id}`)
@@ -19,11 +18,7 @@ function Album({ album, addToStack }) {
     }
 
     const isAlbumInStack = (id) => {
-        if (myStack.length) {
-            const foundStack = myStack.find(album => album.id === id)
-            return true
-        }
-        return false;
+         return myStack.some(album => album.id === id)
     };
 
     return (
@@ -35,25 +30,13 @@ function Album({ album, addToStack }) {
                 <p>{album.genre}</p>
                 <button className="record-button"
                     onClick={handleAddToStack}
-                    // disabled={isAlbumInStack(album.id)}
+                    disabled={isAlbumInStack(album.id)}
                     >
-                    {/* {isAlbumInStack(album.id) ? 'Already Got It' : 'Add To My Stack'} */}
+                    {isAlbumInStack(album.id) ? 'Already Got It' : 'Add To My Stack'}
                 </button>
             </div>
         </div>
     )
 }
-
-// Album.propTypes = {
-//     album: PropTypes.shape({
-//         id: PropTypes.string.isRequired,
-//         albumName: PropTypes.string.isRequired,
-//         artist: PropTypes.string.isRequired,
-//         genre: PropTypes.string.isRequired,
-//         imgURL: PropTypes.string.isRequired
-//     }).isRequired,
-//     addToStack: PropTypes.func.isRequired,
-// }
-
 
 export default Album

@@ -64,23 +64,21 @@ export const getUsers = async () => {
         console.log({ error: error.message })
     }
 }
-export const postUser = (user) => {
+export const postUser = (user, token) => {
+    const {name, email} = user
+    const newUser = {name, email}
     try {
         fetch(`${BASE_URL}/api/v1/users`, {
             method: 'POST',
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
             },
-            body: JSON.stringify({user})
+            body: JSON.stringify(newUser)
         })
+        .then(resp => console.log(resp))
     }
     catch (error) {
         console.log({error: error.message})
     }
 }
-
-// axios.request(options).then(function (response) {
-//   console.log(response.data);
-// }).catch(function (error) {
-//   console.error(error);
-// });

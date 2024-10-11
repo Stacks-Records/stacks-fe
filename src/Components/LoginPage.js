@@ -12,8 +12,9 @@ const LoginPage = () => {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const {myStack, setMyStack} = useContext(MyStackContext)
   const {albums, setAlbums, authCode, setAuthCode} = useContext(AuthAlbumContext)
+  const navigate = useNavigate();
+
   useEffect(() => {
-    postUser(user)
     if (isAuthenticated) {
       const getAccessToken = async() => {
         var token = await getAccessTokenSilently()
@@ -24,6 +25,7 @@ const LoginPage = () => {
   },[isAuthenticated])
   useEffect(() => {
     if (authCode && isAuthenticated) {
+      postUser(user, authCode)
       const getAlbums = async() => {
         try {
           const albums = await getRecords(authCode)
@@ -34,8 +36,10 @@ const LoginPage = () => {
         }
       }
       getAlbums()
+      navigate('/landing')
     }
   },[authCode])
+
   return (
     <div className='login-page'>
         <LogoutButton/> 
