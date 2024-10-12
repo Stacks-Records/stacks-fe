@@ -36,7 +36,10 @@ const LoginPage = () => {
         }
       }
       getAlbums()
-      navigate('/landing')
+      setTimeout(() => {
+        navigate('/landing')
+      },1000)
+      
     }
   },[authCode])
 

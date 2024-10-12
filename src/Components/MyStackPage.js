@@ -3,12 +3,19 @@ import MyStackContext from '../Context/MyStack'
 import { Link } from 'react-router-dom'
 import '../CSS/MyStackPage.css'
 import { useContext } from 'react'
+import { deleteStack } from './APICalls'
+import AuthAlbumContext from '../Context/AuthAlbumContext'
+import { useAuth0 } from '@auth0/auth0-react'
 const MyStackPage = () => {
     const {myStack, setMyStack} = useContext(MyStackContext)
+    const {authCode} = useContext(AuthAlbumContext)
+    const {user} = useAuth0()
 
-   function handleDelete(id) {
-    const deleteFavorite = myStack.filter(record => record.id !== id)
-    setMyStack(deleteFavorite)
+   function handleDelete(album) {
+    const {email} = user
+    deleteStack(email, album, authCode)
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
    }
    if (myStack.length !== undefined) {
     var myStackRecords = myStack.map(record => {
