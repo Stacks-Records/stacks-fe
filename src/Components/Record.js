@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { useStack } from './MyStack'
+import MyStackContext from '../Context/MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/Record.css'
-
+import { useContext } from 'react'
 function Album({ album, addToStack }) {
     const navigate = useNavigate()
-    const [myStack] = useStack()
+    const {myStack, setMyStack} = useContext(MyStackContext)
     const handleClick = () => {
         navigate(`/${album.id}`)
     }
@@ -18,7 +18,7 @@ function Album({ album, addToStack }) {
     }
 
     const isAlbumInStack = (id) => {
-        return myStack.some(album => album.id === id);
+         return myStack.some(album => album.id === id)
     };
 
     return (
@@ -38,17 +38,5 @@ function Album({ album, addToStack }) {
         </div>
     )
 }
-
-Album.propTypes = {
-    album: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        albumName: PropTypes.string.isRequired,
-        artist: PropTypes.string.isRequired,
-        genre: PropTypes.string.isRequired,
-        imgURL: PropTypes.string.isRequired
-    }).isRequired,
-    addToStack: PropTypes.func.isRequired,
-}
-
 
 export default Album

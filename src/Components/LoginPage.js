@@ -4,29 +4,45 @@ import LogoutButton from './LogoutButton';
 import LoginButton from './LoginButton'
 import Profile from './Profile';
 import { useNavigate } from 'react-router';
-import { useEffect } from 'react';
-import { getRecords, getToken } from './APICalls';
-import { useStack } from './MyStack'
+import { useEffect,useContext } from 'react';
+import { getRecords, getUsers, postUser} from './APICalls';
+import MyStackContext from '../Context/MyStack'
+import AuthAlbumContext from '../Context/AuthAlbumContext';
 const LoginPage = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [authCode, setAuthCode, albums, setAlbums] = useStack();
-  useEffect(() => {
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
+  const {myStack, setMyStack} = useContext(MyStackContext)
+  const {albums, setAlbums, authCode, setAuthCode} = useContext(AuthAlbumContext)
+  const navigate = useNavigate();
 
-    const getAccessToken = async() => {
-      var token = await getAccessTokenSilently()
-      setAuthCode(token)
+  useEffect(() => {
+    if (isAuthenticated) {
+      const getAccessToken = async() => {
+        var token = await getAccessTokenSilently()
+        setAuthCode(token)
+      }
+      getAccessToken()
     }
-    getAccessToken()
   },[isAuthenticated])
   useEffect(() => {
-    if (authCode) {
-      getRecords(authCode)
-      .then(data => setAlbums(data))
-      .catch(err => {
-        console.log(err)
-      })
+    if (authCode && isAuthenticated) {
+      postUser(user, authCode)
+      const getAlbums = async() => {
+        try {
+          const albums = await getRecords(authCode)
+          setAlbums(albums)
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+      getAlbums()
+      setTimeout(() => {
+        navigate('/landing')
+      },1000)
+      
     }
   },[authCode])
+
   return (
     <div className='login-page'>
         <LogoutButton/> 

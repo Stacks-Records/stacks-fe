@@ -1,19 +1,22 @@
-import { useStack } from './MyStack'
+import MyStackContext from '../Context/MyStack'
 import { useParams, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../CSS/RecordPage.css';
-
+import { useContext } from 'react';
+import AuthAlbumContext from '../Context/AuthAlbumContext';
 function getYouTubeVideoID(url) {
     const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null;
 }
 
-const RecordPage = ({ records }) => {
+const RecordPage = () => {
     const { id } = useParams();
     const navigate = useNavigate()
-    const [myStack, setMyStack] = useStack()
-    const allRecords = [...records, ...myStack]
+    // const [myStack, setMyStack, albums] = useStack()
+    const {myStack, setMyStack} = useContext(MyStackContext)
+    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const allRecords = [...albums, ...myStack]
     const record = allRecords.find(record => record.id === id);
 
     if (!record) {

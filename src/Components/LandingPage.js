@@ -1,25 +1,35 @@
 import Album from './Record'
-import { getRecords, getUsers } from './APICalls'
-import { useState, useEffect } from 'react'
+import { getUsers, addStack, getStack } from './APICalls'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStack } from './MyStack'
 import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
-import {useAuth0} from '@auth0/auth0-react'
+import MyStackContext from '../Context/MyStack'
+import AuthAlbumContext from '../Context/AuthAlbumContext'
+import { useAuth0 } from "@auth0/auth0-react";
 
 function LandingPage() {
-    const [myStack, setMyStack, albums,authCode] = useStack()
 
+    const {myStack, setMyStack} = useContext(MyStackContext)
+    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const {authCode} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const {user} = useAuth0()
 
     const navigate = useNavigate()
-    const auth0 = useAuth0();
     const addToStack = (album) => {
+        const {email} = user
+        addStack(email,album,authCode)
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+        getStack(email,authCode)
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
