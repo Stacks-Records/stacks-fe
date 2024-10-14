@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import MyStackContext from '../Context/MyStack'
-import PropTypes from 'prop-types'
 import '../CSS/Record.css'
 import { useContext } from 'react'
 function Album({ album, addToStack }) {
@@ -18,7 +17,7 @@ function Album({ album, addToStack }) {
     }
 
     const isAlbumInStack = (id) => {
-         return myStack.some(album => album.id === id)
+         return myStack?.some(album => album.id === id)
     };
 
     return (
