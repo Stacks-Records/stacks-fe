@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { addStack } from './APICalls'
+import { getRecords, postAlbum } from './APICalls'
 import '../CSS/AddStack.css'
+import {useAuth0} from '@auth0/auth0-react'
+import AuthAlbumContext from '../Context/AuthAlbumContext'
 
 function AddStack() {
     const [album, setAlbum] = useState({
@@ -17,7 +19,7 @@ function AddStack() {
         imgURL: '',
         albumsSold: ''
     })
-
+    const {authCode} = useContext(AuthAlbumContext)
     const [bandMember, setBandMember] = useState('')
     const [error, setError] = useState('')
     const navigate = useNavigate()
@@ -42,8 +44,8 @@ function AddStack() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-        const result = await addStack(album)
-        navigate('/')
+        const result = await postAlbum(authCode,album)
+        navigate('/landing')
     } catch(error) {
         console.error('Error:', error.message)
         setError('Failed to add album. Please try again.')

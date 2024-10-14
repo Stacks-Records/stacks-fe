@@ -103,3 +103,24 @@ export const deleteStack = async (email, albumToDelete, token) => {
         console.log(resp)
         return resp.json()})
 }
+
+export const postAlbum = async (token,album) => {
+        try {
+            const res = await fetch(`${BASE_URL}/add-stack`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: JSON.stringify(album)
+            })
+            if (!res.ok) {
+                throw new Error('Failed to add album.')
+            }
+            const newAlbum = await res.json()
+            return newAlbum
+        } catch (error) {
+            console.error('Error:', error.message)
+            throw error
+        }
+    }
