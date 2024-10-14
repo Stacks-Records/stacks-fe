@@ -48,6 +48,7 @@ const LoginPage = () => {
         <LogoutButton/> 
         <LoginButton />
         <Profile/>
+        {/* {isAuthenticated && useNavigate('/landing')} */}
     </div>
   )
 }

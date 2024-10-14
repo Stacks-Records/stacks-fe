@@ -52,7 +52,6 @@ function LandingPage() {
         filterAlbums()
     }, [search, genre, albums])
 
-    
     const handleSearch = (e) => {
         const query = e.target.value
         setSearch(query)
@@ -118,6 +117,5 @@ function LandingPage() {
         </div>
     )
 }
-
 
 export default LandingPage
