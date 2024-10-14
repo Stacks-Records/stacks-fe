@@ -27,9 +27,6 @@ function LandingPage() {
         addStack(email,album,authCode)
         .then(data => console.log(data))
         .catch(err => console.log(err))
-        getStack(email,authCode)
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }

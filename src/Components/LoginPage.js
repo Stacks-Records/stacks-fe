@@ -5,7 +5,7 @@ import LoginButton from './LoginButton'
 import Profile from './Profile';
 import { useNavigate } from 'react-router';
 import { useEffect,useContext } from 'react';
-import { getRecords, getUsers, postUser} from './APICalls';
+import { getRecords, getStack, postUser} from './APICalls';
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext';
 const LoginPage = () => {
@@ -23,8 +23,9 @@ const LoginPage = () => {
       getAccessToken()
     }
   },[isAuthenticated])
-  useEffect(() => {
+  useEffect(() => { //getStack, setMystack to data
     if (authCode && isAuthenticated) {
+      const {email} = user
       postUser(user, authCode)
       const getAlbums = async() => {
         try {
@@ -36,6 +37,9 @@ const LoginPage = () => {
         }
       }
       getAlbums()
+      getStack(email, authCode)
+      .then(data => {
+        setMyStack(data)})
       setTimeout(() => {
         navigate('/landing')
       },1000)
