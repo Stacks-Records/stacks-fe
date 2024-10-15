@@ -36,7 +36,7 @@ const MyStackPage = () => {
         <div className="my-stack-gallery">
           <h1 className="my-stack-title"> My Stack </h1>
 
-          {myStack.length > 0 ? (
+          {myStack?.length > 0 ? (
             <div className="my-stack-wrapper">{myStackRecords}
              <button className="back-to-main">
                     <Link to="/landing" className="main-gallery-link">Go Pick Out Some More!</Link>
