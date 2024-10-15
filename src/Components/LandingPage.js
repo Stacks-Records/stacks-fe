@@ -27,9 +27,6 @@ function LandingPage() {
         addStack(email,album,authCode)
         .then(data => console.log(data))
         .catch(err => console.log(err))
-        getStack(email,authCode)
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
@@ -52,7 +49,6 @@ function LandingPage() {
         filterAlbums()
     }, [search, genre, albums])
 
-    
     const handleSearch = (e) => {
         const query = e.target.value
         setSearch(query)
@@ -95,12 +91,11 @@ function LandingPage() {
                         </ul>
                     )}
                 </div>
-                <label>Select Your Genre:</label>
                 <select
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                 >
-                    <option value="">All Genres</option>
+                    <option value="">Select Your Genre</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
                     <option value="Hip-Hop">Hip-Hop</option>
@@ -118,6 +113,5 @@ function LandingPage() {
         </div>
     )
 }
-
 
 export default LandingPage

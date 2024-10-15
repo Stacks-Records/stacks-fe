@@ -2,7 +2,7 @@ import MyStackAlbum from './MyStackAlbum'
 import MyStackContext from '../Context/MyStack'
 import { Link } from 'react-router-dom'
 import '../CSS/MyStackPage.css'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { deleteStack } from './APICalls'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -14,10 +14,13 @@ const MyStackPage = () => {
    function handleDelete(album) {
     const {email} = user
     deleteStack(email, album, authCode)
-    .then(data => console.log(data))
+    .then(data => {
+        console.log(data)
+        setMyStack(data.user)})
     .catch(err => console.log(err))
    }
-   if (myStack.length !== undefined) {
+
+   if (myStack.length > 0) {
     var myStackRecords = myStack.map(record => {
         return (
             <MyStackAlbum
@@ -33,7 +36,7 @@ const MyStackPage = () => {
         <div className="my-stack-gallery">
           <h1 className="my-stack-title"> My Stack </h1>
 
-          {myStackRecords.length > 0 ? (
+          {myStack?.length > 0 ? (
             <div className="my-stack-wrapper">{myStackRecords}
              <button className="back-to-main">
                     <Link to="/landing" className="main-gallery-link">Go Pick Out Some More!</Link>

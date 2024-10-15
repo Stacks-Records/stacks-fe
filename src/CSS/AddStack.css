@@ -1,34 +1,26 @@
 /* AddStack.css */
-.add-stack {
-    padding: 1.25rem;
-    max-width: 40rem;
-    margin: auto;
-  }
-  
+
   .add-stack h1 {
     text-align: center;
+    color: white;
   }
-  
-  .add-stack form {
-    display: flex;
-    flex-direction: column;
-  }
-  
+
   .add-stack label {
-    margin-bottom: .75rem;
+    /* color: black; */
   }
   
   .add-stack input[type="text"],
-  .add-stack input[type="number"] {
+  .add-stack input[type="number"],
+  .add-stack input[type="date"],
+  .add-stack input[type="url"] {
     width: 100%;
     padding: .5rem;
-    margin-top: .3rem;
   }
   
   .add-stack button {
     padding: .75rem;
     margin-top: 1.25rem;
-    background-color: #4CAF50;
+    background-color: #600ccf;
     color: white;
     border: none;
     cursor: pointer;
@@ -39,3 +31,43 @@
     margin-top: .75rem;
   }
   
+  .add-stack-form {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem;
+    grid-template-columns: auto 1fr;
+  }
+  label {
+    margin-right: 1em;
+  }
+  input {
+    border-radius: 5px;
+    border: none;
+    /* margin-left: 1em; */
+  }
+
+  .input-group {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    justify-items: end;
+    align-items: baseline;
+  }
+
+  sub {
+    color: red;
+    vertical-align: 25%;
+    font-size: 1.2em;
+  }
+  
+  .required-text {
+    transform: translate(-5%,22%);
+    color: white;
+  }
+
+  input[type="checkbox"] {
+    justify-items: start;
+    padding: 2em;
+    height: 2em;
+    transform: translateY(20%)
+  }
