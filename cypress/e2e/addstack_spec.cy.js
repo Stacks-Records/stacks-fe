@@ -1,5 +1,5 @@
 describe('Add Stack Page', () => {
-  const api = 'https://stacks-api-iota.vercel.app/api/v1/stacks';
+  const api = 'https://stacks-api-iota.vercel.app/albums';
   const newAlbum = {
     albumName: 'Test Album',
     artist: 'Test Artist',
@@ -26,7 +26,7 @@ describe('Add Stack Page', () => {
   });
 
   it('should fill out and submit the form successfully', () => {
-    cy.intercept('POST', api, {
+    cy.intercept('POST', 'https://stacks-api-iota.vercel.app/add-stack', {
       statusCode: 201,
       body: newAlbum
     }).as('postAlbum');
@@ -42,17 +42,16 @@ describe('Add Stack Page', () => {
     cy.get('input[name="albumsSold"]').type(newAlbum.albumsSold.toString());
     cy.get('input[name="bandMembers"]').type(newAlbum.bandMembers)
     cy.get('input[name="isBandTogether"]').check();
+
     cy.get('button[type="submit"]').click();
 
     cy.wait('@postAlbum').its('response.statusCode').should('eq', 201);
-    cy.visit('http://localhost:3000/')
-    cy.wait('@getAlbums')
-    cy.get('.album-list').should('have.length', 4)
+    cy.get('.album-cards').should('have.length', 4)
 
   });
 
   it('should show an error message on form submission failure', () => {
-    cy.intercept('POST', 'https://stacks-api-6hnx.onrender.com/add-stack', {
+    cy.intercept('POST', 'https://stacks-api-iota.vercel.app/add-stack', {
       statusCode: 500,
       body: { error: 'Internal Server Error' }
     }).as('postAlbumError');
@@ -66,12 +65,7 @@ describe('Add Stack Page', () => {
     cy.get('input[name="youTubeAlbumURL"]').type(newAlbum.youTubeAlbumURL);
     cy.get('input[name="imgURL"]').type(newAlbum.imgURL);
     cy.get('input[name="albumsSold"]').type(newAlbum.albumsSold.toString());
-
-    newAlbum.bandMembers.forEach((member, index) => {
-      cy.get('input[type="text"]').eq(1).type(member);
-      cy.contains('button', 'Add Members').click();
-    });
-
+    cy.get('input[name="bandMembers"]').type(newAlbum.bandMembers)
     cy.get('input[name="isBandTogether"]').check();
     cy.get('button[type="submit"]').click();
 
@@ -80,11 +74,12 @@ describe('Add Stack Page', () => {
   });
 
   it('should display an error message if required fields are empty', () => {
-    cy.intercept('POST', 'https://stacks-api-6hnx.onrender.com/add-stack', {
+    cy.intercept('POST', 'https://stacks-api-iota.vercel.app/add-stack', {
       statusCode: 404,
       body: { error: 'Page Not Found' }
     }).as('postAlbumError');
     cy.get('button[type="submit"]').click();
-    cy.get('.error').should('contain', 'Failed to add album. Please try again.');
+    cy.get('input[required]:first').invoke('prop', 'validationMessage')
+      .should('contain', 'Please fill out this field')
   });
 });
