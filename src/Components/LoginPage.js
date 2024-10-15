@@ -27,6 +27,7 @@ const LoginPage = () => {
   useEffect(() => { //getStack, setMystack to data
     if (authCode && isAuthenticated) {
       const {email} = user
+      console.log(authCode)
       postUser(user, authCode)
       const getAlbums = async() => {
         try {

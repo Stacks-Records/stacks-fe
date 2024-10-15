@@ -59,9 +59,6 @@
 }
 
 @media screen and (max-width: 48rem) { /* 768px */
-    .footer {
-        /* padding: 1rem; */
-    }
 
     .created-by {
         font-size: 1.3rem;
@@ -69,10 +66,6 @@
 
     .name {
         font-size: 1rem;
-    }
-
-    .info-section {
-        /* gap: 1.5rem; */
     }
 
     .person img {
@@ -100,13 +93,8 @@
         gap: 1rem;
     }
 
-    .person {
-        /* margin-bottom: 0.5rem; */
-    }
-
     .person img {
         width: 1.5rem;
-        /* margin-right: 0; */
         margin-bottom: 0.3rem;
     }
 

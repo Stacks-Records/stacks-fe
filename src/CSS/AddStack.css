@@ -5,9 +5,6 @@
     color: white;
   }
 
-  .add-stack label {
-    /* color: black; */
-  }
   
   .add-stack input[type="text"],
   .add-stack input[type="number"],
