@@ -1,7 +1,8 @@
 const BASE_URL = 'http://localhost:3001'
 
 export const getRecords = async (token) => {
-    try {
+
+   try {
         const res = await fetch(`${BASE_URL}/albums`, {
             method: 'GET',
             headers: {
@@ -48,8 +49,6 @@ export const postUser = async (user, token) => {
             body: JSON.stringify(newUser)
         })
      
-        // const result = await response.json()
-        // return result
     }
     catch (error) {
         console.log({error: error.message})

@@ -2,10 +2,11 @@
 
   .add-stack h1 {
     text-align: center;
+    color: white;
   }
 
   .add-stack label {
-    color: black;
+    /* color: black; */
   }
   
   .add-stack input[type="text"],
@@ -19,7 +20,7 @@
   .add-stack button {
     padding: .75rem;
     margin-top: 1.25rem;
-    background-color: #4CAF50;
+    background-color: #600ccf;
     color: white;
     border: none;
     cursor: pointer;
@@ -42,7 +43,7 @@
   input {
     border-radius: 5px;
     border: none;
-    margin-left: 1em;
+    /* margin-left: 1em; */
   }
 
   .input-group {
@@ -60,5 +61,13 @@
   }
   
   .required-text {
-    transform: translate(-5%,22%)
+    transform: translate(-5%,22%);
+    color: white;
+  }
+
+  input[type="checkbox"] {
+    justify-items: start;
+    padding: 2em;
+    height: 2em;
+    transform: translateY(20%)
   }

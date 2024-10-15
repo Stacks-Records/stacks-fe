@@ -6,6 +6,8 @@
 
 
 .my-stack-title {
+    justify-items: center;
+    color: white;
     text-decoration: underline;
 }
 .my-stack-wrapper {
@@ -14,6 +16,9 @@
     align-items: center;
     gap: 1rem;
 }
+
+
+
 .nav-wrap {
     display: flex;
     flex-direction: column;
@@ -27,7 +32,7 @@
 }
 
 p {
-    font-size: x-large;
+color: red;
 }
 
 .main-gallery-link {
