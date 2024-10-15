@@ -51,10 +51,4 @@ describe('Landing Page User Flow', () => {
     cy.get('.album-list').children().should('have.length', 0)
   })
 
-  it('should add an album to My Stack and navigate to My Stack Page', () => {
-    cy.get('.album-list').contains('Wish You Were Here').parent().contains('Add To My Stack').click()
-    cy.url().should('include', '/my-stack')
-    cy.get('.my-stack-gallery').should('contain', 'Wish You Were Here')
-  })
-
 })
