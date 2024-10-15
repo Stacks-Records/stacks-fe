@@ -19,6 +19,7 @@ const LoginPage = () => {
       const getAccessToken = async() => {
         var token = await getAccessTokenSilently()
         setAuthCode(token)
+        localStorage.setItem('authAccessToken',JSON.stringify(token))
       }
       getAccessToken()
     }

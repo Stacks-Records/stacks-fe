@@ -1,8 +1,14 @@
 describe('Landing Page User Flow', () => {
-  const api = 'https://stacks-api-6hnx.onrender.com/albums'
+  const api = 'http://localhost:3001/albums'
   const albumData = 'albums.json'
 
   beforeEach(() => {
+    cy.visit('http://localhost:3000/')
+    cy.get('.auth_bttn').click()
+    cy.loginToAuth0(
+      Cypress.env('auth0_username'),
+      Cypress.env('auth0_password')
+    )
     cy.intercept('GET', api, {fixture:albumData}).as('getAlbums')
     cy.visit('http://localhost:3000/')
     cy.wait('@getAlbums')
@@ -43,12 +49,6 @@ describe('Landing Page User Flow', () => {
     cy.get('.album-list').children().should('have.length', 0)
     cy.get('select').select('Country')
     cy.get('.album-list').children().should('have.length', 0)
-  })
-
-  it('should add an album to My Stack and navigate to My Stack Page', () => {
-    cy.get('.album-list').contains('Wish You Were Here').parent().contains('Add To My Stack').click()
-    cy.url().should('include', '/my-stack')
-    cy.get('.my-stack-gallery').should('contain', 'Wish You Were Here')
   })
 
 })

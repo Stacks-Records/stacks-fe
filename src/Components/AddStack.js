@@ -18,7 +18,6 @@ function AddStack() {
         e.preventDefault()
         const formData = new FormData(formRef.current)
         const album = Object.fromEntries(formData.entries())
-        console.log(album)
         album.isBandTogether = formData.get('isBandTogether') === 'on'
         album.bandMembers = formData.getAll('bandMembers')
 
