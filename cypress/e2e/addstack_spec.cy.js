@@ -1,11 +1,11 @@
 describe('Add Stack Page', () => {
-  const api = 'https://stacks-api-6hnx.onrender.com/albums';
+  const api = 'https://stacks-api-iota.vercel.app/api/v1/stacks';
   const newAlbum = {
     albumName: 'Test Album',
     artist: 'Test Artist',
     releaseDate: '2024-01-01',
     genre: 'Test Genre',
-    bandMembers: ['Member 1', 'Member 2'],
+    bandMembers: 'Member 1, Member 2',
     label: 'Test Label',
     isBandTogether: true,
     rollingStoneReview: '****',
@@ -15,12 +15,18 @@ describe('Add Stack Page', () => {
   };
 
   beforeEach(() => {
+    cy.visit('http://localhost:3000/')
+    cy.get('.auth_bttn').click()
+    cy.loginToAuth0(
+        Cypress.env('auth0_username'),
+        Cypress.env('auth0_password')
+    )
     cy.intercept('GET', api, {fixture:'postAlbums.json'}).as('getAlbums')
     cy.visit('http://localhost:3000/add-stack');
   });
 
   it('should fill out and submit the form successfully', () => {
-    cy.intercept('POST', 'https://stacks-api-6hnx.onrender.com/add-stack', {
+    cy.intercept('POST', api, {
       statusCode: 201,
       body: newAlbum
     }).as('postAlbum');
@@ -34,12 +40,7 @@ describe('Add Stack Page', () => {
     cy.get('input[name="youTubeAlbumURL"]').type(newAlbum.youTubeAlbumURL);
     cy.get('input[name="imgURL"]').type(newAlbum.imgURL);
     cy.get('input[name="albumsSold"]').type(newAlbum.albumsSold.toString());
-
-    newAlbum.bandMembers.forEach((member, index) => {
-      cy.get('input[type="text"]').eq(1).type(member);
-      cy.contains('button', 'Add Members').click();
-    });
-
+    cy.get('input[name="bandMembers"]').type(newAlbum.bandMembers)
     cy.get('input[name="isBandTogether"]').check();
     cy.get('button[type="submit"]').click();
 
