@@ -48,7 +48,6 @@ export const postUser = async (user, token) => {
             },
             body: JSON.stringify(newUser)
         })
-     
     }
     catch (error) {
         console.log({error: error.message})

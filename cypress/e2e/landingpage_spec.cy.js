@@ -1,8 +1,14 @@
 describe('Landing Page User Flow', () => {
-  const api = 'https://stacks-api-6hnx.onrender.com/albums'
+  const api = 'http://localhost:3001/albums'
   const albumData = 'albums.json'
 
   beforeEach(() => {
+    cy.visit('http://localhost:3000/')
+    cy.get('.auth_bttn').click()
+    cy.loginToAuth0(
+      Cypress.env('auth0_username'),
+      Cypress.env('auth0_password')
+    )
     cy.intercept('GET', api, {fixture:albumData}).as('getAlbums')
     cy.visit('http://localhost:3000/')
     cy.wait('@getAlbums')
