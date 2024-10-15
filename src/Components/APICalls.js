@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001'
+const BASE_URL = 'https://stacks-api-iota.vercel.app'
 
 export const getRecords = async (token) => {
 

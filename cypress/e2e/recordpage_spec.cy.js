@@ -1,5 +1,11 @@
 describe('RecordPage Component Tests', () => {
     beforeEach(() => {
+        cy.visit('http://localhost:3000/')
+        cy.get('.auth_bttn').click()
+        cy.loginToAuth0(
+            Cypress.env('auth0_username'),
+            Cypress.env('auth0_password')
+        )
         cy.intercept('GET', '**/albums', { fixture: 'recordpage.json' }).as('getRecords')
         cy.visit('http://localhost:3000/')
         cy.wait('@getRecords')
