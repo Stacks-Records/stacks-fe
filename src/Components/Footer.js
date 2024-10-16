@@ -11,23 +11,23 @@ function Footer() {
                 <div className="person">
                     <h3 className="name">Kyle Boomer</h3>
                     <img src={github} className="github" alt="Github Logo" />
-                    <a href='https://www.github.com/kylemboomer' className="github-link">@Github</a>
+                    <a href='https://www.github.com/kylemboomer' className="github-link" target="_blank">@Github</a>
                     <img src={linkedin} className="linkedin" alt="LinkedIn Logo" /> 
-                    <a href='https://www.linkedin.com/in/kylemboomer' className='linkedin-link'>@LinkedIn</a>
+                    <a href='https://www.linkedin.com/in/kylemboomer' className='linkedin-link' target="_blank">@LinkedIn</a>
                 </div>
                 <div className="person">
                     <h3 className="name">Peter Kim</h3>
                     <img src={github} className="github" alt="Github Logo" />
-                    <a href='https://www.github.com/peterkimpk1' className="github-link">@Github</a>
+                    <a href='https://www.github.com/peterkimpk1' className="github-link" target="_blank">@Github</a>
                     <img src={linkedin} className="linkedin" alt="LinkedIn Logo" /> 
-                    <a href='https://www.linkedin.com/in/pk-2403fee' className='linkedin-link'>@LinkedIn</a>
+                    <a href='https://www.linkedin.com/in/pk-2403fee' className='linkedin-link' target="_blank">@LinkedIn</a>
                 </div>
                 <div className="person">
                     <h3 className="name">Adam Konber</h3>
                     <img src={github} className="github" alt="Github Logo" />
-                    <a href='https://www.github.com/Sterling47' className="github-link">@Github</a>
+                    <a href='https://www.github.com/Sterling47' className="github-link" target="_blank">@Github</a>
                     <img src={linkedin} className="linkedin" alt="LinkedIn Logo" /> 
-                    <a href='https://www.linkedin.com/in/adam-konber' className='linkedin-link'>@LinkedIn</a>
+                    <a href='https://www.linkedin.com/in/adam-konber' className='linkedin-link' target="_blank">@LinkedIn</a>
                 </div>
             </div>
         </footer>

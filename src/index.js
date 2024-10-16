@@ -21,6 +21,7 @@ root.render(
       }}
       scope="openid email username"
       >
+
       <App />
     </Auth0Provider>
   </BrowserRouter>

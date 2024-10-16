@@ -19,7 +19,7 @@ function App() {
   return (
     <AuthAlbumContext.Provider value={{authCode, setAuthCode, albums, setAlbums}}>
       <MyStackContext.Provider value={{myStack, setMyStack}}>
-        <Header />
+      <Header />
         <div className="app">
             <Routes>
               <Route index element={<LoginPage />} />
