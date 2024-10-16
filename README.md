@@ -59,7 +59,7 @@ cd stacks && npm i
 ## Challenges 
 - Implementing Cypress testing for POST functionality
 - Adding YouTube functionality for various video types
-- Implementing Auth0, deepening experience with PostGres, Knex, and Express. 
+- Implementing Auth0, deepening experience with PostgreSQL, Knex, and Express. 
 
 ## Contributing
 
