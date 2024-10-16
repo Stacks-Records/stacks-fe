@@ -1,20 +1,18 @@
 describe('Landing Page User Flow', () => {
-  const api = 'http://localhost:3001/albums'
+  const api = 'https://stacks-api-iota.vercel.app/albums'
   const albumData = 'albums.json'
   const userStack = 'userStack.json'
   const user = 'user.json'
-  const token = 'token.json'
   beforeEach(() => {
-    cy.visit('http://localhost:3000/')
+    cy.visit('http://localhost:3000')
     cy.get('.auth_bttn').click()
     cy.loginToAuth0(
       Cypress.env('auth0_username'),
       Cypress.env('auth0_password')
     )
     cy.intercept('GET', api, {fixture:albumData}).as('getAlbums')
-    cy.intercept('GET', 'http://localhost:3001/api/v1/stacks',{fixture:userStack}).as('userStack')
-    cy.intercept('POST', 'http://localhost:3001/api/v1/users',{fixture:user}).as('user')
-    // cy.intercept('POST','https://dev-gniv73lrty2i6mv2.us.auth0.com/oauth/token',{fixture:token}).as('token')
+    cy.intercept('GET', 'https://stacks-api-iota.vercel.app/api/v1/stacks',{fixture:userStack}).as('userStack')
+    cy.intercept('POST', 'https://stacks-api-iota.vercel.app/api/v1/users',{fixture:user}).as('user')
     cy.visit('http://localhost:3000/')
     cy.wait('@getAlbums')
   })
