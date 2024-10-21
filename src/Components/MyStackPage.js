@@ -15,41 +15,43 @@ const MyStackPage = () => {
     const {email} = user
     deleteStack(email, album, authCode)
     .then(data => {
-        console.log(data)
-        setMyStack(data.user)})
+        if (data.user.length) {
+            setMyStack(data.user)
+        }
+        else {
+            setMyStack([])
+        }
+       })
     .catch(err => console.log(err))
    }
 
-   if (myStack.length > 0) {
-    var myStackRecords = myStack.map(record => {
-        return (
-            <MyStackAlbum
-            key={record.id}
-            album={record}
-            handleDelete={handleDelete}
-            />
-        )
-    })
-   }
-  
     return (
         <div className="my-stack-gallery">
           <h1 className="my-stack-title"> My Stack </h1>
 
-          {myStack?.length > 0 ? (
-            <div className="my-stack-wrapper">{myStackRecords}
-             <button className="back-to-main">
-                    <Link to="/landing" className="main-gallery-link">Go Pick Out Some More!</Link>
-                </button>
+          {(myStack?.length > 0 && Array.isArray(myStack)) ? (
+            <div className="my-stack-wrapper">{myStack.map(record => {
+                return (
+                    <MyStackAlbum
+                    key={record.id}
+                    album={record}
+                    handleDelete={handleDelete}
+                    />
+                )
+            })}
+                <Link to="/landing" className="main-gallery-link">
+                    <button className="back-to-main" >Go Pick Out Some More!</button>
+                </Link>
             </div>
           ): (
             <div className="nav-wrap">
                 <p> No records in your stack... </p> 
-                <button className="back-to-main">
-                    <Link to="/landing" className="main-gallery-link">Go Pick Some Out!</Link>
-                </button>
+                <Link to="/landing" className="main-gallery-link">
+                    <button className="back-to-main" >Go Pick Some Out!</button>
+                </Link>
             </div>
-          )}
+          )
+          }
         </div>
     )
 }

@@ -98,7 +98,6 @@ export const deleteStack = async (email, albumToDelete, token) => {
         body: JSON.stringify(userStackDelete)
     })
     .then(resp => {
-        console.log(resp)
         return resp.json()})
 }
 
