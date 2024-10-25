@@ -8,6 +8,7 @@ import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from '@auth0/auth0-react'
 const MyStackPage = () => {
     const {myStack, setMyStack} = useContext(MyStackContext)
+    const {albums, setAlbums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const {user} = useAuth0()
 
@@ -15,8 +16,10 @@ const MyStackPage = () => {
     const {email} = user
     deleteStack(email, album, authCode)
     .then(data => {
-        if (data.user.length) {
-            setMyStack(data.user)
+        if (data.user.mystack.length) {
+            const myStackIndex = albums.findIndex(record => record.id === album.id)
+            albums[myStackIndex].isAlbumInStack = false;
+            setMyStack(data.user.mystack)
         }
         else {
             setMyStack([])
