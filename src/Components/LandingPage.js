@@ -1,8 +1,7 @@
 import Album from './Record'
-import { getUsers, addStack, getStack } from './APICalls'
+import { addStack } from './APICalls'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
@@ -25,7 +24,10 @@ function LandingPage() {
     const addToStack = (album) => {
         const {email} = user
         addStack(email,album,authCode)
-        .then(data => console.log(data))
+        .then(data => {
+            const myStackIndex = albums.findIndex(album => album.id === data.addedAlbum.id)
+            albums[myStackIndex].isAlbumInStack = true;
+        })
         .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')

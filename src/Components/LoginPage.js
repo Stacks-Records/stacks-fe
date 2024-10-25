@@ -8,6 +8,7 @@ import { useEffect,useContext } from 'react';
 import { getRecords, getStack, postUser} from './APICalls';
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext';
+import '../CSS/LoginPage.css'
 const LoginPage = () => {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const {myStack, setMyStack} = useContext(MyStackContext)
@@ -24,23 +25,35 @@ const LoginPage = () => {
       getAccessToken()
     }
   },[isAuthenticated])
-  useEffect(() => { //getStack, setMystack to data
+  useEffect(() => {
     if (authCode && isAuthenticated) {
       const {email} = user
       postUser(user, authCode)
+
       const getAlbums = async() => {
         try {
           const albums = await getRecords(authCode)
-          setAlbums(albums)
+          getStack(email, authCode)
+          .then(data => {
+            setMyStack(data[0].mystack)
+            const userAlbums = albums.map(album => {
+              const foundRecord = data[0].mystack.find(record => record.id === album.id)
+              if (foundRecord) {
+                return {...album,isAlbumInStack: true}
+              }
+              else {
+                return {...album,isAlbumInStack: false}
+              }
+            })
+            setAlbums(userAlbums)
+          })
         }
         catch (error) {
           console.log(error)
         }
       }
+      
       getAlbums()
-      getStack(email, authCode)
-      .then(data => {
-        setMyStack(data)})
       setTimeout(() => {
         navigate('/landing')
       },1000)
@@ -50,9 +63,11 @@ const LoginPage = () => {
 
   return (
     <div className='login-page'>
-        <LogoutButton/> 
-        <LoginButton />
-        <Profile/>
+        <div className='login-wrapper'>
+          <h1>Welcome to Stacks Records!</h1>
+          <p>Login below to unlock our vinyl vault.</p>
+          <LoginButton />
+        </div>
         {/* {isAuthenticated && useNavigate('/landing')} */}
     </div>
   )

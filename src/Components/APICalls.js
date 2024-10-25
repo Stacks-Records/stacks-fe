@@ -1,4 +1,5 @@
-const BASE_URL = 'https://stacks-api-iota.vercel.app'
+// const BASE_URL = 'https://stacks-api-iota.vercel.app'
+const BASE_URL= 'http://localhost:3001'
 
 export const getRecords = async (token) => {
 
@@ -98,7 +99,6 @@ export const deleteStack = async (email, albumToDelete, token) => {
         body: JSON.stringify(userStackDelete)
     })
     .then(resp => {
-        console.log(resp)
         return resp.json()})
 }
 

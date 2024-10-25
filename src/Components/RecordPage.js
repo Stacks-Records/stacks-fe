@@ -13,7 +13,6 @@ function getYouTubeVideoID(url) {
 const RecordPage = () => {
     const { id } = useParams();
     const navigate = useNavigate()
-    // const [myStack, setMyStack, albums] = useStack()
     const {myStack, setMyStack} = useContext(MyStackContext)
     const {albums, setAlbums} = useContext(AuthAlbumContext)
     const allRecords = [...albums, ...myStack]

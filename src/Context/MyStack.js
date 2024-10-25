@@ -1,5 +1,5 @@
 import {createContext} from 'react'
 
-const MyStackContext = createContext()
+const MyStackContext = createContext([])
 
 export default MyStackContext
