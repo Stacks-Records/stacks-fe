@@ -29,9 +29,9 @@ function Album({ album, addToStack }) {
                 <p>{album.genre}</p>
                 <button className="record-button"
                     onClick={handleAddToStack}
-                    disabled={isAlbumInStack(album.id)}
+                    disabled={album.isAlbumInStack}
                     >
-                    {isAlbumInStack(album.id) ? 'Already Got It' : 'Add To My Stack'}
+                    {album.isAlbumInStack ? 'Already Got It' : 'Add To My Stack'}
                 </button>
             </div>
         </div>

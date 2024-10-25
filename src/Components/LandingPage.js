@@ -24,7 +24,10 @@ function LandingPage() {
     const addToStack = (album) => {
         const {email} = user
         addStack(email,album,authCode)
-        .then(data => console.log(data))
+        .then(data => {
+            
+            console.log(data)
+        })
         .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
