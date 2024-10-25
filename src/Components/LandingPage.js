@@ -25,8 +25,11 @@ function LandingPage() {
         const {email} = user
         addStack(email,album,authCode)
         .then(data => {
-            
             console.log(data)
+            console.log(data.addedAlbum)
+            const myStackIndex = albums.findIndex(album => album.id === data.addedAlbum.id)
+            albums[myStackIndex].isAlbumInStack = true;
+            
         })
         .catch(err => console.log(err))
         setMyStack([...myStack, album])
