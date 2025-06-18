@@ -22,9 +22,25 @@ function Album({ album, addToStack }) {
         return myStack.some(album => album.id === id);
     };
 
+    // Check if image URL is valid
+    const getImageSrc = () => {
+        if (album.imgURL && album.imgURL.trim() !== '') {
+            return album.imgURL;
+        }
+        // Return a placeholder image URL or a default image
+        return 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Part_of_Record_Collection_%285012173261%29.jpg';
+    };
+
     return (
         <div className="album-cards" onClick={handleClick}>
-            <img src={album.imgURL} alt={`${album.title} cover`} />
+            <img 
+                src={getImageSrc()} 
+                alt={`${album.albumName || 'Unknown Album'} cover`}
+                onError={(e) => {
+                    // Fallback if the image fails to load
+                    e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Part_of_Record_Collection_%285012173261%29.jpg';
+                }}
+            />
             <div className="album-info">
                 <h3>{album.artist}</h3>
                 <h4>{album.albumName}</h4>
@@ -46,10 +62,9 @@ Album.propTypes = {
         albumName: PropTypes.string.isRequired,
         artist: PropTypes.string.isRequired,
         genre: PropTypes.string.isRequired,
-        imgURL: PropTypes.string.isRequired
+        imgURL: PropTypes.string // Changed from .isRequired since it can be undefined
     }).isRequired,
     addToStack: PropTypes.func.isRequired,
 }
-
 
 export default Album
