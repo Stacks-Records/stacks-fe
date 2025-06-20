@@ -1,0 +1,8 @@
+.profile {
+    color: white;
+    display: flex;
+    img {
+        height: 3.5rem;
+        margin: 0.75rem;
+    }
+}

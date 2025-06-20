@@ -10,7 +10,7 @@ const navigate = useNavigate()
 
     const ifTrashStayHere = (e) => {
         e.stopPropagation()
-        handleDelete(album.id)
+        handleDelete(album)
     }
 
     return (

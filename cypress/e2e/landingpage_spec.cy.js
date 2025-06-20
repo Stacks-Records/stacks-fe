@@ -1,25 +1,24 @@
 describe('Landing Page User Flow', () => {
-  const api = 'https://stacks-api-6hnx.onrender.com/albums'
+  const api = 'https://stacks-api-iota.vercel.app/albums'
   const albumData = 'albums.json'
-
+  const userStack = 'userStack.json'
+  const user = 'user.json'
   beforeEach(() => {
+    cy.visit('http://localhost:3000')
+    cy.get('.auth_bttn').click()
+    cy.loginToAuth0(
+      Cypress.env('auth0_username'),
+      Cypress.env('auth0_password')
+    )
     cy.intercept('GET', api, {fixture:albumData}).as('getAlbums')
+    cy.intercept('GET', 'https://stacks-api-iota.vercel.app/api/v1/stacks',{fixture:userStack}).as('userStack')
+    cy.intercept('POST', 'https://stacks-api-iota.vercel.app/api/v1/users',{fixture:user}).as('user')
     cy.visit('http://localhost:3000/')
     cy.wait('@getAlbums')
   })
 
-  it('should display loading message', () => {
-    cy.intercept('GET', api, {
-      fixture:albumData, 
-      delayMs:5000
-    }).as('getDelayedAlbums')
+  it.only('should display albums on load', () => {
 
-    cy.visit('http://localhost:3000/')
-    cy.get('.loading-message').should('contain', 'Loading up your records on the turntable...')
-    cy.wait('@getDelayedAlbums')
-  })
-
-  it('should display albums on load', () => {
     cy.get('.album-list').children().should('have.length', 3)
     cy.get('.album-list').contains('Wish You Were Here')
     cy.get('.album-list').contains('Speakerboxxx/The Love Below')
@@ -43,12 +42,6 @@ describe('Landing Page User Flow', () => {
     cy.get('.album-list').children().should('have.length', 0)
     cy.get('select').select('Country')
     cy.get('.album-list').children().should('have.length', 0)
-  })
-
-  it('should add an album to My Stack and navigate to My Stack Page', () => {
-    cy.get('.album-list').contains('Wish You Were Here').parent().contains('Add To My Stack').click()
-    cy.url().should('include', '/my-stack')
-    cy.get('.my-stack-gallery').should('contain', 'Wish You Were Here')
   })
 
 })

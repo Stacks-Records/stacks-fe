@@ -1,44 +1,37 @@
 import Album from './Record'
-import { getRecords } from './APICalls'
-import { useState, useEffect } from 'react'
+import { addStack } from './APICalls'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStack } from './MyStack'
-import PropTypes from 'prop-types'
 import '../CSS/LandingPage.css'
+import MyStackContext from '../Context/MyStack'
+import AuthAlbumContext from '../Context/AuthAlbumContext'
+import { useAuth0 } from "@auth0/auth0-react";
 
+function LandingPage() {
 
-function LandingPage({records}) {
-    const [albums, setAlbums] = useState(records)
+    const {myStack, setMyStack} = useContext(MyStackContext)
+    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const {authCode} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
-    const [filteredAlbums, setFilteredAlbums] = useState(records)
+    const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [myStack, setMyStack] = useStack()
-    const navigate = useNavigate()
+    const {user} = useAuth0()
 
+    const navigate = useNavigate()
     const addToStack = (album) => {
+        const {email} = user
+        addStack(email,album,authCode)
+        .then(data => {
+            const myStackIndex = albums.findIndex(album => album.id === data.addedAlbum.id)
+            albums[myStackIndex].isAlbumInStack = true;
+        })
+        .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
-
-
-    useEffect(() => {
-        const fetchRecords = async () => {
-            setLoading(true)
-            try {
-                const records = await getRecords()
-                setAlbums(records)
-                setError('')
-            } catch (error) {
-                console.error(error)
-                setError(error.message)
-            }
-            setLoading(false)
-        }
-        fetchRecords()
-     }, [])
 
     useEffect(() => {
         const filterAlbums = () => {
@@ -100,12 +93,11 @@ function LandingPage({records}) {
                         </ul>
                     )}
                 </div>
-                <label>Select Your Genre:</label>
                 <select
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
                 >
-                    <option value="">All Genres</option>
+                    <option value="">Select Your Genre</option>
                     <option value="Rock">Rock</option>
                     <option value="Pop">Pop</option>
                     <option value="Hip-Hop">Hip-Hop</option>
@@ -123,9 +115,5 @@ function LandingPage({records}) {
         </div>
     )
 }
-
-LandingPage.propTypes = {
-    records: PropTypes.arrayOf(PropTypes.object).isRequired,
-  }
 
 export default LandingPage
