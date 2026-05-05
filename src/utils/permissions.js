@@ -37,10 +37,7 @@ export const ROLE_PERMISSIONS = {
 }
 
 export const hasPermission = (userRole, permission) => {
-    if (!userRole || !ROLE_PERMISSIONS[userRole]) {
-        return false;
-    }
-    return ROLE_PERMISSIONS[userRole].includes(permission);
+    return ROLE_PERMISSIONS[userRole]?.includes(permission) ?? false;
 }
 
 export const canPerformAction = (userRole, permission, resourceOwnerId = null, userId = null) => {
@@ -53,7 +50,7 @@ export const canPerformAction = (userRole, permission, resourceOwnerId = null, u
     }
 
     if (permission === PERMISSIONS.EDIT_ALBUM || permission === PERMISSIONS.DELETE_ALBUM) {
-        if (userRole === USER_ROLES.MODERATOR) {
+        if (userRole === USER_ROLES.ADMIN || userRole === USER_ROLES.MODERATOR) {
             return true;
         }
         return resourceOwnerId === userId;

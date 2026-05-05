@@ -19,9 +19,10 @@ export const AuthorizationProvider = ({ children }) => {
 
     useEffect(() => {
         if (isAuthenticated && user) {
-             // Get user role from Auth0 metadata or your backend
-      // This could come from user.app_metadata.role or a custom claim
-            const role = user['https://stacks.app/roles']?.[0] || user.app.metadata?.role ||
+            // Get user role from Auth0 metadata or your backend
+            // This could come from user.app_metadata.role or a custom claim
+            const role = user['https://stacks.app/roles']?.[0] ||
+                user.app_metadata?.role ||
                 USER_ROLES.USER;
 
             setUserRole(role);
@@ -41,16 +42,16 @@ export const AuthorizationProvider = ({ children }) => {
     };
 
     const value = {
-        userRole, 
-        checkPermission, 
-        checkAction, 
+        userRole,
+        checkPermission,
+        checkAction,
         isAdmin: userRole === USER_ROLES.ADMIN,
         isModerator: userRole === USER_ROLES.MODERATOR,
         loading
     };
 
     return (
-        <AuthorizationContext.Provider value = {value}>
+        <AuthorizationContext.Provider value={value}>
             {children}
         </AuthorizationContext.Provider>
     );
