@@ -7,31 +7,34 @@ import Footer from './Footer'
 import AddStack from './AddStack'
 import MyStackPage from './MyStackPage'
 import '../CSS/App.css';
-import { Routes, Route} from 'react-router-dom';
-import  MyStackContext  from '../Context/MyStack'
+import { Routes, Route } from 'react-router-dom';
+import { AuthorizationProvider } from '../Context/AuthorizationContext'
+import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 
 function App() {
-    const [authCode, setAuthCode] = useState('')
-    const [albums, setAlbums] = useState([])
-    const [myStack, setMyStack] = useState([])
+  const [authCode, setAuthCode] = useState('')
+  const [albums, setAlbums] = useState([])
+  const [myStack, setMyStack] = useState([])
 
   return (
-    <AuthAlbumContext.Provider value={{authCode, setAuthCode, albums, setAlbums}}>
-      <MyStackContext.Provider value={{myStack, setMyStack}}>
-      <Header />
-        <div className="app">
+    <AuthorizationProvider>
+      <AuthAlbumContext.Provider value={{ authCode, setAuthCode, albums, setAlbums }}>
+        <MyStackContext.Provider value={{ myStack, setMyStack }}>
+          <Header />
+          <div className="app">
             <Routes>
               <Route index element={<LoginPage />} />
-              <Route path="/landing" element={<LandingPage/>} />
+              <Route path="/landing" element={<LandingPage />} />
               <Route path="/:id" element={<RecordPage />} />
               <Route path="/add-stack" element={<AddStack />} />
               <Route path="/my-stack" element={<MyStackPage />} />
             </Routes>
-        </div>
-        <Footer />
-      </MyStackContext.Provider>
-    </AuthAlbumContext.Provider>
+          </div>
+          <Footer />
+        </MyStackContext.Provider>
+      </AuthAlbumContext.Provider>
+    </AuthorizationProvider>
   );
 }
 
