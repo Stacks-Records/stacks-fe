@@ -1,0 +1,37 @@
+.admin-users-page {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.admin-users-page h1 {
+    margin-bottom: 1.5rem;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.users-table th {
+    font-weight: bold;
+    background-color: #f4f4f4;
+}
+
+.users-table select {
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.admin-error {
+    color: red;
+    margin-top: 1rem;
+}
