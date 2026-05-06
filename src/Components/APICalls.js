@@ -1,5 +1,16 @@
 // const BASE_URL = 'https://stacks-api-iota.vercel.app'
-const BASE_URL= 'http://localhost:3001'
+const BASE_URL = 'http://localhost:3001'
+
+export const getUserRole = async (email, token) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Email': email
+        }
+    })
+    if (!res.ok) throw new Error('Failed to fetch user role.')
+    return res.json()
+}
 
 export const getRecords = async (token) => {
 
