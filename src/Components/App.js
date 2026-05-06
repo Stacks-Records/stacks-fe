@@ -6,6 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import AddStack from './AddStack'
 import MyStackPage from './MyStackPage'
+import AdminUsersPage from './AdminUsersPage'
 import '../CSS/App.css';
 import { Routes, Route } from 'react-router-dom';
 import { AuthorizationProvider } from '../Context/AuthorizationContext'
@@ -29,6 +30,7 @@ function App() {
               <Route path="/:id" element={<RecordPage />} />
               <Route path="/add-stack" element={<AddStack />} />
               <Route path="/my-stack" element={<MyStackPage />} />
+              <Route path="/admin/users" element={<AdminUsersPage />} />
             </Routes>
           </div>
           <Footer />
