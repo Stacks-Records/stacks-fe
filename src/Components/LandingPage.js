@@ -10,14 +10,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [error] = useState('')
+    const [loading] = useState(false)
     const {user} = useAuth0()
 
     const navigate = useNavigate()

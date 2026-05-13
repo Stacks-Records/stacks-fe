@@ -1,8 +1,6 @@
 import React from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
-import LogoutButton from './LogoutButton';
 import LoginButton from './LoginButton'
-import Profile from './Profile';
 import { useNavigate } from 'react-router';
 import { useEffect,useContext } from 'react';
 import { getRecords, getStack, postUser} from './APICalls';
@@ -24,7 +22,7 @@ const LoginPage = () => {
       }
       getAccessToken()
     }
-  },[isAuthenticated])
+  },[isAuthenticated, getAccessTokenSilently, setAuthCode])
   useEffect(() => {
     if (authCode && isAuthenticated) {
       const {email} = user
@@ -48,7 +46,7 @@ const LoginPage = () => {
       },1000)
       
     }
-  },[authCode])
+  },[authCode, isAuthenticated, user, setAlbums, setMyStack, navigate])
 
   return (
     <div className='login-page'>
