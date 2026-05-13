@@ -22,7 +22,7 @@ function AdminUsersPage() {
         getUsers(authCode)
             .then(setUsers)
             .catch(() => setError('Failed to load users.'))
-    }, [loading, authCode])
+    }, [loading, authCode, checkPermission, navigate])
 
     const handleRoleChange = async (userId, newRole) => {
         try {

@@ -6,11 +6,13 @@
 
 .admin-users-page h1 {
     margin-bottom: 1.5rem;
+    color:red;
 }
 
 .users-table {
     width: 100%;
     border-collapse: collapse;
+    flex:start;
 }
 
 .users-table th,
@@ -23,6 +25,11 @@
 .users-table th {
     font-weight: bold;
     background-color: #f4f4f4;
+}
+
+.users-table tr {
+    background-color: #f9f9f9;
+
 }
 
 .users-table select {
