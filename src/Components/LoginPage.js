@@ -11,8 +11,8 @@ import AuthAlbumContext from '../Context/AuthAlbumContext';
 import '../CSS/LoginPage.css'
 const LoginPage = () => {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
-  const {myStack, setMyStack} = useContext(MyStackContext)
-  const {albums, setAlbums, authCode, setAuthCode} = useContext(AuthAlbumContext)
+  const {setMyStack} = useContext(MyStackContext)
+  const {setAlbums, authCode, setAuthCode} = useContext(AuthAlbumContext)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,20 +33,9 @@ const LoginPage = () => {
       const getAlbums = async() => {
         try {
           const albums = await getRecords(authCode)
-          getStack(email, authCode)
-          .then(data => {
-            setMyStack(data[0].mystack)
-            const userAlbums = albums.map(album => {
-              const foundRecord = data[0].mystack.find(record => record.id === album.id)
-              if (foundRecord) {
-                return {...album,isAlbumInStack: true}
-              }
-              else {
-                return {...album,isAlbumInStack: false}
-              }
-            })
-            setAlbums(userAlbums)
-          })
+          setAlbums(albums)
+          const data = await getStack(email, authCode)
+          setMyStack(data[0]?.mystack ?? [])
         }
         catch (error) {
           console.log(error)

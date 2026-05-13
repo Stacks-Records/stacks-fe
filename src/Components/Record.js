@@ -70,9 +70,9 @@ function Album({ album, addToStack }) {
                 <p>{album.genre}</p>
                 <button className="record-button"
                     onClick={handleAddToStack}
-                    disabled={album.isAlbumInStack}
+                    disabled={isAlbumInStack(album.id)}
                 >
-                    {album.isAlbumInStack ? 'Already Got It' : 'Add To My Stack'}
+                    {isAlbumInStack(album.id) ? 'Already Got It' : 'Add To My Stack'}
                 </button>
                 {canEdit && (
                     <button className="edit-button" onClick={handleEdit}>Edit</button>

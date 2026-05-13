@@ -23,12 +23,8 @@ function LandingPage() {
     const navigate = useNavigate()
     const addToStack = (album) => {
         const {email} = user
-        addStack(email,album,authCode)
-        .then(data => {
-            const myStackIndex = albums.findIndex(album => album.id === data.addedAlbum.id)
-            albums[myStackIndex].isAlbumInStack = true;
-        })
-        .catch(err => console.log(err))
+        addStack(email, album, authCode)
+            .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
