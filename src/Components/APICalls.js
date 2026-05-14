@@ -35,6 +35,21 @@ export const getRecords = async (token) => {
     }
 }
 
+export const getGenres = async (token) => {
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/genres`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch genres.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch genres.', error.message)
+        throw error
+    }
+}
+
 
 export const getUsers = async (token) => {
     try {
