@@ -3,53 +3,27 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from './LoginButton'
 import { useNavigate } from 'react-router';
 import { useEffect, useContext } from 'react';
-import { getRecords, getStack, postUser } from './APICalls';
-import MyStackContext from '../Context/MyStack'
+import { postUser } from './APICalls';
 import AuthAlbumContext from '../Context/AuthAlbumContext';
 import '../CSS/LoginPage.css'
 
 const LoginPage = () => {
-  const { isAuthenticated, isLoading, error, getAccessTokenSilently, user } = useAuth0();
-  const { setMyStack } = useContext(MyStackContext)
-  const { setAlbums, authCode, setAuthCode } = useContext(AuthAlbumContext)
+  const { isAuthenticated, isLoading, error, user } = useAuth0();
+  const { authCode } = useContext(AuthAlbumContext)
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Sign in · Stacks Records';
   }, []);
 
+  // Token acquisition + data loading now live in App.js. Once authenticated
+  // and a token is available, register the user and head to the dashboard.
   useEffect(() => {
-    if (isAuthenticated) {
-      const getAccessToken = async () => {
-        const token = await getAccessTokenSilently()
-        setAuthCode(token)
-        localStorage.setItem('authAccessToken', JSON.stringify(token))
-      }
-      getAccessToken()
-    }
-  }, [isAuthenticated, getAccessTokenSilently, setAuthCode])
-
-  useEffect(() => {
-    if (authCode && isAuthenticated) {
-      const { email } = user
+    if (isAuthenticated && authCode && user) {
       postUser(user, authCode)
-
-      const loadAndGo = async () => {
-        try {
-          const albums = await getRecords(authCode)
-          setAlbums(albums)
-          const data = await getStack(email, authCode)
-          setMyStack(data[0]?.mystack ?? [])
-        }
-        catch (err) {
-          console.log(err)
-        }
-        navigate('/landing')
-      }
-
-      loadAndGo()
+      navigate('/landing')
     }
-  }, [authCode, isAuthenticated, user, setAlbums, setMyStack, navigate])
+  }, [isAuthenticated, authCode, user, navigate])
 
   if (isLoading) {
     return (

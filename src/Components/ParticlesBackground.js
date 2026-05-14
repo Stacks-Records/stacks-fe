@@ -47,8 +47,8 @@ const ParticlesBackground = () => {
 
   return (
     <Particles
-      id="login-particles"
-      className="login-particles"
+      id="app-particles"
+      className="app-particles"
       options={options}
     />
   )

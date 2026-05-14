@@ -67,6 +67,11 @@
     font-size: 0.875rem;
 }
 
+.edit-button {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .record-button {
     display:flex;
