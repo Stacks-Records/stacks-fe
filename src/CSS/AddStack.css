@@ -1,5 +1,9 @@
 /* AddStack.css */
 
+.add-stack {
+  position: relavtive;
+  z-index: 1;
+}
   .add-stack h1 {
     text-align: center;
     color: white;
