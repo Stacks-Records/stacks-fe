@@ -1,5 +1,5 @@
 import Album from './Record'
-import { addStack } from './APICalls'
+import { addStack, getGenres } from './APICalls'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../CSS/LandingPage.css'
@@ -14,6 +14,7 @@ function LandingPage() {
     const {authCode} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
+    const [genres, setGenres] = useState([])
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
     const [error] = useState('')
@@ -21,6 +22,13 @@ function LandingPage() {
     const {user} = useAuth0()
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!authCode) return
+        getGenres(authCode)
+            .then(setGenres)
+            .catch(err => console.log(err))
+    }, [authCode])
     const addToStack = (album) => {
         const {email} = user
         addStack(email, album, authCode)
@@ -94,13 +102,9 @@ function LandingPage() {
                     onChange={(e) => setGenre(e.target.value)}
                 >
                     <option value="">Select Your Genre</option>
-                    <option value="Rock">Rock</option>
-                    <option value="Pop">Pop</option>
-                    <option value="Hip-Hop">Hip-Hop</option>
-                    <option value="Country">Country</option>
-                    <option value="Folk">Folk </option>
-                    <option value="Jazz">Jazz</option>
-                    <option value="Classical">Classical</option>
+                    {genres.map(g => (
+                        <option key={g} value={g}>{g}</option>
+                    ))}
                 </select>
             </div>
             <div className="album-list">
