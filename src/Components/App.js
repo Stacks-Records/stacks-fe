@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import LoginPage from './LoginPage'
 import LandingPage from './LandingPage'
 import RecordPage from './RecordPage'
@@ -12,6 +12,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthorizationProvider } from '../Context/AuthorizationContext'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
+import ParticlesBackground from './ParticlesBackground'
 
 function App() {
   const [authCode, setAuthCode] = useState('')
@@ -24,6 +25,7 @@ function App() {
         <MyStackContext.Provider value={{ myStack, setMyStack }}>
           <Header />
           <div className="app">
+            <ParticlesBackground />
             <Routes>
               <Route index element={<LoginPage />} />
               <Route path="/landing" element={<LandingPage />} />

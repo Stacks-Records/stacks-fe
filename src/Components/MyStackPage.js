@@ -2,13 +2,13 @@ import MyStackAlbum from './MyStackAlbum'
 import MyStackContext from '../Context/MyStack'
 import { Link } from 'react-router-dom'
 import '../CSS/MyStackPage.css'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { deleteStack } from './APICalls'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from '@auth0/auth0-react'
 const MyStackPage = () => {
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const {user} = useAuth0()
 
