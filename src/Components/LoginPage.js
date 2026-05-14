@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from './LoginButton'
+import ParticlesBackground from './ParticlesBackground'
 import { useNavigate } from 'react-router';
 import { useEffect, useContext } from 'react';
 import { getRecords, getStack, postUser } from './APICalls';
@@ -75,6 +76,7 @@ const LoginPage = () => {
 
   return (
     <main className='login-page'>
+      <ParticlesBackground />
       <div className='login-wrapper'>
         <h1>Welcome to Stacks Records</h1>
         <LoginButton />

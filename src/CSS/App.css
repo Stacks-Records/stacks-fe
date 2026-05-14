@@ -9,7 +9,7 @@
   --color-danger: #ff6b6b;
   --radius-card: 16px;
   --radius-button: 8px;
-  --shadow-brand: 0 8px 28px var(--color-brand-glow);
+  --shadow-brand: 20px 20px 60px var(--color-brand-glow);
   --transition-fast: 150ms ease;
   --font-body: Arial, sans-serif;
   --font-display: Georgia, "Times New Roman", serif;
