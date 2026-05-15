@@ -77,9 +77,9 @@ function Album({ album, addToStack }) {
                 {canEdit && (
                     <button className="edit-button" onClick={handleEdit}>Edit</button>
                 )}
-                {canDelete && (
+                {/* {canDelete && (
                     <button className="delete-btn" onClick={handleDelete}>Delete</button>
-                )}
+                )} */}
             </div>
         </div>
     )

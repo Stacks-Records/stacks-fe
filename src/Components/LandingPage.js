@@ -2,6 +2,11 @@ import Album from './Record'
 import { addStack, getGenres } from './APICalls'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCoverflow, Navigation, Keyboard } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/navigation'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
@@ -107,11 +112,29 @@ function LandingPage() {
                     ))}
                 </select>
             </div>
-            <div className="album-list">
-                {filteredAlbums.map(album => (            
-                    <Album key={album.id} album={album} addToStack={addToStack}/>
+            <Swiper
+                modules={[EffectCoverflow, Navigation, Keyboard]}
+                effect="coverflow"
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView="4"
+                keyboard={{ enabled: true }}
+                navigation={true}
+                coverflowEffect={{
+                    rotate: 80,
+                    stretch: 0,
+                    depth: 150,
+                    modifier: 1,
+                    slideShadows: true,
+                }}
+                className="album-carousel"
+            >
+                {filteredAlbums.map(album => (
+                    <SwiperSlide key={album.id} className="album-slide">
+                        <Album album={album} addToStack={addToStack}/>
+                    </SwiperSlide>
                 ))}
-            </div>
+            </Swiper>
         </div>
     )
 }
