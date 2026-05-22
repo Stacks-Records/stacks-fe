@@ -5,13 +5,8 @@ import { useContext } from 'react';
 import AuthAlbumContext from '../Context/AuthAlbumContext';
 import { useAuthorization } from '../Context/AuthorizationContext';
 import { PERMISSIONS } from '../utils/permissions';
+import { getYouTubeVideoID } from '../utils/validation';
 import { deleteAlbum } from './APICalls';
-
-function getYouTubeVideoID(url) {
-    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/.+|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/;
-    const match = url.match(regExp);
-    return match ? match[1] : null;
-}
 
 const RecordPage = () => {
     const { id } = useParams();
