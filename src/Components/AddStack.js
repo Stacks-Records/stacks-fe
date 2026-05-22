@@ -22,6 +22,7 @@ function AddStack() {
         const album = Object.fromEntries(formData.entries())
         album.isBandTogether = formData.get('isBandTogether') === 'on'
         album.bandMembers = formData.getAll('bandMembers')
+        album.albumsSold = Number(album.albumsSold)
 
         const errors = {}
         if (!isValidYouTubeURL(album.youTubeAlbumURL)) {
