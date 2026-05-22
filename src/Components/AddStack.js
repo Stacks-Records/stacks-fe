@@ -1,6 +1,7 @@
 import { useContext, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { getRecords, postAlbum, editAlbum } from './APICalls'
+import { isValidYouTubeURL, isImageReachable } from '../utils/validation'
 import '../CSS/AddStack.css'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 
@@ -8,6 +9,8 @@ function AddStack() {
     const formRef = useRef()
     const { setAlbums, authCode } = useContext(AuthAlbumContext)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
+    const [isValidating, setIsValidating] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
     const albumToEdit = location.state?.albumToEdit ?? null
@@ -19,6 +22,22 @@ function AddStack() {
         const album = Object.fromEntries(formData.entries())
         album.isBandTogether = formData.get('isBandTogether') === 'on'
         album.bandMembers = formData.getAll('bandMembers')
+
+        const errors = {}
+        if (!isValidYouTubeURL(album.youTubeAlbumURL)) {
+            errors.youTubeAlbumURL = 'Enter a valid YouTube link (e.g. https://youtu.be/...)'
+        }
+        setIsValidating(true)
+        const imageOk = await isImageReachable(album.imgURL)
+        setIsValidating(false)
+        if (!imageOk) {
+            errors.imgURL = 'That image link could not be loaded. Check the URL.'
+        }
+        if (Object.keys(errors).length) {
+            setFieldErrors(errors)
+            return
+        }
+        setFieldErrors({})
 
         try {
             if (isEditMode) {
@@ -67,11 +86,13 @@ function AddStack() {
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Youtube Album URL</label>
-                    <input required type="url" name="youTubeAlbumURL" placeholder="YouTube Album URL" defaultValue={albumToEdit?.youTubeAlbumURL ?? ''} />
+                    <input required type="text" name="youTubeAlbumURL" placeholder="YouTube Album URL" defaultValue={albumToEdit?.youTubeAlbumURL ?? ''} />
+                    {fieldErrors.youTubeAlbumURL && <span className="field-error">{fieldErrors.youTubeAlbumURL}</span>}
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Image URL</label>
-                    <input required type="url" name="imgURL" placeholder="Image URL" defaultValue={albumToEdit?.imgURL ?? ''} />
+                    <input required type="text" name="imgURL" placeholder="Image URL" defaultValue={albumToEdit?.imgURL ?? ''} />
+                    {fieldErrors.imgURL && <span className="field-error">{fieldErrors.imgURL}</span>}
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Albums Sold</label>
@@ -85,7 +106,7 @@ function AddStack() {
                     <label><sub>*</sub>Are they still together?</label>
                     <input type="checkbox" name="isBandTogether" defaultChecked={albumToEdit?.isBandTogether ?? false} />
                 </div>
-                <button type="submit">{isEditMode ? 'Save Changes' : 'Add Album'}</button>
+                <button type="submit" disabled={isValidating}>{isValidating ? 'Checking…' : (isEditMode ? 'Save Changes' : 'Add Album')}</button>
                 {error && <p className="error">{error}</p>}
                 <div className='required-text'><sub>*</sub>Indicates required field</div>
             </form>
