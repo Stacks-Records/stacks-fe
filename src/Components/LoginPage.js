@@ -13,7 +13,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = 'Sign in · Stacks Records';
+    document.title = 'Stacks Records';
   }, []);
 
   // Token acquisition + data loading now live in App.js. Once authenticated
