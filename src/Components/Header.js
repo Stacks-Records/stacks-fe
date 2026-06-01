@@ -4,9 +4,12 @@ import '../CSS/Header.css';
 import Profile from './Profile';
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from './LogoutButton';
+import { useAuthorization } from '../Context/AuthorizationContext';
+import { PERMISSIONS } from '../utils/permissions';
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { isAuthenticated} = useAuth0();
+    const { isAuthenticated } = useAuth0();
+    const { checkPermission } = useAuthorization();
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -36,7 +39,11 @@ const Header = () => {
                             <li className="dropdown-item">
                                 <Link to="/add-stack" onClick={() => setIsOpen(false)}>Add to Stacks</Link>
                             </li>
-                    
+                            {checkPermission(PERMISSIONS.MANAGE_USERS) && (
+                                <li className="dropdown-item">
+                                    <Link to="/admin/users" onClick={() => setIsOpen(false)}>Admin: Users</Link>
+                                </li>
+                            )}
                         </div>
                         <div>
                            

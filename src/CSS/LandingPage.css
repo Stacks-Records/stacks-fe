@@ -2,8 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.25rem;
-    min-height: 65vh;
+    position:relative;
+    z-index:1;
+    padding-top: 2.25rem;
+    min-height: 100vh;
     width: 100vw;
 }
 
@@ -37,12 +39,21 @@ select {
     width: max-content;
 }
 
-.album-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
+.album-carousel {
     width: 100%;
     max-width: 75rem;
+    padding: 3rem 0;
+}
+
+.album-slide {
+    width: 18rem;
+    display: flex;
+    justify-content: center;
+}
+
+.album-carousel .swiper-button-prev,
+.album-carousel .swiper-button-next {
+    color: #fff;
 }
 
 .search-container {
@@ -76,13 +87,6 @@ select {
 }
 
 
-@media (max-width: 64rem) {
-    .album-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-
 @media (max-width: 48rem) {
     .filters {
         flex-direction: column;
@@ -95,9 +99,5 @@ select {
 
     select {
         width: 65%;
-    }
-
-    .album-list {
-        grid-template-columns: repeat(1, 1fr);
     }
 }

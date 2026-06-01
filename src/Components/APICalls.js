@@ -1,5 +1,16 @@
 // const BASE_URL = 'https://stacks-api-iota.vercel.app'
-const BASE_URL= 'http://localhost:3001'
+const BASE_URL = 'http://localhost:3001'
+
+export const getUserRole = async (email, token) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Email': email
+        }
+    })
+    if (!res.ok) throw new Error('Failed to fetch user role.')
+    return res.json()
+}
 
 export const getRecords = async (token) => {
 
@@ -24,24 +35,87 @@ export const getRecords = async (token) => {
     }
 }
 
-
-export const getUsers = async (token) => {
+export const getGenres = async (token) => {
     try {
-        const users = await fetch(`${BASE_URL}/api/v1/users`,{
+        const res = await fetch(`${BASE_URL}/api/v1/genres`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
+        if (!res.ok) throw new Error('Failed to fetch genres.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch genres.', error.message)
+        throw error
+    }
+}
+
+
+export const getUsers = async (token) => {
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/users`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch users.')
+        return res.json()
     }
     catch (error) {
         console.log({ error: error.message })
+        throw error
     }
+}
+
+export const deleteAlbum = async (id, token) => {
+    const res = await fetch(`${BASE_URL}/albums/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to delete album.')
+    }
+}
+
+export const editAlbum = async (id, albumData, token) => {
+    const res = await fetch(`${BASE_URL}/albums/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(albumData)
+    })
+    if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to edit album.')
+    }
+    return res.json()
+}
+
+export const updateUserRole = async (id, role, token) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/${id}/role`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ role })
+    })
+    if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to update user role.')
+    }
+    return res.json()
 }
 export const postUser = async (user, token) => {
     const {name, email} = user
     const newUser = {name, email}
     try {
-        const response = fetch(`${BASE_URL}/api/v1/users`, {
+        await fetch(`${BASE_URL}/api/v1/users`, {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',

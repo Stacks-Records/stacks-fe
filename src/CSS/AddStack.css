@@ -1,5 +1,9 @@
 /* AddStack.css */
 
+.add-stack {
+  position: relavtive;
+  z-index: 1;
+}
   .add-stack h1 {
     text-align: center;
     color: white;
@@ -26,6 +30,15 @@
   .add-stack .error {
     color: red;
     margin-top: .75rem;
+  }
+
+  .add-stack .field-error {
+    grid-column: 1 / -1;
+    justify-self: end;
+    text-align: right;
+    color: red;
+    font-size: .85em;
+    margin-top: .25rem;
   }
   
   .add-stack-form {

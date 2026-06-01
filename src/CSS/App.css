@@ -1,9 +1,33 @@
+:root {
+  --color-bg: #000;
+  --color-surface: #0a0a0a;
+  --color-text: #fff;
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-brand: #600ccf;
+  --color-brand-hover: #7a1ee8;
+  --color-brand-glow: rgba(95, 14, 208, 0.5);
+  --color-danger: #ff6b6b;
+  --radius-card: 16px;
+  --radius-button: 8px;
+  --shadow-brand: 20px 20px 60px var(--color-brand-glow);
+  --transition-fast: 150ms ease;
+  --font-body: Arial, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+
 .app {
-  font-family: Arial, sans-serif;
-  background-color: rgba(0, 0, 0, 0.908);
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.app-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
 }
 

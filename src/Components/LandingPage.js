@@ -1,7 +1,12 @@
 import Album from './Record'
-import { addStack } from './APICalls'
+import { addStack, getGenres } from './APICalls'
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCoverflow, Navigation, Keyboard } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/navigation'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
@@ -10,25 +15,29 @@ import { useAuth0 } from "@auth0/auth0-react";
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums, setAlbums} = useContext(AuthAlbumContext)
+    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const [search, setSearch] = useState('')
     const [genre, setGenre] = useState('')
+    const [genres, setGenres] = useState([])
     const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [error] = useState('')
+    const [loading] = useState(false)
     const {user} = useAuth0()
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!authCode) return
+        getGenres(authCode)
+            .then(setGenres)
+            .catch(err => console.log(err))
+    }, [authCode])
     const addToStack = (album) => {
         const {email} = user
-        addStack(email,album,authCode)
-        .then(data => {
-            const myStackIndex = albums.findIndex(album => album.id === data.addedAlbum.id)
-            albums[myStackIndex].isAlbumInStack = true;
-        })
-        .catch(err => console.log(err))
+        addStack(email, album, authCode)
+            .catch(err => console.log(err))
         setMyStack([...myStack, album])
         navigate('/my-stack')
     }
@@ -98,20 +107,34 @@ function LandingPage() {
                     onChange={(e) => setGenre(e.target.value)}
                 >
                     <option value="">Select Your Genre</option>
-                    <option value="Rock">Rock</option>
-                    <option value="Pop">Pop</option>
-                    <option value="Hip-Hop">Hip-Hop</option>
-                    <option value="Country">Country</option>
-                    <option value="Folk">Folk </option>
-                    <option value="Jazz">Jazz</option>
-                    <option value="Classical">Classical</option>
+                    {genres.map(g => (
+                        <option key={g} value={g}>{g}</option>
+                    ))}
                 </select>
             </div>
-            <div className="album-list">
-                {filteredAlbums.map(album => (            
-                    <Album key={album.id} album={album} addToStack={addToStack}/>
+            <Swiper
+                modules={[EffectCoverflow, Navigation, Keyboard]}
+                effect="coverflow"
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView="4"
+                keyboard={{ enabled: true }}
+                navigation={true}
+                coverflowEffect={{
+                    rotate: 80,
+                    stretch: 0,
+                    depth: 150,
+                    modifier: 1,
+                    slideShadows: true,
+                }}
+                className="album-carousel"
+            >
+                {filteredAlbums.map(album => (
+                    <SwiperSlide key={album.id} className="album-slide">
+                        <Album album={album} addToStack={addToStack}/>
+                    </SwiperSlide>
                 ))}
-            </div>
+            </Swiper>
         </div>
     )
 }
