@@ -1,6 +1,11 @@
 .profile {
     color: white;
     display: flex;
+
+    p {
+        color: white;
+    }
+
     img {
         height: 3.5rem;
         margin: 0.75rem;
