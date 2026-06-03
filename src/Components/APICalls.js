@@ -50,6 +50,22 @@ export const getGenres = async (token) => {
 }
 
 
+export const getAlbumsByGenre = async (token, limit = 20) => {
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/albums/by-genre?limit=${limit}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch albums by genre.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch albums by genre.', error.message)
+        throw error
+    }
+}
+
 export const getUsers = async (token) => {
     try {
         const res = await fetch(`${BASE_URL}/api/v1/users`, {
