@@ -20,7 +20,7 @@ A comprehensive vinyl record marketplace application built with React (React Rou
 Welcome to Stacks! This application allows users to browse, listen to, add to, and keep a digital collection of vinyl records. It provides a user-friendly interface and a robust back-end to ensure a seamless experience. Authentication is handled by Auth0 — users sign in with an email/password account or with Google.
 
 ## Preview 
-### Click [here](https://stacks-records.vercel.app/) to check it out for yourself.
+### Click [here](https://stacks-records-client.vercel.app/) to check it out for yourself.
 <img width="861" alt="Screenshot 2024-10-16 at 12 00 31 PM" src="https://github.com/user-attachments/assets/cf35eb93-83e1-442f-b183-e97cf01939a2">
 <img width="1392" alt="Screenshot 2024-10-16 at 12 01 37 PM" src="https://github.com/user-attachments/assets/206cf4f7-c345-4229-abf0-97e6b7b97cd8">
 <img width="442" alt="Screenshot 2024-10-16 at 12 02 03 PM" src="https://github.com/user-attachments/assets/ad049ea5-2398-4804-815a-bb04bc48ebff">
@@ -64,7 +64,7 @@ Welcome to Stacks! This application allows users to browse, listen to, add to, a
 - Users may post their own albums, provided they do their homework for all the input fields, and add it to My Stack. Data uniformity is paramount to application integrity at this time. 
 
 ## Deployment
-The production app is deployed on Vercel: [stacks-records.vercel.app](https://stacks-records.vercel.app/). (Note: the `predeploy`/`deploy` `gh-pages` scripts in `package.json` are legacy and no longer used.)
+The production app is deployed on Vercel: [stacks-records.vercel.app](https://stacks-records-client.vercel.app/). (Note: the `predeploy`/`deploy` `gh-pages` scripts in `package.json` are legacy and no longer used.)
 
 ## Wins
 - Built the application from scratch, front end and back end.
