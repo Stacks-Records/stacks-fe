@@ -1,6 +1,6 @@
 import Album from './Record'
-import { addStack, getGenres } from './APICalls'
-import { useState, useEffect, useContext } from 'react'
+import { addStack, getAlbumsByGenre } from './APICalls'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCoverflow, Navigation, Keyboard } from 'swiper/modules'
@@ -15,25 +15,28 @@ import { useAuth0 } from "@auth0/auth0-react";
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
+    const [genreGroups, setGenreGroups] = useState([])
     const [search, setSearch] = useState('')
-    const [genre, setGenre] = useState('')
-    const [genres, setGenres] = useState([])
-    const [filteredAlbums, setFilteredAlbums] = useState(albums)
     const [filteredSearch, setFilteredSearch] = useState([])
-    const [error] = useState('')
-    const [loading] = useState(false)
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const {user} = useAuth0()
 
     const navigate = useNavigate()
 
     useEffect(() => {
         if (!authCode) return
-        getGenres(authCode)
-            .then(setGenres)
-            .catch(err => console.log(err))
+        setLoading(true)
+        getAlbumsByGenre(authCode)
+            .then(setGenreGroups)
+            .catch(err => {
+                console.log(err)
+                setError('Could not load records.')
+            })
+            .finally(() => setLoading(false))
     }, [authCode])
+
     const addToStack = (album) => {
         const {email} = user
         addStack(email, album, authCode)
@@ -42,30 +45,40 @@ function LandingPage() {
         navigate('/my-stack')
     }
 
-    useEffect(() => {
-        const filterAlbums = () => {
-            let filtered = albums
-            if (search) {
-                filtered = filtered.filter(album =>
-                    album.albumName.toLowerCase().includes(search.toLowerCase())
-                )
-            }
-            if (genre) {
-                filtered = filtered.filter(album =>
-                    album.genre.toLowerCase() === genre.toLowerCase()
-                )
-            }
-            setFilteredAlbums(filtered)
-        }
-        filterAlbums()
-    }, [search, genre, albums])
+    // Rows are sourced from the server, so a deleted card has to be pulled from
+    // local state here. Empty genres drop out so we don't render headingless rows.
+    const handleAlbumDeleted = (albumId) => {
+        setGenreGroups(groups =>
+            groups
+                .map(g => ({ ...g, albums: g.albums.filter(a => a.id !== albumId) }))
+                .filter(g => g.albums.length > 0)
+        )
+    }
+
+    // Flat list backing the artist autocomplete below the search box.
+    const allAlbums = useMemo(
+        () => genreGroups.flatMap(g => g.albums),
+        [genreGroups]
+    )
+
+    // While searching, filter each genre row by album name and hide empty rows.
+    const visibleGroups = useMemo(() => {
+        if (!search) return genreGroups
+        const query = search.toLowerCase()
+        return genreGroups
+            .map(g => ({
+                ...g,
+                albums: g.albums.filter(a => a.albumName.toLowerCase().includes(query))
+            }))
+            .filter(g => g.albums.length > 0)
+    }, [search, genreGroups])
 
     const handleSearch = (e) => {
         const query = e.target.value
         setSearch(query)
 
         if (query) {
-            const results = albums.filter(album =>
+            const results = allAlbums.filter(album =>
                 album.artist.toLowerCase().includes(query.toLowerCase())
             )
             setFilteredSearch(results)
@@ -102,39 +115,40 @@ function LandingPage() {
                         </ul>
                     )}
                 </div>
-                <select
-                    value={genre}
-                    onChange={(e) => setGenre(e.target.value)}
-                >
-                    <option value="">Select Your Genre</option>
-                    {genres.map(g => (
-                        <option key={g} value={g}>{g}</option>
-                    ))}
-                </select>
             </div>
-            <Swiper
-                modules={[EffectCoverflow, Navigation, Keyboard]}
-                effect="coverflow"
-                grabCursor={true}
-                centeredSlides={true}
-                slidesPerView="4"
-                keyboard={{ enabled: true }}
-                navigation={true}
-                coverflowEffect={{
-                    rotate: 80,
-                    stretch: 0,
-                    depth: 150,
-                    modifier: 1,
-                    slideShadows: true,
-                }}
-                className="album-carousel"
-            >
-                {filteredAlbums.map(album => (
-                    <SwiperSlide key={album.id} className="album-slide">
-                        <Album album={album} addToStack={addToStack}/>
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+
+            {!loading && visibleGroups.length === 0 && (
+                <p className="loading-message">No records to display.</p>
+            )}
+
+            {visibleGroups.map(group => (
+                <section key={group.genre} className="genre-row">
+                    <h2 className="genre-heading">{group.genre}</h2>
+                    <Swiper
+                        modules={[EffectCoverflow, Navigation, Keyboard]}
+                        effect="coverflow"
+                        grabCursor={true}
+                        centeredSlides={true}
+                        slidesPerView="4"
+                        keyboard={{ enabled: true }}
+                        navigation={true}
+                        coverflowEffect={{
+                            rotate: 80,
+                            stretch: 0,
+                            depth: 150,
+                            modifier: 1,
+                            slideShadows: true,
+                        }}
+                        className="album-carousel"
+                    >
+                        {group.albums.map(album => (
+                            <SwiperSlide key={album.id} className="album-slide">
+                                <Album album={album} addToStack={addToStack} onAlbumDeleted={handleAlbumDeleted}/>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </section>
+            ))}
         </div>
     )
 }

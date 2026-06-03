@@ -7,7 +7,7 @@ import { deleteAlbum } from './APICalls'
 import '../CSS/Record.css'
 import { useContext } from 'react'
 
-function Album({ album, addToStack }) {
+function Album({ album, addToStack, onAlbumDeleted }) {
     const navigate = useNavigate()
     const { myStack } = useContext(MyStackContext)
     const { albums, setAlbums, authCode } = useContext(AuthAlbumContext)
@@ -35,6 +35,7 @@ function Album({ album, addToStack }) {
         try {
             await deleteAlbum(album.id, authCode)
             setAlbums(albums.filter(a => a.id !== album.id))
+            onAlbumDeleted?.(album.id)
         } catch (error) {
             console.error('Failed to delete album:', error.message)
             alert('Could not delete album. Please try again.')
