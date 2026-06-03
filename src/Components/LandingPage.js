@@ -129,7 +129,7 @@ function LandingPage() {
                         effect="coverflow"
                         grabCursor={true}
                         centeredSlides={true}
-                        slidesPerView="4"
+                        slidesPerView="auto"
                         keyboard={{ enabled: true }}
                         navigation={true}
                         coverflowEffect={{
