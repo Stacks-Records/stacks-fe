@@ -1,6 +1,6 @@
 # Stacks
 
-A comprehensive vinyl record marketplace application built with React, supported by an Express/Knex/PostGreSQL backend and deployed with Vercel.
+A comprehensive vinyl record marketplace application built with React (React Router, Swiper) and Auth0 authentication, supported by an Express/Knex/PostgreSQL backend and deployed with Vercel.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ A comprehensive vinyl record marketplace application built with React, supported
 
 ## Introduction
 
-Welcome to Stacks! This application allows users to browse, listen to, add to, and keep a digital collection of vinyl records. It provides a user-friendly interface and a robust back-end to ensure a seamless experience. Users must be authenticated by either creating an Okta account or through their Google email account to use the application. 
+Welcome to Stacks! This application allows users to browse, listen to, add to, and keep a digital collection of vinyl records. It provides a user-friendly interface and a robust back-end to ensure a seamless experience. Authentication is handled by Auth0 — users sign in with an email/password account or with Google.
 
 ## Preview 
 ### Click [here](https://stacks-records.vercel.app/) to check it out for yourself.
@@ -30,26 +30,41 @@ Welcome to Stacks! This application allows users to browse, listen to, add to, a
 
 ## Features
 
-- User authentication and profile management. 
+- User authentication and profile management via Auth0.
 - Add records to personal stack, which persists beyond user's session.
 - Filter records by genre, or search for a specific record or artist.
+- Post, edit, and delete album records (gated by user role/ownership permissions).
+- Role-based access control, including an admin user-management page.
 - Responsive design for various devices.
-- Cypress tests for critical user flows. 
+- Cypress E2E specs under `cypress/e2e/` (currently disabled — see commit `1b1bde1`).
 
 ## Installation
 
 1. Clone the repository:
-   git clone git@github.com:Stacks-Records/stacks-fe.git
+   `git clone git@github.com:Stacks-Records/stacks-fe.git`
 
-2. Then type this into your terminal: 
-cd stacks && npm i
+2. Install dependencies:
+   `cd stacks && npm i`
 
-3. Allow the dependencies to install, then: npm start. Side note: confirm all dependencies are installed. Not MODULE_NOT_FOUND errors, or inspect the package.json file to confirm you've got everything installed. 
+3. Create a `.env` file in the project root with the following variables:
+   ```
+   REACT_APP_API_URL=http://localhost:3001   # base URL of the backend API
+   REACT_APP_DOMAIN=your-auth0-domain
+   REACT_APP_CLIENT_ID=your-auth0-client-id
+   REACT_APP_AUDIENCE=your-auth0-api-audience
+   ```
+
+4. Start the backend API. This frontend requires the Stacks API to be running — by default it expects it at `http://localhost:3001`. Clone and run it from [Stacks-Records/stacks-be](https://github.com/Stacks-Records/stacks-be).
+
+5. Start the frontend with `npm start`. This runs the app on `http://localhost:3000` via `react-scripts`. If you hit `MODULE_NOT_FOUND` errors, confirm all dependencies installed (inspect `package.json`).
 
 ## Usage
 - Peruse the records available, including a feature that enables users to listen to them from the single record page once a record is clicked.
 - Users may create My Stack, their own collection of records, either from the Landing Page or Single Record Page. Toss one out if you don't like it anymore.
 - Users may post their own albums, provided they do their homework for all the input fields, and add it to My Stack. Data uniformity is paramount to application integrity at this time. 
+
+## Deployment
+The production app is deployed on Vercel: [stacks-records.vercel.app](https://stacks-records.vercel.app/). (Note: the `predeploy`/`deploy` `gh-pages` scripts in `package.json` are legacy and no longer used.)
 
 ## Wins
 - Built the application from scratch, front end and back end.
