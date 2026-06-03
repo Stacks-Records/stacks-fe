@@ -55,12 +55,12 @@ select {
 
 .album-carousel {
     width: 100%;
-    max-width: 75rem;
+    max-width: 96rem;
     padding: 3rem 0;
 }
 
 .album-slide {
-    width: 18rem;
+    width: 25rem;
     display: flex;
     justify-content: center;
 }
