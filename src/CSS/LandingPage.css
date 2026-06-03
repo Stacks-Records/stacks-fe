@@ -39,6 +39,20 @@ select {
     width: max-content;
 }
 
+.genre-row {
+    width: 90vw;
+    max-width: 75rem;
+    margin-bottom: 1.5rem;
+}
+
+.genre-heading {
+    color: #fff;
+    margin: 0 0 0.25rem;
+    padding-left: 0.5rem;
+    font-size: 1.5rem;
+    text-transform: capitalize;
+}
+
 .album-carousel {
     width: 100%;
     max-width: 75rem;

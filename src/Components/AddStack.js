@@ -91,7 +91,7 @@ function AddStack() {
                     {fieldErrors.youTubeAlbumURL && <span className="field-error">{fieldErrors.youTubeAlbumURL}</span>}
                 </div>
                 <div className="input-group">
-                    <label><sub>*</sub>Image URL</label>
+                    <label><sub>*</sub>Image Cover</label>
                     <input required type="text" name="imgURL" placeholder="Image URL" defaultValue={albumToEdit?.imgURL ?? ''} />
                     {fieldErrors.imgURL && <span className="field-error">{fieldErrors.imgURL}</span>}
                 </div>
