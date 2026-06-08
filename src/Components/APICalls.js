@@ -1,5 +1,5 @@
-// const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001'
-const BASE_URL = 'http://localhost:3001'
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001'
+// const BASE_URL = 'http://localhost:3001'
 
 export const getUserRole = async (email, token) => {
     const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
