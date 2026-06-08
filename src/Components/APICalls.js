@@ -1,5 +1,5 @@
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001'
-// const BASE_URL = 'http://localhost:3001'
+// const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001'
+const BASE_URL = 'http://localhost:3001'
 
 export const getUserRole = async (email, token) => {
     const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
@@ -33,6 +33,15 @@ export const getRecords = async (token) => {
         console.error('Failed to fetch records.', error.message)
         throw error
     }
+}
+
+export const getRecordById = async (id, token) => {
+    const res = await fetch(`${BASE_URL}/albums/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+    })
+    if (!res.ok) return null                      // backend sends 400 when missing
+    const data = await res.json()                 // backend sends an ARRAY
+    return Array.isArray(data) ? (data[0] ?? null) : data
 }
 
 export const getGenres = async (token) => {
