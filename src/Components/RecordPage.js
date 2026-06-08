@@ -1,12 +1,12 @@
 import MyStackContext from '../Context/MyStack'
 import { useParams, useNavigate } from 'react-router-dom';
 import '../CSS/RecordPage.css';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AuthAlbumContext from '../Context/AuthAlbumContext';
 import { useAuthorization } from '../Context/AuthorizationContext';
 import { PERMISSIONS } from '../utils/permissions';
 import { getYouTubeVideoID } from '../utils/validation';
-import { deleteAlbum } from './APICalls';
+import { deleteAlbum, getRecordById } from './APICalls';
 
 const RecordPage = () => {
     const { id } = useParams();
@@ -14,8 +14,28 @@ const RecordPage = () => {
     const { myStack, setMyStack } = useContext(MyStackContext)
     const { albums, setAlbums, authCode } = useContext(AuthAlbumContext)
     const { checkAction } = useAuthorization()
-    const allRecords = [...albums, ...myStack]
-    const record = allRecords.find(record => record.id === id);
+
+    // Prefer the in-memory list, but fall back to a by-id fetch so deep links and
+    // hard reloads (where `albums` hasn't loaded yet) still resolve the record.
+    // Re-runs on id/context change since the route reuses this component instance.
+    const cached = [...albums, ...myStack].find(r => r.id === id) || null
+    const [record, setRecord] = useState(cached)
+    const [loading, setLoading] = useState(!cached)
+
+    useEffect(() => {
+        if (cached) { setRecord(cached); setLoading(false); return }
+        let active = true
+        setRecord(null)
+        setLoading(true)
+        getRecordById(id, authCode)
+            .then(r => { if (active) { setRecord(r); setLoading(false) } })
+            .catch(() => { if (active) setLoading(false) })
+        return () => { active = false }
+    }, [id, cached, authCode])
+
+    if (loading) {
+        return <p>Loading…</p>;
+    }
 
     if (!record) {
         return <p>Record not found.</p>;
@@ -98,11 +118,11 @@ const RecordPage = () => {
                     <h2>{artist}</h2>
                     <p><strong>Release Date:</strong> {releaseDate}</p>
                     <p><strong>Genre:</strong> {genre}</p>
-                    <p><strong>Band Members:</strong> {bandMembers.join(', ')}</p>
+                    <p><strong>Band Members:</strong> {Array.isArray(bandMembers) ? bandMembers.join(', ') : (bandMembers || 'N/A')}</p>
                     <p><strong>Label:</strong> {label}</p>
                     <p><strong>Band Status:</strong> {isBandTogether ? 'Together' : 'Disbanded'}</p>
                     <p><strong>Rolling Stone Review:</strong> {rollingStoneReview}</p>
-                    <p><strong>Albums Sold:</strong> {albumsSold.toLocaleString()}</p>
+                    <p><strong>Albums Sold:</strong> {Number(albumsSold || 0).toLocaleString()}</p>
                 </div>
             </div>
         </div>
