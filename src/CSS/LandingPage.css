@@ -53,6 +53,14 @@ select {
     text-transform: capitalize;
 }
 
+
+.genre-row-placeholder {
+    min-height: 24rem;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
 .album-carousel {
     width: 100%;
     max-width: 96rem;
@@ -85,6 +93,19 @@ select {
     gap: 1.5rem;
     justify-items: center;
     padding: 1rem 0;
+}
+
+.browse-view {
+    width: 90vw;
+    max-width: 75rem;
+}
+
+.browse-heading {
+    color: #fff;
+    margin: 0 0 0.25rem;
+    padding-left: 0.5rem;
+    font-size: 1.5rem;
+    text-transform: capitalize;
 }
 
 

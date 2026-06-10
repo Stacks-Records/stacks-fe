@@ -1,41 +1,71 @@
 import Album from './Record'
-import { addStack, getAlbumsByGenre, searchAlbums } from './APICalls'
-import { useState, useEffect, useContext } from 'react'
+import GenreRow from './GenreRow'
+import AlbumCarousel from './AlbumCarousel'
+import { addStack, getGenres, searchAlbums, getAlbums } from './APICalls'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectCoverflow, Navigation, Keyboard } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/effect-coverflow'
-import 'swiper/css/navigation'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from "@auth0/auth0-react";
 
+// Single source of truth for the sort dropdown: the <option> list and the
+// query mapping. The first entry is the "no sort" default. rollingStoneReview
+// requires the backend ALBUM_SORTABLE whitelist to include it.
+const SORT_OPTIONS = [
+    { value: '', label: 'Sort by…', sortBy: '', order: '' },
+    { value: 'name', label: 'Album name (A–Z)', sortBy: 'albumName', order: 'asc' },
+    { value: 'sales', label: 'Best selling', sortBy: 'albumsSold', order: 'desc' },
+    { value: 'rating', label: 'Highest rated', sortBy: 'rollingStoneReview', order: 'desc' },
+]
+
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
     const {authCode} = useContext(AuthAlbumContext)
-    const [genreGroups, setGenreGroups] = useState([])
+    const [genres, setGenres] = useState([])
     const [search, setSearch] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [searchLoading, setSearchLoading] = useState(false)
     const [searchError, setSearchError] = useState('')
+    const [selectedGenre, setSelectedGenre] = useState('')
+    const [selectedSort, setSelectedSort] = useState('')
+    const [browseResults, setBrowseResults] = useState([])
+    const [browseLoading, setBrowseLoading] = useState(false)
+    const [browseError, setBrowseError] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const {user} = useAuth0()
 
     const navigate = useNavigate()
 
-    // While searching we hide the genre carousels and show a flat results grid.
+    // View precedence: search grid > browse Swiper > canonical carousels.
     const isSearching = search.trim().length > 0
+    const isBrowsing = !isSearching && (selectedGenre !== '' || selectedSort !== '')
 
+    // Canonical genres drive the carousels; every genre (incl. user-contributed)
+    // populates the filter dropdown.
+    const canonicalGenres = useMemo(
+        () => genres.filter(g => g.isCanonical).map(g => g.name),
+        [genres]
+    )
+    const allGenreNames = useMemo(() => genres.map(g => g.name), [genres])
+
+    // Fetch only the lightweight list of genres up front; each genre's albums
+    // load lazily via its own GenreRow. The response is { name, isCanonical }
+    // objects; the string fallback keeps us working through a deploy skew where
+    // the API still serves the old bare-string array (treat those as canonical).
     useEffect(() => {
         if (!authCode) return
         setLoading(true)
-        getAlbumsByGenre(authCode)
-            .then(setGenreGroups)
+        getGenres(authCode)
+            .then(data => {
+                const normalized = data.map(g =>
+                    typeof g === 'string' ? { name: g, isCanonical: true } : g
+                )
+                setGenres(normalized)
+            })
             .catch(err => {
                 console.log(err)
                 setError('Could not load records.')
@@ -71,6 +101,29 @@ function LandingPage() {
         return () => { active = false }
     }, [debouncedSearch, authCode])
 
+    // Combined genre-filter + sort for the browse view. Tears down (clears
+    // results) whenever browsing stops — including when a search takes over.
+    useEffect(() => {
+        if (!isBrowsing || !authCode) {
+            setBrowseResults([])
+            setBrowseError('')
+            return
+        }
+        const opt = SORT_OPTIONS.find(o => o.value === selectedSort) || SORT_OPTIONS[0]
+        let active = true
+        setBrowseLoading(true)
+        setBrowseError('')
+        getAlbums(authCode, { genre: selectedGenre, sortBy: opt.sortBy, order: opt.order })
+            .then(results => { if (active) setBrowseResults(results) })
+            .catch(err => {
+                if (!active) return
+                console.log(err)
+                setBrowseError('Could not load records.')
+            })
+            .finally(() => { if (active) setBrowseLoading(false) })
+        return () => { active = false }
+    }, [isBrowsing, selectedGenre, selectedSort, authCode])
+
     const addToStack = (album) => {
         const {email} = user
         addStack(email, album, authCode)
@@ -79,17 +132,17 @@ function LandingPage() {
         navigate('/my-stack')
     }
 
-    // Rows and search results are sourced from the server, so a deleted card has
-    // to be pulled from local state in both places. Empty genres drop out so we
-    // don't render headingless rows.
-    const handleAlbumDeleted = (albumId) => {
-        setGenreGroups(groups =>
-            groups
-                .map(g => ({ ...g, albums: g.albums.filter(a => a.id !== albumId) }))
-                .filter(g => g.albums.length > 0)
-        )
+    // Search and browse results are server-sourced, so a deleted card has to be
+    // pulled from local state here. Genre rows manage their own deletions.
+    const handleSearchAlbumDeleted = (albumId) => {
         setSearchResults(results => results.filter(a => a.id !== albumId))
     }
+
+    const handleBrowseAlbumDeleted = (albumId) => {
+        setBrowseResults(results => results.filter(a => a.id !== albumId))
+    }
+
+    const sortLabel = SORT_OPTIONS.find(o => o.value === selectedSort)?.label
 
     return (
         <div className="landing-page">
@@ -104,9 +157,30 @@ function LandingPage() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
+                <select
+                    className="genre-select"
+                    value={selectedGenre}
+                    onChange={(e) => setSelectedGenre(e.target.value)}
+                    aria-label="Filter by genre"
+                >
+                    <option value="">All genres</option>
+                    {allGenreNames.map(name => (
+                        <option key={name} value={name}>{name}</option>
+                    ))}
+                </select>
+                <select
+                    className="sort-select"
+                    value={selectedSort}
+                    onChange={(e) => setSelectedSort(e.target.value)}
+                    aria-label="Sort albums"
+                >
+                    {SORT_OPTIONS.map(o => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                </select>
             </div>
 
-            {isSearching ? (
+            {isSearching && (
                 <div className="search-view">
                     {searchLoading && <p className="loading-message">Searching the crates...</p>}
                     {searchError && <p className="error-message">Error: {searchError}</p>}
@@ -115,46 +189,48 @@ function LandingPage() {
                     )}
                     <div className="search-results-grid">
                         {searchResults.map(album => (
-                            <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={handleAlbumDeleted}/>
+                            <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={handleSearchAlbumDeleted}/>
                         ))}
                     </div>
                 </div>
-            ) : (
-                <>
-                    {!loading && genreGroups.length === 0 && (
-                        <p className="loading-message">No records to display.</p>
-                    )}
-
-                    {genreGroups.map(group => (
-                        <section key={group.genre} className="genre-row">
-                            <h2 className="genre-heading">{group.genre}</h2>
-                            <Swiper
-                                modules={[EffectCoverflow, Navigation, Keyboard]}
-                                effect="coverflow"
-                                grabCursor={true}
-                                centeredSlides={true}
-                                slidesPerView="auto"
-                                keyboard={{ enabled: true }}
-                                navigation={true}
-                                coverflowEffect={{
-                                    rotate: 80,
-                                    stretch: 0,
-                                    depth: 150,
-                                    modifier: 1,
-                                    slideShadows: true,
-                                }}
-                                className="album-carousel"
-                            >
-                                {group.albums.map(album => (
-                                    <SwiperSlide key={album.id} className="album-slide">
-                                        <Album album={album} addToStack={addToStack} onAlbumDeleted={handleAlbumDeleted}/>
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                        </section>
-                    ))}
-                </>
             )}
+
+            {isBrowsing && (
+                <div className="browse-view">
+                    <h2 className="browse-heading">
+                        {selectedGenre || 'All genres'}
+                        {sortLabel && selectedSort && ` · ${sortLabel}`}
+                    </h2>
+                    {browseLoading && <p className="loading-message">Loading records…</p>}
+                    {browseError && <p className="error-message">Error: {browseError}</p>}
+                    {!browseLoading && !browseError && browseResults.length === 0 && (
+                        <p className="loading-message">No records match this selection.</p>
+                    )}
+                    {browseResults.length > 0 && (
+                        <AlbumCarousel
+                            albums={browseResults}
+                            addToStack={addToStack}
+                            onAlbumDeleted={handleBrowseAlbumDeleted}
+                        />
+                    )}
+                </div>
+            )}
+
+            {/* Kept mounted (just hidden) while searching/browsing so already-loaded
+                rows don't refetch when those views are dismissed. */}
+            <div className="genre-rows" style={{ display: (isSearching || isBrowsing) ? 'none' : 'contents' }}>
+                {!loading && canonicalGenres.length === 0 && (
+                    <p className="loading-message">No records to display.</p>
+                )}
+                {canonicalGenres.map(genre => (
+                    <GenreRow
+                        key={genre}
+                        genre={genre}
+                        authCode={authCode}
+                        addToStack={addToStack}
+                    />
+                ))}
+            </div>
         </div>
     )
 }
