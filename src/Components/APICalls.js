@@ -76,6 +76,22 @@ export const getAlbumsByGenre = async (token, limit = 20) => {
     }
 }
 
+export const searchAlbums = async (token, query) => {
+    try {
+        const res = await fetch(`${BASE_URL}/albums?search=${encodeURIComponent(query)}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!res.ok) throw new Error('Failed to search albums.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to search albums.', error.message)
+        throw error
+    }
+}
+
 export const getUsers = async (token) => {
     try {
         const res = await fetch(`${BASE_URL}/api/v1/users`, {
