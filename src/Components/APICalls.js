@@ -60,6 +60,25 @@ export const getGenres = async (token) => {
 }
 
 
+// Albums for a single genre, fetched on demand as each carousel scrolls into
+// view. Backed by GET /albums?genre=<name>, which filters through the
+// album_genres join on the canonical genre name.
+export const getAlbumsByGenreName = async (token, genre) => {
+    try {
+        const res = await fetch(`${BASE_URL}/albums?genre=${encodeURIComponent(genre)}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch albums for genre.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch albums for genre.', error.message)
+        throw error
+    }
+}
+
 export const getAlbumsByGenre = async (token, limit = 20) => {
     try {
         const res = await fetch(`${BASE_URL}/api/v1/albums/by-genre?limit=${limit}`, {
@@ -88,6 +107,30 @@ export const searchAlbums = async (token, query) => {
         return res.json()
     } catch (error) {
         console.error('Failed to search albums.', error.message)
+        throw error
+    }
+}
+
+// Combined genre filter + sort for the browse view. Builds /albums with only the
+// non-empty params (URLSearchParams handles encoding and omits blanks), e.g.
+// /albums?genre=Rock&sortBy=albumsSold&order=desc. Returns a flat album array.
+export const getAlbums = async (token, { genre, sortBy, order } = {}) => {
+    try {
+        const params = new URLSearchParams()
+        if (genre) params.set('genre', genre)
+        if (sortBy) params.set('sortBy', sortBy)
+        if (order) params.set('order', order)
+        const qs = params.toString()
+        const res = await fetch(`${BASE_URL}/albums${qs ? `?${qs}` : ''}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch albums.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch albums.', error.message)
         throw error
     }
 }
