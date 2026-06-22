@@ -14,7 +14,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 // requires the backend ALBUM_SORTABLE whitelist to include it.
 const SORT_OPTIONS = [
     { value: '', label: 'Sort by…', sortBy: '', order: '' },
-    { value: 'name', label: 'Album name (A–Z)', sortBy: 'albumName', order: 'asc' },
+    { value: 'name-asc', label: 'Album name (A–Z)', sortBy: 'albumName', order: 'asc' },
+    { value: 'name-desc', label: 'Album name (Z–A)', sortBy: 'albumName', order: 'desc' },
     { value: 'sales', label: 'Best selling', sortBy: 'albumsSold', order: 'desc' },
     { value: 'rating', label: 'Highest rated', sortBy: 'rollingStoneReview', order: 'desc' },
 ]
@@ -31,6 +32,7 @@ function LandingPage() {
     const [searchError, setSearchError] = useState('')
     const [selectedGenre, setSelectedGenre] = useState('')
     const [selectedSort, setSelectedSort] = useState('')
+    const [genreOrder, setGenreOrder] = useState('asc')
     const [browseResults, setBrowseResults] = useState([])
     const [browseLoading, setBrowseLoading] = useState(false)
     const [browseError, setBrowseError] = useState('')
@@ -45,11 +47,15 @@ function LandingPage() {
     const isBrowsing = !isSearching && (selectedGenre !== '' || selectedSort !== '')
 
     // Canonical genres drive the carousels; every genre (incl. user-contributed)
-    // populates the filter dropdown.
-    const canonicalGenres = useMemo(
-        () => genres.filter(g => g.isCanonical).map(g => g.name),
-        [genres]
-    )
+    // populates the filter dropdown. The carousels sort alphabetically and flip
+    // with the genre-order toggle; the dropdown order is left as the API returns.
+    const canonicalGenres = useMemo(() => {
+        const names = genres
+            .filter(g => g.isCanonical)
+            .map(g => g.name)
+            .sort((a, b) => a.localeCompare(b))
+        return genreOrder === 'desc' ? names.reverse() : names
+    }, [genres, genreOrder])
     const allGenreNames = useMemo(() => genres.map(g => g.name), [genres])
 
     // Fetch only the lightweight list of genres up front; each genre's albums
@@ -178,6 +184,14 @@ function LandingPage() {
                         <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                 </select>
+                <button
+                    type="button"
+                    className="genre-order-toggle"
+                    onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
+                    aria-label="Flip genre order"
+                >
+                    {genreOrder === 'asc' ? 'Genres A–Z' : 'Genres Z–A'}
+                </button>
             </div>
 
             {isSearching && (
