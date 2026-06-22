@@ -14,9 +14,9 @@ const navigate = useNavigate()
     }
 
     return (
-        <div className="album-cards" onClick={handleClick}>
+        <div className="my-stack-card" onClick={handleClick}>
         <img src={album.imgURL} alt={`${album.title} cover`} />
-        <div className="album-info">
+        <div className="my-stack-card-info">
             <h3>{album.artist}</h3>
             <h4>{album.albumName}</h4>
             <p>{album.genre}</p>

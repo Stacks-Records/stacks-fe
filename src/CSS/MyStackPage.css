@@ -9,12 +9,20 @@
     justify-items: center;
     color: white;
     text-decoration: underline;
+    z-index: 1;
 }
+
+.my-stack-container {
+    width: 100%;
+    padding: 0 2rem 2rem;
+    box-sizing: border-box;
+}
+
 .my-stack-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    width: 100%;
 }
 
 
@@ -29,6 +37,13 @@
 
 .back-to-main {
     margin-top: 2rem;
+}
+
+/* Sit the "pick out more" button on its own row, centered across all columns */
+.my-stack-wrapper .main-gallery-link {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
 }
 
 p {
