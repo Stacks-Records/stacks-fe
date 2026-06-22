@@ -20,6 +20,8 @@ root.render(
         audience: audience
       }}
       scope="openid email username"
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
       >
 
       <App />
