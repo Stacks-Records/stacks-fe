@@ -1,0 +1,55 @@
+.my-stack-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.my-stack-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    display: block;
+}
+
+.my-stack-card-info {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(7, 7, 7, 0.708);
+    color: #fff;
+    text-align: center;
+    padding: 0.625rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.my-stack-card:hover .my-stack-card-info {
+    display: flex;
+    opacity: 1;
+}
+
+.my-stack-card-info h3,
+.my-stack-card-info h4,
+.my-stack-card-info p {
+    margin: 0;
+}
+
+.my-stack-card-info .delete-button {
+    margin-top: 0.5rem;
+}

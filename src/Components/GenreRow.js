@@ -1,6 +1,6 @@
 import AlbumCarousel from './AlbumCarousel'
 import { getAlbumsByGenreName } from './APICalls'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 // One genre's carousel. Albums are fetched lazily the first time the row scrolls
 // near the viewport, so the landing page renders cheap shells up front instead of
@@ -12,6 +12,16 @@ function GenreRow({ genre, authCode, addToStack }) {
     const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [rowOrder, setRowOrder] = useState('asc')
+
+    // Sort a copy by album name so the toggle is instant (no refetch) and the
+    // original `albums` state stays intact for delete-by-id.
+    const sortedAlbums = useMemo(() => {
+        const sorted = [...albums].sort((a, b) =>
+            (a.albumName ?? '').localeCompare(b.albumName ?? '')
+        )
+        return rowOrder === 'desc' ? sorted.reverse() : sorted
+    }, [albums, rowOrder])
 
     // Flip `visible` the first time the row nears the viewport, then stop
     // observing — we only need the one-shot trigger to kick off the fetch.
@@ -61,7 +71,19 @@ function GenreRow({ genre, authCode, addToStack }) {
 
     return (
         <section ref={sectionRef} className="genre-row">
-            <h2 className="genre-heading">{genre}</h2>
+            <div className="genre-row-header">
+                <h2 className="genre-heading">{genre}</h2>
+                {loaded && albums.length > 1 && (
+                    <button
+                        type="button"
+                        className="row-sort-toggle"
+                        onClick={() => setRowOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
+                        aria-label={`Sort ${genre} albums`}
+                    >
+                        {rowOrder === 'asc' ? 'A–Z' : 'Z–A'}
+                    </button>
+                )}
+            </div>
             {error && <p className="error-message">Error: {error}</p>}
             {!loaded && (
                 <div className="genre-row-placeholder">
@@ -70,7 +92,7 @@ function GenreRow({ genre, authCode, addToStack }) {
             )}
             {loaded && albums.length > 0 && (
                 <AlbumCarousel
-                    albums={albums}
+                    albums={sortedAlbums}
                     addToStack={addToStack}
                     onAlbumDeleted={handleAlbumDeleted}
                 />
