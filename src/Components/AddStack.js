@@ -1,7 +1,7 @@
 import { useContext, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { getRecords, postAlbum, editAlbum } from './APICalls'
-import { isValidYouTubeURL, isImageReachable } from '../utils/validation'
+import { isValidYouTubeURL, isImageReachable, toDateInputValue } from '../utils/validation'
 import '../CSS/AddStack.css'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 
@@ -71,7 +71,7 @@ function AddStack() {
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Release Date</label>
-                    <input required type="date" name="releaseDate" placeholder="Release Date" defaultValue={albumToEdit?.releaseDate ?? ''} />
+                    <input required type="date" name="releaseDate" placeholder="Release Date" defaultValue={toDateInputValue(albumToEdit?.releaseDate)} />
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Genre</label>
