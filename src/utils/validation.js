@@ -9,6 +9,21 @@ export function isValidYouTubeURL(url) {
     return getYouTubeVideoID(url) !== null;
 }
 
+// Convert a release date from whatever format the API returns (e.g. "September 12th, 1975")
+// into the exact YYYY-MM-DD form <input type="date"> requires, or '' if it can't be parsed.
+export function toDateInputValue(dateString) {
+    if (!dateString) return ''
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString
+
+    const parsed = new Date(dateString.replace(/(\d+)(st|nd|rd|th)/, '$1'))
+    if (isNaN(parsed.getTime())) return ''
+
+    const year = parsed.getFullYear()
+    const month = String(parsed.getMonth() + 1).padStart(2, '0')
+    const day = String(parsed.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 // Resolve true if the URL loads as an actual image, false otherwise (empty, dead, or non-image).
 export function isImageReachable(url) {
     return new Promise((resolve) => {

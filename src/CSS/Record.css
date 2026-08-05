@@ -17,6 +17,7 @@
 .album-cards:hover {
     transform: translateY(-0.3125rem);
     box-shadow: 0 0.25rem 0.625rem rgba(106, 106, 106, 0.25);
+    z-index: 1;
 }
 
 .album-cards img {
@@ -24,7 +25,7 @@
     height: 100%;
     border-radius: 5%;
     object-fit: cover;
-    transition: transform 0.3s ease; 
+    transition: transform 0.3s ease;
 }
 
 .album-info {
@@ -41,16 +42,17 @@
     color: #fff;
     text-align: center;
     padding: 0.625rem;
-    border-radius: 5%; 
+    border-radius: 5%;
     opacity: 0;
-    transform: translateY(20px); 
-    transition: opacity 0.3s ease, transform 0.3s ease; 
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1;
 }
 
 .album-cards:hover .album-info {
-    display: flex; 
-    opacity: 1; 
-    transform: translateY(0); 
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .album-info h3 {
@@ -69,20 +71,20 @@
 }
 
 .edit-button {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .record-button {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-    height:3.75rem;
-    width:7rem;
+    height: 3.75rem;
+    width: 7rem;
     appearance: none;
     background-color: #0000002b;
-    border:.2rem solid white;
+    border: .2rem solid white;
     border-radius: 1rem;
     box-sizing: border-box;
     color: #FFFFFF;
@@ -92,7 +94,7 @@
     margin: 0;
     outline: none;
     padding: 1rem;
-    margin:2rem;
+    margin: 2rem;
     text-align: center;
     text-decoration: none;
     transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
@@ -101,18 +103,18 @@
     touch-action: manipulation;
     width: 8rem;
     will-change: transform;
-  }
-  
-  button:disabled {
+}
+
+button:disabled {
     pointer-events: none;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
     transform: translateY(-2px);
-  }
-  
-  button:active {
+}
+
+button:active {
     box-shadow: none;
     transform: translateY(0);
-  }
+}
