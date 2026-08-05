@@ -64,6 +64,67 @@
     align-items: baseline;
   }
 
+  /* react-select renders a div, not an <input>, so it needs its own sizing
+     and doesn't pick up the plain `input` rule or justify-items: end above. */
+  .add-stack .genre-select__control {
+    width: 100%;
+    justify-self: stretch;
+    min-height: 2.5rem;
+    border-radius: 5px;
+    border: none;
+    background-color: black;
+  }
+
+  .add-stack .genre-select__control--is-focused {
+    box-shadow: 0 0 0 2px #600ccf;
+    border-color: #600ccf;
+  }
+
+  .add-stack .genre-select__value-container,
+  .add-stack .genre-select__input-container,
+  .add-stack .genre-select__placeholder {
+    color: white;
+  }
+
+  .add-stack .genre-select__input {
+    color: white !important;
+  }
+
+  .add-stack .genre-select__multi-value {
+    background-color: #600ccf;
+    border-radius: 0.25rem;
+  }
+
+  .add-stack .genre-select__multi-value__label {
+    color: white;
+  }
+
+  .add-stack .genre-select__multi-value__remove {
+    color: white;
+    cursor: pointer;
+  }
+
+  .add-stack .genre-select__multi-value__remove:hover {
+    background-color: #4a09a3;
+    color: white;
+  }
+
+  .add-stack .genre-select__menu {
+    background-color: black;
+    border: 1px solid #600ccf;
+    z-index: 2;
+  }
+
+  .add-stack .genre-select__option {
+    background-color: black;
+    color: white;
+  }
+
+  .add-stack .genre-select__option--is-focused,
+  .add-stack .genre-select__option--is-selected {
+    background-color: #600ccf;
+  }
+
   sub {
     color: red;
     vertical-align: 25%;

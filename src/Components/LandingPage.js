@@ -4,6 +4,7 @@ import AlbumCarousel from './AlbumCarousel'
 import { addStack, getGenres, searchAlbums, getAlbums } from './APICalls'
 import { useState, useEffect, useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Select from 'react-select'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
@@ -30,7 +31,7 @@ function LandingPage() {
     const [searchResults, setSearchResults] = useState([])
     const [searchLoading, setSearchLoading] = useState(false)
     const [searchError, setSearchError] = useState('')
-    const [selectedGenre, setSelectedGenre] = useState('')
+    const [selectedGenres, setSelectedGenres] = useState([])
     const [selectedSort, setSelectedSort] = useState('')
     const [genreOrder, setGenreOrder] = useState('asc')
     const [viewMode, setViewMode] = useState('carousel')
@@ -49,7 +50,7 @@ function LandingPage() {
 
     // View precedence: search grid > browse Swiper > canonical carousels.
     const isSearching = search.trim().length > 0
-    const isBrowsing = !isSearching && (selectedGenre !== '' || selectedSort !== '')
+    const isBrowsing = !isSearching && (selectedGenres.length > 0 || selectedSort !== '')
 
     // Canonical genres drive the carousels; every genre (incl. user-contributed)
     // populates the filter dropdown. The carousels sort alphabetically and flip
@@ -124,7 +125,7 @@ function LandingPage() {
         let active = true
         setBrowseLoading(true)
         setBrowseError('')
-        getAlbums(authCode, { genre: selectedGenre, sortBy: opt.sortBy, order: opt.order })
+        getAlbums(authCode, { genre: selectedGenres, sortBy: opt.sortBy, order: opt.order })
             .then(results => { if (active) setBrowseResults(results) })
             .catch(err => {
                 if (!active) return
@@ -133,7 +134,7 @@ function LandingPage() {
             })
             .finally(() => { if (active) setBrowseLoading(false) })
         return () => { active = false }
-    }, [isBrowsing, selectedGenre, selectedSort, authCode])
+    }, [isBrowsing, selectedGenres, selectedSort, authCode])
 
     // Grid mode's default (unfiltered) view needs one flat fetch of every album,
     // since the carousel default view instead loads albums per-genre via GenreRow.
@@ -192,17 +193,17 @@ function LandingPage() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-                <select
-                    className="genre-select"
-                    value={selectedGenre}
-                    onChange={(e) => setSelectedGenre(e.target.value)}
+                <Select
+                    inputId="genre-filter-select"
+                    classNamePrefix="genre-select"
                     aria-label="Filter by genre"
-                >
-                    <option value="">All genres</option>
-                    {allGenreNames.map(name => (
-                        <option key={name} value={name}>{name}</option>
-                    ))}
-                </select>
+                    isClearable
+                    isMulti
+                    placeholder="All genres"
+                    value={selectedGenres.map(name => ({ value: name, label: name }))}
+                    onChange={(selected) => setSelectedGenres((selected ?? []).map(o => o.value))}
+                    options={allGenreNames.map(name => ({ value: name, label: name }))}
+                />
                 <select
                     className="sort-select"
                     value={selectedSort}
@@ -215,19 +216,25 @@ function LandingPage() {
                 </select>
                 <button
                     type="button"
-                    className="genre-order-toggle"
+                    className={`switch-toggle genre-order-toggle ${genreOrder === 'desc' ? 'is-on' : ''}`}
                     onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
+                    aria-pressed={genreOrder === 'desc'}
                     aria-label="Flip genre order"
                 >
-                    {genreOrder === 'asc' ? 'Genres A–Z' : 'Genres Z–A'}
+                    <span className="switch-toggle-option">A–Z</span>
+                    <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
+                    <span className="switch-toggle-option">Z–A</span>
                 </button>
                 <button
                     type="button"
-                    className="view-mode-toggle"
+                    className={`switch-toggle view-mode-toggle ${viewMode === 'grid' ? 'is-on' : ''}`}
                     onClick={() => setViewMode(v => (v === 'carousel' ? 'grid' : 'carousel'))}
+                    aria-pressed={viewMode === 'grid'}
                     aria-label="Toggle grid or carousel view"
                 >
-                    {viewMode === 'carousel' ? 'Grid' : 'Carousel'}
+                    <span className="switch-toggle-option">Carousel</span>
+                    <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
+                    <span className="switch-toggle-option">Grid</span>
                 </button>
             </div>
 
@@ -249,7 +256,7 @@ function LandingPage() {
             {isBrowsing && (
                 <div className="browse-view">
                     <h2 className="browse-heading">
-                        {selectedGenre || 'All genres'}
+                        {selectedGenres.length > 0 ? selectedGenres.join(', ') : 'All genres'}
                         {sortLabel && selectedSort && ` · ${sortLabel}`}
                     </h2>
                     {browseLoading && <p className="loading-message">Loading records…</p>}
