@@ -193,13 +193,14 @@ function LandingPage() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
+                
                 <Select
                     inputId="genre-filter-select"
                     classNamePrefix="genre-select"
                     aria-label="Filter by genre"
                     isClearable
                     isMulti
-                    placeholder="All genres"
+                    placeholder="Genre multi-select..."
                     value={selectedGenres.map(name => ({ value: name, label: name }))}
                     onChange={(selected) => setSelectedGenres((selected ?? []).map(o => o.value))}
                     options={allGenreNames.map(name => ({ value: name, label: name }))}
@@ -214,17 +215,6 @@ function LandingPage() {
                         <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                 </select>
-                <button
-                    type="button"
-                    className={`switch-toggle genre-order-toggle ${genreOrder === 'desc' ? 'is-on' : ''}`}
-                    onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
-                    aria-pressed={genreOrder === 'desc'}
-                    aria-label="Flip genre order"
-                >
-                    <span className="switch-toggle-option">A–Z</span>
-                    <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
-                    <span className="switch-toggle-option">Z–A</span>
-                </button>
                 <button
                     type="button"
                     className={`switch-toggle view-mode-toggle ${viewMode === 'grid' ? 'is-on' : ''}`}

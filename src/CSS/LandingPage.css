@@ -142,7 +142,7 @@ select {
 }
 
 /* Toggle-switch look for the genre-order and view-mode controls: two side
-   labels flanking a sliding track/thumb, matching the app's #600ccf accent. */
+   labels flanking a sliding track/thumb, matching the #600ccf accent. */
 .switch-toggle {
     display: inline-flex;
     align-items: center;

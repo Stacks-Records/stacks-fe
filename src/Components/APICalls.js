@@ -114,15 +114,18 @@ export const searchAlbums = async (token, query) => {
 // Combined genre filter + sort for the browse view. Builds /albums with only the
 // non-empty params (URLSearchParams handles encoding and omits blanks), e.g.
 // /albums?genre=Rock&sortBy=albumsSold&order=desc. `genre` may be a single name or
-// an array — repeated `genre` params are OR'd together server-side. Returns a flat
-// album array.
-export const getAlbums = async (token, { genre, sortBy, order } = {}) => {
+// an array — repeated `genre` params are OR'd together server-side. `page`/`limit`
+// page through the result set; a page shorter than `limit` signals the last page.
+// Returns a flat album array.
+export const getAlbums = async (token, { genre, sortBy, order, page, limit } = {}) => {
     try {
         const params = new URLSearchParams()
         const genreList = [].concat(genre ?? []).filter(Boolean)
         genreList.forEach(g => params.append('genre', g))
         if (sortBy) params.set('sortBy', sortBy)
         if (order) params.set('order', order)
+        if (page) params.set('page', page)
+        if (limit) params.set('limit', limit)
         const qs = params.toString()
         const res = await fetch(`${BASE_URL}/albums${qs ? `?${qs}` : ''}`, {
             headers: {
