@@ -12,9 +12,11 @@
 .filters {
     margin-bottom: 1.25rem;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: no-wrap;
+    justify-content: flex-start;
     align-items: center;
     gap: 0.625rem;
+    row-gap: 0.75rem;
     width: 80vw;
 }
 
@@ -25,10 +27,64 @@
     font-size: 1rem;
     border-radius: 0.5rem;
     height: 2.75rem;
-    width: 20rem;
+    width: 16.5rem;
     background-color: black;
     color: white;
     border: 2px solid #600ccf;
+}
+
+/* react-select renders a div-based control, so it doesn't inherit the
+   .filters select rule above and needs its own styling via classNamePrefix. */
+.filters .genre-select__control {
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    width: 20rem;
+    background-color: black;
+    border: 2px solid #600ccf;
+    border-radius: 0.5rem;
+}
+
+.filters .genre-select__control--is-focused {
+    border-color: #600ccf;
+    box-shadow: none;
+}
+
+.filters .genre-select__value-container,
+.filters .genre-select__input-container,
+.filters .genre-select__single-value,
+.filters .genre-select__placeholder {
+    color: white;
+}
+
+.filters .genre-select__input {
+    color: white !important;
+}
+
+.filters .genre-select__menu {
+    background-color: black;
+    border: 2px solid #600ccf;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.filters .genre-select__option {
+    background-color: black;
+    color: white;
+}
+
+.filters .genre-select__option--is-focused,
+.filters .genre-select__option--is-selected {
+    background-color: #600ccf;
+}
+
+.filters .genre-select__indicator-separator {
+    background-color: #600ccf;
+}
+
+.filters .genre-select__dropdown-indicator,
+.filters .genre-select__clear-indicator {
+    color: #600ccf;
 }
 
 .loading-message {
@@ -71,29 +127,90 @@ select {
     text-transform: capitalize;
 }
 
-/* Shared look for the genre-order, view-mode, and per-row sort toggles */
-.genre-order-toggle,
-.view-mode-toggle,
+/* Look for the per-row sort toggle button */
 .row-sort-toggle {
     background: none;
     border: #600ccf 2px solid;
     border-radius: 0.5rem;
     color: #fff;
     cursor: pointer;
-    font-size: clamp(0.75rem, 2.5vw, 1.25rem);
-    padding: 0.4rem .25rem;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.6rem;
     word-break: break-all;
 }
 
-.genre-order-toggle:hover,
-.view-mode-toggle:hover,
 .row-sort-toggle:hover {
     background-color: #600ccf;
 }
 
-.row-sort-toggle {
+/* Pairs the genre-order and view-mode toggles as one tight unit so they read
+   as a matched group within .filters, rather than the order toggle floating
+   awkwardly on its own. */
+.view-toggles {
+    display: flex;
+    flex-wrap: no-wrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Toggle-switch look for the genre-order and view-mode controls: two side
+   labels flanking a sliding track/thumb, matching the #600ccf accent. */
+.switch-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
     font-size: 0.875rem;
-    padding: 0.25rem 0.6rem;
+    padding: 0.25rem;
+}
+
+.switch-toggle-option {
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+}
+
+.switch-toggle:not(.is-on) .switch-toggle-option:first-child,
+.switch-toggle.is-on .switch-toggle-option:last-child {
+    opacity: 1;
+    font-weight: 600;
+}
+
+.switch-toggle-track {
+    position: relative;
+    display: inline-block;
+    width: 2.75rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border: 2px solid #600ccf;
+    border-radius: 999px;
+    background-color: black;
+    transition: background-color 0.15s ease;
+}
+
+.switch-toggle:hover .switch-toggle-track {
+    filter: brightness(1.25);
+}
+
+.switch-toggle.is-on .switch-toggle-track {
+    background-color: #600ccf;
+}
+
+.switch-toggle-thumb {
+    position: absolute;
+    top: 0.0625rem;
+    left: 0.0625rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: transform 0.15s ease;
+}
+
+.switch-toggle.is-on .switch-toggle-thumb {
+    transform: translateX(1.25rem);
 }
 
 
@@ -139,6 +256,15 @@ select {
     padding: 1rem 0;
 }
 
+.grid-sentinel {
+    height: 1px;
+}
+
+.grid-load-more {
+    text-align: center;
+    padding: 1rem 0;
+}
+
 .grid-view {
     width: 90vw;
     max-width: 75rem;
@@ -170,5 +296,37 @@ select {
 
     select {
         width: 65%;
+    }
+
+    .filters .genre-select__control {
+        width: 65%;
+    }
+
+    .view-toggles {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 26rem) {
+    .switch-toggle {
+        font-size: 0.75rem;
+        gap: 0.375rem;
+    }
+
+    .switch-toggle-track {
+        width: 2.25rem;
+        height: 1.25rem;
+    }
+
+    .switch-toggle-thumb {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+
+    .switch-toggle.is-on .switch-toggle-thumb {
+        transform: translateX(1rem);
     }
 }

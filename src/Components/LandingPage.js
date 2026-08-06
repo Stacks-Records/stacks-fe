@@ -4,10 +4,12 @@ import AlbumCarousel from './AlbumCarousel'
 import { addStack, getGenres, searchAlbums, getAlbums } from './APICalls'
 import { useState, useEffect, useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Select from 'react-select'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from "@auth0/auth0-react";
+import usePaginatedAlbums from '../hooks/usePaginatedAlbums'
 
 // Single source of truth for the sort dropdown: the <option> list and the
 // query mapping. The first entry is the "no sort" default. rollingStoneReview
@@ -30,17 +32,15 @@ function LandingPage() {
     const [searchResults, setSearchResults] = useState([])
     const [searchLoading, setSearchLoading] = useState(false)
     const [searchError, setSearchError] = useState('')
-    const [selectedGenre, setSelectedGenre] = useState('')
+    const [selectedGenres, setSelectedGenres] = useState([])
     const [selectedSort, setSelectedSort] = useState('')
     const [genreOrder, setGenreOrder] = useState('asc')
     const [viewMode, setViewMode] = useState('carousel')
+    // Only feeds the browse Swiper (non-grid). The grid rendering of browse
+    // results is paginated instead, via browseGrid below.
     const [browseResults, setBrowseResults] = useState([])
     const [browseLoading, setBrowseLoading] = useState(false)
     const [browseError, setBrowseError] = useState('')
-    const [gridAlbums, setGridAlbums] = useState([])
-    const [gridLoading, setGridLoading] = useState(false)
-    const [gridError, setGridError] = useState('')
-    const [gridLoaded, setGridLoaded] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const {user} = useAuth0()
@@ -49,7 +49,16 @@ function LandingPage() {
 
     // View precedence: search grid > browse Swiper > canonical carousels.
     const isSearching = search.trim().length > 0
-    const isBrowsing = !isSearching && (selectedGenre !== '' || selectedSort !== '')
+    const isBrowsing = !isSearching && (selectedGenres.length > 0 || selectedSort !== '')
+    // Browsing splits by viewMode: the grid rendering is paginated (browseGrid,
+    // below); the Swiper rendering keeps the original single-fetch effect.
+    const isBrowsingGrid = isBrowsing && viewMode === 'grid'
+    const isBrowsingCarousel = isBrowsing && viewMode !== 'grid'
+
+    const sortOpt = useMemo(
+        () => SORT_OPTIONS.find(o => o.value === selectedSort) || SORT_OPTIONS[0],
+        [selectedSort]
+    )
 
     // Canonical genres drive the carousels; every genre (incl. user-contributed)
     // populates the filter dropdown. The carousels sort alphabetically and flip
@@ -112,19 +121,20 @@ function LandingPage() {
         return () => { active = false }
     }, [debouncedSearch, authCode])
 
-    // Combined genre-filter + sort for the browse view. Tears down (clears
-    // results) whenever browsing stops — including when a search takes over.
+    // Combined genre-filter + sort for the browse Swiper. Tears down (clears
+    // results) whenever the carousel rendering of browse stops — including
+    // when a search takes over or the view flips to grid (paginated separately
+    // by browseGrid below).
     useEffect(() => {
-        if (!isBrowsing || !authCode) {
+        if (!isBrowsingCarousel || !authCode) {
             setBrowseResults([])
             setBrowseError('')
             return
         }
-        const opt = SORT_OPTIONS.find(o => o.value === selectedSort) || SORT_OPTIONS[0]
         let active = true
         setBrowseLoading(true)
         setBrowseError('')
-        getAlbums(authCode, { genre: selectedGenre, sortBy: opt.sortBy, order: opt.order })
+        getAlbums(authCode, { genre: selectedGenres, sortBy: sortOpt.sortBy, order: sortOpt.order })
             .then(results => { if (active) setBrowseResults(results) })
             .catch(err => {
                 if (!active) return
@@ -133,27 +143,24 @@ function LandingPage() {
             })
             .finally(() => { if (active) setBrowseLoading(false) })
         return () => { active = false }
-    }, [isBrowsing, selectedGenre, selectedSort, authCode])
+    }, [isBrowsingCarousel, selectedGenres, sortOpt, authCode])
 
-    // Grid mode's default (unfiltered) view needs one flat fetch of every album,
-    // since the carousel default view instead loads albums per-genre via GenreRow.
-    // Lazy + fetched once: only runs the first time the user switches to grid mode
-    // while not searching/browsing, so the common carousel path never pays for it.
-    useEffect(() => {
-        if (viewMode !== 'grid' || isSearching || isBrowsing || !authCode || gridLoaded) return
-        let active = true
-        setGridLoading(true)
-        setGridError('')
-        getAlbums(authCode)
-            .then(results => { if (active) { setGridAlbums(results); setGridLoaded(true) } })
-            .catch(err => {
-                if (!active) return
-                console.log(err)
-                setGridError('Could not load records.')
-            })
-            .finally(() => { if (active) setGridLoading(false) })
-        return () => { active = false }
-    }, [viewMode, isSearching, isBrowsing, authCode, gridLoaded])
+    // Grid mode's default (unfiltered) view needs a flat, paginated fetch of the
+    // catalog, since the carousel default view instead loads albums per-genre via
+    // GenreRow. Only enabled while not searching/browsing so the common carousel
+    // path never pays for it.
+    const flatGrid = usePaginatedAlbums(authCode, {
+        enabled: viewMode === 'grid' && !isSearching && !isBrowsing,
+    })
+
+    // Genre-filtered/sorted grid rendering of the browse view, paginated
+    // separately from the Swiper rendering (browseResults above).
+    const browseGrid = usePaginatedAlbums(authCode, {
+        genre: selectedGenres,
+        sortBy: sortOpt.sortBy,
+        order: sortOpt.order,
+        enabled: isBrowsingGrid,
+    })
 
     const addToStack = (album) => {
         const {email} = user
@@ -173,11 +180,7 @@ function LandingPage() {
         setBrowseResults(results => results.filter(a => a.id !== albumId))
     }
 
-    const handleGridAlbumDeleted = (albumId) => {
-        setGridAlbums(albums => albums.filter(a => a.id !== albumId))
-    }
-
-    const sortLabel = SORT_OPTIONS.find(o => o.value === selectedSort)?.label
+    const sortLabel = sortOpt.label
 
     return (
         <div className="landing-page">
@@ -192,17 +195,18 @@ function LandingPage() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-                <select
-                    className="genre-select"
-                    value={selectedGenre}
-                    onChange={(e) => setSelectedGenre(e.target.value)}
+                
+                <Select
+                    inputId="genre-filter-select"
+                    classNamePrefix="genre-select"
                     aria-label="Filter by genre"
-                >
-                    <option value="">All genres</option>
-                    {allGenreNames.map(name => (
-                        <option key={name} value={name}>{name}</option>
-                    ))}
-                </select>
+                    isClearable
+                    isMulti
+                    placeholder="Genre multi-select..."
+                    value={selectedGenres.map(name => ({ value: name, label: name }))}
+                    onChange={(selected) => setSelectedGenres((selected ?? []).map(o => o.value))}
+                    options={allGenreNames.map(name => ({ value: name, label: name }))}
+                />
                 <select
                     className="sort-select"
                     value={selectedSort}
@@ -213,22 +217,32 @@ function LandingPage() {
                         <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                 </select>
-                <button
-                    type="button"
-                    className="genre-order-toggle"
-                    onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
-                    aria-label="Flip genre order"
-                >
-                    {genreOrder === 'asc' ? 'Genres A–Z' : 'Genres Z–A'}
-                </button>
-                <button
-                    type="button"
-                    className="view-mode-toggle"
-                    onClick={() => setViewMode(v => (v === 'carousel' ? 'grid' : 'carousel'))}
-                    aria-label="Toggle grid or carousel view"
-                >
-                    {viewMode === 'carousel' ? 'Grid' : 'Carousel'}
-                </button>
+                <div className="view-toggles">
+                    {viewMode === 'carousel' && (
+                        <button
+                            type="button"
+                            className={`switch-toggle genre-order-toggle ${genreOrder === 'desc' ? 'is-on' : ''}`}
+                            onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
+                            aria-pressed={genreOrder === 'desc'}
+                            aria-label="Flip genre order"
+                        >
+                            <span className="switch-toggle-option">Genres A–Z</span>
+                            <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
+                            <span className="switch-toggle-option">Z-A</span>
+                        </button>
+                    )}
+                    <button
+                        type="button"
+                        className={`switch-toggle view-mode-toggle ${viewMode === 'grid' ? 'is-on' : ''}`}
+                        onClick={() => setViewMode(v => (v === 'carousel' ? 'grid' : 'carousel'))}
+                        aria-pressed={viewMode === 'grid'}
+                        aria-label="Toggle grid or carousel view"
+                    >
+                        <span className="switch-toggle-option">Carousel</span>
+                        <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
+                        <span className="switch-toggle-option">Grid</span>
+                    </button>
+                </div>
             </div>
 
             {isSearching && (
@@ -249,28 +263,41 @@ function LandingPage() {
             {isBrowsing && (
                 <div className="browse-view">
                     <h2 className="browse-heading">
-                        {selectedGenre || 'All genres'}
+                        {selectedGenres.length > 0 ? selectedGenres.join(', ') : 'All genres'}
                         {sortLabel && selectedSort && ` · ${sortLabel}`}
                     </h2>
-                    {browseLoading && <p className="loading-message">Loading records…</p>}
-                    {browseError && <p className="error-message">Error: {browseError}</p>}
-                    {!browseLoading && !browseError && browseResults.length === 0 && (
-                        <p className="loading-message">No records match this selection.</p>
-                    )}
-                    {browseResults.length > 0 && (
-                        viewMode === 'grid' ? (
-                            <div className="search-results-grid">
-                                {browseResults.map(album => (
-                                    <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={handleBrowseAlbumDeleted}/>
-                                ))}
-                            </div>
-                        ) : (
-                            <AlbumCarousel
-                                albums={browseResults}
-                                addToStack={addToStack}
-                                onAlbumDeleted={handleBrowseAlbumDeleted}
-                            />
-                        )
+                    {viewMode === 'grid' ? (
+                        <>
+                            {browseGrid.loading && <p className="loading-message">Loading records…</p>}
+                            {browseGrid.error && <p className="error-message">Error: {browseGrid.error}</p>}
+                            {!browseGrid.loading && !browseGrid.error && browseGrid.albums.length === 0 && (
+                                <p className="loading-message">No records match this selection.</p>
+                            )}
+                            {browseGrid.albums.length > 0 && (
+                                <div className="search-results-grid">
+                                    {browseGrid.albums.map(album => (
+                                        <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={browseGrid.removeAlbum}/>
+                                    ))}
+                                </div>
+                            )}
+                            {browseGrid.loadingMore && <p className="loading-message grid-load-more">Loading more…</p>}
+                            {browseGrid.hasMore && <div ref={browseGrid.sentinelRef} className="grid-sentinel" />}
+                        </>
+                    ) : (
+                        <>
+                            {browseLoading && <p className="loading-message">Loading records…</p>}
+                            {browseError && <p className="error-message">Error: {browseError}</p>}
+                            {!browseLoading && !browseError && browseResults.length === 0 && (
+                                <p className="loading-message">No records match this selection.</p>
+                            )}
+                            {browseResults.length > 0 && (
+                                <AlbumCarousel
+                                    albums={browseResults}
+                                    addToStack={addToStack}
+                                    onAlbumDeleted={handleBrowseAlbumDeleted}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             )}
@@ -293,16 +320,18 @@ function LandingPage() {
 
             {!isSearching && !isBrowsing && viewMode === 'grid' && (
                 <div className="grid-view">
-                    {gridLoading && <p className="loading-message">Loading records…</p>}
-                    {gridError && <p className="error-message">Error: {gridError}</p>}
-                    {!gridLoading && !gridError && gridAlbums.length === 0 && (
+                    {flatGrid.loading && <p className="loading-message">Loading records…</p>}
+                    {flatGrid.error && <p className="error-message">Error: {flatGrid.error}</p>}
+                    {!flatGrid.loading && !flatGrid.error && flatGrid.albums.length === 0 && (
                         <p className="loading-message">No records to display.</p>
                     )}
                     <div className="search-results-grid">
-                        {gridAlbums.map(album => (
-                            <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={handleGridAlbumDeleted}/>
+                        {flatGrid.albums.map(album => (
+                            <Album key={album.id} album={album} addToStack={addToStack} onAlbumDeleted={flatGrid.removeAlbum}/>
                         ))}
                     </div>
+                    {flatGrid.loadingMore && <p className="loading-message grid-load-more">Loading more…</p>}
+                    {flatGrid.hasMore && <div ref={flatGrid.sentinelRef} className="grid-sentinel" />}
                 </div>
             )}
         </div>

@@ -1,7 +1,9 @@
-import { useContext, useState, useRef } from 'react'
+import { useContext, useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { getRecords, postAlbum, editAlbum } from './APICalls'
+import CreatableSelect from 'react-select/creatable'
+import { getRecords, postAlbum, editAlbum, getGenres } from './APICalls'
 import { isValidYouTubeURL, isImageReachable, toDateInputValue } from '../utils/validation'
+import { getAlbumGenreNames } from '../utils/genres'
 import '../CSS/AddStack.css'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 
@@ -16,6 +18,23 @@ function AddStack() {
     const albumToEdit = location.state?.albumToEdit ?? null
     const isEditMode = Boolean(albumToEdit)
 
+    const [genreOptions, setGenreOptions] = useState([])
+    const [selectedGenres, setSelectedGenres] = useState(() =>
+        getAlbumGenreNames(albumToEdit?.genres, albumToEdit?.genre).map(name => ({ value: name, label: name }))
+    )
+
+    useEffect(() => {
+        if (!authCode) return
+        getGenres(authCode)
+            .then(data => {
+                const normalized = data.map(g =>
+                    typeof g === 'string' ? { name: g, isCanonical: true } : g
+                )
+                setGenreOptions(normalized.map(g => ({ value: g.name, label: g.name })))
+            })
+            .catch(err => console.error('Failed to load genre options.', err.message))
+    }, [authCode])
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         const formData = new FormData(formRef.current)
@@ -23,8 +42,12 @@ function AddStack() {
         album.isBandTogether = formData.get('isBandTogether') === 'on'
         album.bandMembers = formData.getAll('bandMembers')
         album.albumsSold = Number(album.albumsSold)
+        album.genres = selectedGenres.map(g => g.value)
 
         const errors = {}
+        if (album.genres.length === 0) {
+            errors.genres = 'Select at least one genre.'
+        }
         if (!isValidYouTubeURL(album.youTubeAlbumURL)) {
             errors.youTubeAlbumURL = 'Enter a valid YouTube link (e.g. https://youtu.be/...)'
         }
@@ -75,7 +98,17 @@ function AddStack() {
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Genre</label>
-                    <input required type="text" name="genre" placeholder="Genre" defaultValue={albumToEdit?.genre ?? ''} />
+                    <CreatableSelect
+                        isMulti
+                        classNamePrefix="genre-select"
+                        inputId="genre-select"
+                        options={genreOptions}
+                        value={selectedGenres}
+                        onChange={(selected) => setSelectedGenres(selected ?? [])}
+                        placeholder="Genre(s)"
+                        aria-label="Genre(s)"
+                    />
+                    {fieldErrors.genres && <span className="field-error">{fieldErrors.genres}</span>}
                 </div>
                 <div className="input-group">
                     <label><sub>*</sub>Label</label>

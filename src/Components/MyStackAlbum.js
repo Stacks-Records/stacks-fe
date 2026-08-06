@@ -1,4 +1,5 @@
 import {useNavigate} from 'react-router-dom'
+import { getAlbumGenreNames } from '../utils/genres'
 import '../CSS/MyStackAlbum.css'
 
 const MyStackAlbum = ({album, handleDelete}) => {
@@ -19,7 +20,7 @@ const navigate = useNavigate()
         <div className="my-stack-card-info">
             <h3>{album.artist}</h3>
             <h4>{album.albumName}</h4>
-            <p>{album.genre}</p>
+            <p>{getAlbumGenreNames(album.genres, album.genre).join(', ') || 'N/A'}</p>
             <button className="delete-button"onClick={ifTrashStayHere}>Toss This Record</button>
         </div>
     </div>

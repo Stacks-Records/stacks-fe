@@ -6,6 +6,7 @@ import AuthAlbumContext from '../Context/AuthAlbumContext';
 import { useAuthorization } from '../Context/AuthorizationContext';
 import { PERMISSIONS } from '../utils/permissions';
 import { getYouTubeVideoID } from '../utils/validation';
+import { getAlbumGenreNames } from '../utils/genres';
 import { deleteAlbum, getRecordById } from './APICalls';
 
 const RecordPage = () => {
@@ -46,6 +47,7 @@ const RecordPage = () => {
         artist = 'N/A',
         releaseDate = 'N/A',
         genre = 'N/A',
+        genres = [],
         bandMembers = [],
         label = 'N/A',
         isBandTogether = false,
@@ -117,7 +119,7 @@ const RecordPage = () => {
                     <h1>{albumName}</h1>
                     <h2>{artist}</h2>
                     <p><strong>Release Date:</strong> {releaseDate}</p>
-                    <p><strong>Genre:</strong> {genre}</p>
+                    <p><strong>Genre:</strong> {getAlbumGenreNames(genres, genre).join(', ') || 'N/A'}</p>
                     <p><strong>Band Members:</strong> {Array.isArray(bandMembers) ? bandMembers.join(', ') : (bandMembers || 'N/A')}</p>
                     <p><strong>Label:</strong> {label}</p>
                     <p><strong>Band Status:</strong> {isBandTogether ? 'Together' : 'Disbanded'}</p>

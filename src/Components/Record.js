@@ -4,6 +4,7 @@ import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuthorization } from '../Context/AuthorizationContext'
 import { PERMISSIONS } from '../utils/permissions'
 import { deleteAlbum } from './APICalls'
+import { getAlbumGenreNames } from '../utils/genres'
 import '../CSS/Record.css'
 import { useContext } from 'react'
 
@@ -68,7 +69,7 @@ function Album({ album, addToStack, onAlbumDeleted }) {
             <div className="album-info">
                 <h3>{album.artist}</h3>
                 <h4>{album.albumName}</h4>
-                <p>{album.genre}</p>
+                <p>{getAlbumGenreNames(album.genres, album.genre).join(', ') || 'N/A'}</p>
                 <button className="record-button"
                     onClick={handleAddToStack}
                     disabled={isAlbumInStack(album.id)}
