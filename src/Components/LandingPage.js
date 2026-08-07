@@ -10,6 +10,7 @@ import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from "@auth0/auth0-react";
 import usePaginatedAlbums from '../hooks/usePaginatedAlbums'
+import useUserPreferences from '../hooks/useUserPreferences'
 
 // Single source of truth for the sort dropdown: the <option> list and the
 // query mapping. The first entry is the "no sort" default. rollingStoneReview
@@ -22,6 +23,10 @@ const SORT_OPTIONS = [
     { value: 'rating', label: 'Highest rated', sortBy: 'rollingStoneReview', order: 'desc' },
 ]
 
+// Module-level so it's a stable reference across renders (avoids re-firing
+// the preferences fetch effect on every LandingPage render).
+const DEFAULT_PREFERENCES = { selectedGenres: [], selectedSort: '', genreOrder: 'asc', viewMode: 'carousel' }
+
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
@@ -32,10 +37,6 @@ function LandingPage() {
     const [searchResults, setSearchResults] = useState([])
     const [searchLoading, setSearchLoading] = useState(false)
     const [searchError, setSearchError] = useState('')
-    const [selectedGenres, setSelectedGenres] = useState([])
-    const [selectedSort, setSelectedSort] = useState('')
-    const [genreOrder, setGenreOrder] = useState('asc')
-    const [viewMode, setViewMode] = useState('carousel')
     // Only feeds the browse Swiper (non-grid). The grid rendering of browse
     // results is paginated instead, via browseGrid below.
     const [browseResults, setBrowseResults] = useState([])
@@ -46,6 +47,13 @@ function LandingPage() {
     const {user} = useAuth0()
 
     const navigate = useNavigate()
+
+    // Sort/filter/view-mode choices, persisted server-side per user (see
+    // user_preferences table) so they follow the user across devices.
+    const { preferences, setPreferences } = useUserPreferences(user?.email, authCode, DEFAULT_PREFERENCES)
+    const { selectedGenres, selectedSort, genreOrder, viewMode } = preferences
+    const setSelectedGenres = (value) => setPreferences({ selectedGenres: value })
+    const setSelectedSort = (value) => setPreferences({ selectedSort: value })
 
     // View precedence: search grid > browse Swiper > canonical carousels.
     const isSearching = search.trim().length > 0
@@ -222,7 +230,7 @@ function LandingPage() {
                         <button
                             type="button"
                             className={`switch-toggle genre-order-toggle ${genreOrder === 'desc' ? 'is-on' : ''}`}
-                            onClick={() => setGenreOrder(o => (o === 'asc' ? 'desc' : 'asc'))}
+                            onClick={() => setPreferences({ genreOrder: genreOrder === 'asc' ? 'desc' : 'asc' })}
                             aria-pressed={genreOrder === 'desc'}
                             aria-label="Flip genre order"
                         >
@@ -234,7 +242,7 @@ function LandingPage() {
                     <button
                         type="button"
                         className={`switch-toggle view-mode-toggle ${viewMode === 'grid' ? 'is-on' : ''}`}
-                        onClick={() => setViewMode(v => (v === 'carousel' ? 'grid' : 'carousel'))}
+                        onClick={() => setPreferences({ viewMode: viewMode === 'carousel' ? 'grid' : 'carousel' })}
                         aria-pressed={viewMode === 'grid'}
                         aria-label="Toggle grid or carousel view"
                     >
