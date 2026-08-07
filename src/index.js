@@ -19,7 +19,7 @@ root.render(
         redirect_uri: window.location.origin,
         audience: audience
       }}
-      scope="openid email username"
+      scope="openid profile email"
       cacheLocation="localstorage"
       useRefreshTokens={true}
       >

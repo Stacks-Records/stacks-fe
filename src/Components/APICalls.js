@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001'
+const BASE_URL = process.env.REACT_APP_API_URL
 // const BASE_URL = 'http://localhost:3001'
 
 export const getUserRole = async (email, token) => {
@@ -42,6 +42,40 @@ export const getRecordById = async (id, token) => {
     if (!res.ok) return null                      // backend sends 400 when missing
     const data = await res.json()                 // backend sends an ARRAY
     return Array.isArray(data) ? (data[0] ?? null) : data
+}
+
+// Per-user sort/filter/view-mode preferences (jsonb blob owned by the
+// frontend, see stacks-be's user_preferences table). GET returns {} until the
+// user has saved anything; PUT is a full replace, so callers must send the
+// complete current preferences object, not a partial patch.
+export const getUserPreferences = async (email, token) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me/preferences`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Email': email
+        }
+    })
+    if (!res.ok) throw new Error('Failed to fetch preferences.')
+    const data = await res.json()
+    return data.preferences
+}
+
+export const updateUserPreferences = async (email, token, preferences) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me/preferences`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Email': email,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(preferences)
+    })
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to update preferences.')
+    }
+    const data = await res.json()
+    return data.preferences
 }
 
 export const getGenres = async (token) => {
