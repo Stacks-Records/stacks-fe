@@ -23,3 +23,15 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// App.js's own data-load effect runs on every route regardless of which page
+// is under test, so any spec that stubs authentication needs this same base
+// set of intercepts or it'll hit the real (likely unrunning) backend.
+Cypress.Commands.add('interceptBackend', () => {
+  cy.intercept('GET', '**/albums', { fixture: 'albums.json' }).as('getAlbums')
+  cy.intercept('GET', '**/api/v1/stacks', { fixture: 'userStack.json' }).as('getStack')
+  cy.intercept('POST', '**/api/v1/users', { fixture: 'user.json' }).as('postUser')
+  cy.intercept('GET', '**/api/v1/users/me', { fixture: 'userRole.json' }).as('getUserRole')
+  cy.intercept('GET', '**/api/v1/users/me/preferences', { fixture: 'preferences.json' }).as('getPreferences')
+  cy.intercept('GET', '**/api/v1/genres', { fixture: 'genres.json' }).as('getGenres')
+})
