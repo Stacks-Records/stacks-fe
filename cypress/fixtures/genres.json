@@ -1,0 +1,5 @@
+[
+  { "name": "Rock", "isCanonical": true },
+  { "name": "Hip-Hop", "isCanonical": true },
+  { "name": "Pop", "isCanonical": true }
+]
