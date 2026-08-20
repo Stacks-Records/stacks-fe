@@ -8,6 +8,7 @@ A comprehensive vinyl record marketplace application built with React (React Rou
 - [Preview](#preview)
 - [Features](#features)
 - [Installation](#installation)
+- [Running the Cypress E2E tests](#running-the-cypress-e2e-tests)
 - [Usage](#usage)
 - [Wins](#wins)
 - [Challenges](#challenges)
@@ -36,7 +37,7 @@ Welcome to Stacks! This application allows users to browse, listen to, add to, a
 - Post, edit, and delete album records (gated by user role/ownership permissions).
 - Role-based access control, including an admin user-management page.
 - Responsive design for various devices.
-- Cypress E2E specs under `cypress/e2e/` (currently disabled — see commit `1b1bde1`).
+- Cypress E2E specs under `cypress/e2e/` (`login.cy.js` is live, covering signup+email-verification and a stubbed Google login; the rest are disabled — see commit `1b1bde1`).
 
 ## Installation
 
@@ -51,12 +52,35 @@ Welcome to Stacks! This application allows users to browse, listen to, add to, a
    REACT_APP_API_URL=http://localhost:3001   # base URL of the backend API
    REACT_APP_DOMAIN=your-auth0-domain
    REACT_APP_CLIENT_ID=your-auth0-client-id
+   REACT_APP_CLIENT_SECRET=your-auth0-client-secret
    REACT_APP_AUDIENCE=your-auth0-api-audience
+   REACT_APP_SCOPE=openid profile email
+   REACT_APP_AUTH0_USERNAME=an-existing-test-account-username
+   REACT_APP_AUTH0_PASSWORD=that-account-password
    ```
+   These are all consumed by `cypress.config.js` in addition to the app itself — see [Running the Cypress E2E tests](#running-the-cypress-e2e-tests) for the additional variables needed there.
 
 4. Start the backend API. This frontend requires the Stacks API to be running — by default it expects it at `http://localhost:3001`. Clone and run it from [Stacks-Records/stacks-be](https://github.com/Stacks-Records/stacks-be).
 
 5. Start the frontend with `npm start`. This runs the app on `http://localhost:3000` via `react-scripts`. If you hit `MODULE_NOT_FOUND` errors, confirm all dependencies installed (inspect `package.json`).
+
+## Running the Cypress E2E tests
+
+`cypress/e2e/login.cy.js` covers the two ways the app supports signing in, both exercised without ever driving a real Google OAuth consent screen (Google actively blocks automated browsers there):
+
+- **Signup + email verification** — a real Auth0 account is created through the real Universal Login "Sign up" form, and a real verification email is polled for and clicked via IMAP against a test Gmail inbox.
+- **Stubbed Google login** — an existing Google-social identity is simulated by seeding the Auth0 SDK's own token cache in `localStorage` (see `cypress/support/googleAuthStub.js`), with the backend calls this triggers mocked via `cy.intercept`.
+
+Add these to `.env` in addition to the variables above:
+```
+GMAIL_TEST_EMAIL_BASE=your-test-account@gmail.com
+GMAIL_TEST_APP_PASSWORD=your-16-char-app-password
+AUTH0_SIGNUP_PASSWORD=a-password-meeting-your-tenant's-policy
+```
+
+`GMAIL_TEST_EMAIL_BASE` must be a real Gmail account with 2FA enabled, so an [App Password](https://myaccount.google.com/apppasswords) can be generated for `GMAIL_TEST_APP_PASSWORD` (IMAP access can't use the account's normal login password). The signup test never touches the inbox address directly — it appends a `+<timestamp>` alias (e.g. `your-test-account+1755555555@gmail.com`) for every run, which Gmail still delivers to the same inbox but Auth0 treats as a brand-new account each time, so repeated runs never collide with "user already exists."
+
+Run with `npm run cypress` (interactive) or `npx cypress run` (headless).
 
 ## Usage
 - Peruse the records available, including a feature that enables users to listen to them from the single record page once a record is clicked.
