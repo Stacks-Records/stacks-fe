@@ -25,12 +25,7 @@ describe('Auth0 — new account signup with email verification', () => {
 
 describe('Auth0 — stubbed Google login', () => {
   beforeEach(() => {
-    cy.intercept('GET', '**/albums', { fixture: 'albums.json' }).as('getAlbums')
-    cy.intercept('GET', '**/api/v1/stacks', { fixture: 'userStack.json' }).as('getStack')
-    cy.intercept('POST', '**/api/v1/users', { fixture: 'user.json' }).as('postUser')
-    cy.intercept('GET', '**/api/v1/users/me', { fixture: 'userRole.json' }).as('getUserRole')
-    cy.intercept('GET', '**/api/v1/users/me/preferences', { fixture: 'preferences.json' }).as('getPreferences')
-    cy.intercept('GET', '**/api/v1/genres', { fixture: 'genres.json' }).as('getGenres')
+    cy.interceptBackend()
   })
 
   it('reports an authenticated Google-social user and reaches the landing page', () => {
