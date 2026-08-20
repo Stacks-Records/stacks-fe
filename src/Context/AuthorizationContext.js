@@ -30,7 +30,8 @@ export const AuthorizationProvider = ({ children }) => {
                 const token = await getAccessTokenSilently();
                 const data = await getUserRole(user.email, token);
                 setUserRole(data.role || USER_ROLES.USER);
-            } catch {
+            } catch (err) {
+                console.error('AuthorizationProvider fetchRole failed:', err);
                 setUserRole(USER_ROLES.USER);
             } finally {
                 setLoading(false);
