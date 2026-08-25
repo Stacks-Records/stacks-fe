@@ -19,26 +19,30 @@ import { getRecords, getStack } from './APICalls'
 
 function App() {
   const { isAuthenticated, user } = useAuth0()
-  const { token: authCode, isLoading: tokenLoading } = useAuthToken()
+  const userEmail = user?.email
+  const { token: authCode } = useAuthToken()
   const [albums, setAlbums] = useState([])
   const [myStack, setMyStack] = useState([])
 
   // Load records + the user's stack once the shared token is ready. Owning
-  // this here (instead of in LoginPage) keeps every page reload-safe.
+  // this here (instead of in LoginPage) keeps every page reload-safe. Gated
+  // on authCode's own truthiness (it's empty until AuthTokenContext confirms
+  // a real token — see that file) rather than an isLoading flag, so a
+  // redundant upstream fetch resolving to the same token can't re-fire this.
   useEffect(() => {
-    if (!authCode || tokenLoading || !isAuthenticated || !user) return
+    if (!authCode || !isAuthenticated || !userEmail) return
     const loadData = async () => {
       try {
         const records = await getRecords(authCode)
         setAlbums(records)
-        const stack = await getStack(user.email, authCode)
+        const stack = await getStack(userEmail, authCode)
         setMyStack(stack[0]?.mystack ?? [])
       } catch (err) {
         console.log(err)
       }
     }
     loadData()
-  }, [authCode, tokenLoading, isAuthenticated, user])
+  }, [authCode, isAuthenticated, userEmail])
 
   return (
     <AuthorizationProvider>
