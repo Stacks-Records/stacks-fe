@@ -8,13 +8,17 @@ import '../CSS/AdminUsersPage.css'
 
 function AdminUsersPage() {
     const { authCode } = useContext(AuthAlbumContext)
-    const { checkPermission, loading } = useAuthorization()
+    const { checkPermission, loading, roleFetchError } = useAuthorization()
     const navigate = useNavigate()
     const [users, setUsers] = useState([])
     const [error, setError] = useState('')
 
     useEffect(() => {
         if (loading) return
+        if (roleFetchError) {
+            setError('Could not verify your permissions. Please try again.')
+            return
+        }
         if (!checkPermission(PERMISSIONS.MANAGE_USERS)) {
             navigate('/landing')
             return
@@ -22,7 +26,7 @@ function AdminUsersPage() {
         getUsers(authCode)
             .then(setUsers)
             .catch(() => setError('Failed to load users.'))
-    }, [loading, authCode, checkPermission, navigate])
+    }, [loading, roleFetchError, authCode, checkPermission, navigate])
 
     const handleRoleChange = async (userId, newRole) => {
         try {
