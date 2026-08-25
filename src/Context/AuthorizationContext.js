@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { hasPermission, canPerformAction, USER_ROLES } from '../utils/permissions';
 import { getUserRole } from '../Components/APICalls';
+import { useAuthToken } from './AuthTokenContext';
 
 const AuthorizationContext = createContext();
 
@@ -14,9 +15,11 @@ export const useAuthorization = () => {
 }
 
 export const AuthorizationProvider = ({ children }) => {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const { user, isAuthenticated } = useAuth0();
+    const { token, isLoading: tokenLoading, isReauthenticating } = useAuthToken();
     const [userRole, setUserRole] = useState(USER_ROLES.USER);
     const [loading, setLoading] = useState(true);
+    const [roleFetchError, setRoleFetchError] = useState(false);
 
     useEffect(() => {
         if (!isAuthenticated || !user) {
@@ -24,22 +27,27 @@ export const AuthorizationProvider = ({ children }) => {
             setLoading(false);
             return;
         }
+        if (tokenLoading || isReauthenticating) {
+            setLoading(true);
+            return;
+        }
 
         const fetchRole = async () => {
+            setRoleFetchError(false);
             try {
-                const token = await getAccessTokenSilently();
                 const data = await getUserRole(user.email, token);
                 setUserRole(data.role || USER_ROLES.USER);
             } catch (err) {
                 console.error('AuthorizationProvider fetchRole failed:', err);
                 setUserRole(USER_ROLES.USER);
+                setRoleFetchError(true);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchRole();
-    }, [isAuthenticated, user, getAccessTokenSilently]);
+    }, [isAuthenticated, user, token, tokenLoading, isReauthenticating]);
 
     const checkPermission = (permission) => {
         return hasPermission(userRole, permission);
@@ -55,7 +63,8 @@ export const AuthorizationProvider = ({ children }) => {
         checkAction,
         isAdmin: userRole === USER_ROLES.ADMIN,
         isModerator: userRole === USER_ROLES.MODERATOR,
-        loading
+        loading,
+        roleFetchError
     };
 
     return (

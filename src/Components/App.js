@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useAuthToken } from '../Context/AuthTokenContext'
 import LoginPage from './LoginPage'
 import LandingPage from './LandingPage'
 import RecordPage from './RecordPage'
@@ -17,44 +18,15 @@ import ParticlesBackground from './ParticlesBackground'
 import { getRecords, getStack } from './APICalls'
 
 function App() {
-  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0()
-  const [authCode, setAuthCode] = useState(() => {
-    try {
-      const stored = localStorage.getItem('authAccessToken')
-      return stored ? JSON.parse(stored) : ''
-    } catch {
-      return ''
-    }
-  })
+  const { isAuthenticated, user } = useAuth0()
+  const { token: authCode, isLoading: tokenLoading } = useAuthToken()
   const [albums, setAlbums] = useState([])
   const [myStack, setMyStack] = useState([])
-  // Tracks the freshly-acquired token so the load effect below can tell it
-  // apart from the localStorage-seeded authCode (which only exists so
-  // AuthAlbumContext has something to work with immediately on reload) and
-  // avoid firing the records/stack fetch for both.
-  const freshAuthCodeRef = useRef(null)
 
-  // Acquire/refresh the access token whenever the user is authenticated.
-  // Runs on any route, so a reload on an inner page rehydrates the token.
+  // Load records + the user's stack once the shared token is ready. Owning
+  // this here (instead of in LoginPage) keeps every page reload-safe.
   useEffect(() => {
-    if (!isAuthenticated) return
-    getAccessTokenSilently()
-      .then(token => {
-        freshAuthCodeRef.current = token
-        setAuthCode(token)
-        localStorage.setItem('authAccessToken', JSON.stringify(token))
-      })
-      .catch(err => console.log(err))
-  }, [isAuthenticated, getAccessTokenSilently])
-
-  // Load records + the user's stack once the freshly-acquired token is in
-  // place. Owning this here (instead of in LoginPage) keeps every page
-  // reload-safe. Gated on freshAuthCodeRef, not just authCode, so the
-  // localStorage-seeded value on mount doesn't trigger a redundant fetch
-  // before the SDK confirms the session.
-  useEffect(() => {
-    if (!authCode || !isAuthenticated || !user) return
-    if (authCode !== freshAuthCodeRef.current) return
+    if (!authCode || tokenLoading || !isAuthenticated || !user) return
     const loadData = async () => {
       try {
         const records = await getRecords(authCode)
@@ -66,11 +38,11 @@ function App() {
       }
     }
     loadData()
-  }, [authCode, isAuthenticated, user])
+  }, [authCode, tokenLoading, isAuthenticated, user])
 
   return (
     <AuthorizationProvider>
-      <AuthAlbumContext.Provider value={{ authCode, setAuthCode, albums, setAlbums }}>
+      <AuthAlbumContext.Provider value={{ authCode, albums, setAlbums }}>
         <MyStackContext.Provider value={{ myStack, setMyStack }}>
           <Header />
           <div className="app">
