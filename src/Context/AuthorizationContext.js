@@ -15,7 +15,7 @@ export const useAuthorization = () => {
 }
 
 export const AuthorizationProvider = ({ children }) => {
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated, isLoading: auth0Loading } = useAuth0();
     const userEmail = user?.email;
     const { token, isReauthenticating } = useAuthToken();
     const [userRole, setUserRole] = useState(USER_ROLES.USER);
@@ -28,6 +28,16 @@ export const AuthorizationProvider = ({ children }) => {
     // userEmail, not the whole user object, since useAuth0() can hand out a
     // new user object reference without the underlying profile changing.
     useEffect(() => {
+        // Auth0 hasn't determined auth status yet on this render — bail out
+        // without touching userRole/loading rather than treating "unknown"
+        // the same as "definitely logged out". Consumers that act on a false
+        // checkPermission() by navigating away (e.g. AdminUsersPage) can't
+        // self-correct once that navigation happens, so a transient false
+        // negative here is a real bug, not just a flash of wrong content —
+        // it was letting a genuine admin get bounced to /landing on a hard
+        // reload straight to an admin route, before Auth0 had even finished
+        // resolving the cached session.
+        if (auth0Loading) return
         if (!isAuthenticated || !userEmail) {
             setUserRole(USER_ROLES.USER);
             setLoading(false);
@@ -53,7 +63,7 @@ export const AuthorizationProvider = ({ children }) => {
         };
 
         fetchRole();
-    }, [isAuthenticated, userEmail, token, isReauthenticating]);
+    }, [auth0Loading, isAuthenticated, userEmail, token, isReauthenticating]);
 
     const checkPermission = (permission) => {
         return hasPermission(userRole, permission);
