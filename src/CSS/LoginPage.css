@@ -88,23 +88,117 @@
     font-size: 0.95rem;
 }
 
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.login-option {
+    width: 100%;
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-text-muted);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-button);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+.login-option:hover {
+    background: var(--color-surface);
+    border-color: var(--color-text);
+}
+
+.login-option:focus-visible {
+    outline: 2px solid var(--color-brand-hover);
+    outline-offset: 3px;
+}
+
+.login-option:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login-option--primary {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+}
+
+.login-option--primary:hover {
+    background: var(--color-brand-hover);
+    border-color: var(--color-brand-hover);
+}
+
+.login-hint {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.login-disclosure {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.login-disclosure__toggle {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    transition: color var(--transition-fast);
+}
+
+.login-disclosure__toggle:hover,
+.login-disclosure__toggle:focus-visible {
+    color: var(--color-text);
+}
+
+.login-disclosure__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    animation: login-fade-in 200ms ease-out both;
+}
+
 @keyframes login-fade-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 480px) {
     .login-wrapper {
         padding: 2rem 1.5rem;
     }
+
     .login-wrapper h1 {
         font-size: 1.6rem;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .login-wrapper,
-    .auth_bttn {
+    .auth_bttn,
+    .login-disclosure__panel {
         animation: none;
         transition: none;
     }

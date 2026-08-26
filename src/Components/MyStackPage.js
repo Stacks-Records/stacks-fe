@@ -8,24 +8,17 @@ import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from '@auth0/auth0-react'
 const MyStackPage = () => {
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const {user} = useAuth0()
 
    function handleDelete(album) {
     const {email} = user
     deleteStack(email, album, authCode)
-    .then(data => {
-        if (data.user.mystack.length) {
-            const myStackIndex = albums.findIndex(record => record.id === album.id)
-            albums[myStackIndex].isAlbumInStack = false;
-            setMyStack(data.user.mystack)
-        }
-        else {
-            setMyStack([])
-        }
-       })
-    .catch(err => console.log(err))
+    .then(data => setMyStack(data.user.mystack))
+    .catch(err => {
+        console.error('Failed to remove album from stack:', err.message)
+        alert('Could not remove album from your stack. Please try again.')
+    })
    }
 
     return (
