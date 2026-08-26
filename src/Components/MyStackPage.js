@@ -8,7 +8,6 @@ import AuthAlbumContext from '../Context/AuthAlbumContext'
 import { useAuth0 } from '@auth0/auth0-react'
 const MyStackPage = () => {
     const {myStack, setMyStack} = useContext(MyStackContext)
-    const {albums} = useContext(AuthAlbumContext)
     const {authCode} = useContext(AuthAlbumContext)
     const {user} = useAuth0()
 
