@@ -8,7 +8,7 @@ describe('AdminUsersPage — access control', () => {
     cy.interceptBackend()
   })
 
-  it.skip('redirects non-admins to /landing without ever showing the table', () => {
+  it('redirects non-admins to /landing without ever showing the table', () => {
     cy.intercept('GET', '**/api/v1/users/me', { body: { role: 'user' } }).as('getUserRole')
     cy.stubGoogleLogin('/admin/users')
     cy.wait('@getUserRole')
@@ -17,7 +17,7 @@ describe('AdminUsersPage — access control', () => {
     cy.get('.users-table').should('not.exist')
   })
 
-  it.skip('redirects moderators to /landing (MANAGE_USERS is admin-only)', () => {
+  it('redirects moderators to /landing (MANAGE_USERS is admin-only)', () => {
     cy.intercept('GET', '**/api/v1/users/me', { body: { role: 'moderator' } }).as('getUserRole')
     cy.stubGoogleLogin('/admin/users')
     cy.wait('@getUserRole')
