@@ -93,7 +93,7 @@ The production app is deployed on Vercel: [stacks-records.vercel.app](https://st
 ## Wins
 - Built the application from scratch, front end and back end.
 - Deepened of Auth0, and seeding user interactions with the application in the back end based on authentication.
-- Experienced first PATCH route that updates the My Stack column for each user in the back end.
+- Implemented daily, programmatic POSTing of new albums via a cron job that scrapes Wikipedia and YouTube, via the Rolling Stone Top 500 Albums of All Time list, with Claude Haiku Console API.
 
 ## Challenges 
 - Implementing Cypress testing for POST functionality
