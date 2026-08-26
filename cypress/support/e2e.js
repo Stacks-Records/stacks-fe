@@ -17,5 +17,6 @@
 import './commands'
 import './auth0'
 import './googleAuthStub'
+import "cypress-real-events"
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

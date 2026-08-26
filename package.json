@@ -53,6 +53,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "cheerio": "^1.2.0",
     "cypress": "^15.20.1",
+    "cypress-real-events": "^1.15.0",
     "eslint-plugin-cypress": "^2.15.2",
     "imapflow": "^1.7.1",
     "mailparser": "^3.9.15"
