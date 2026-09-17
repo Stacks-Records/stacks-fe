@@ -5,8 +5,24 @@ export function getYouTubeVideoID(url) {
     return match ? match[1] : null;
 }
 
+// Extract the playlist ID from a YouTube URL's `list` query param, or null if absent.
+export function getYouTubePlaylistID(url) {
+    const match = (url ?? '').match(/[?&]list=([^"&?/ ]+)/);
+    return match ? match[1] : null;
+}
+
 export function isValidYouTubeURL(url) {
-    return getYouTubeVideoID(url) !== null;
+    return getYouTubeVideoID(url) !== null || getYouTubePlaylistID(url) !== null;
+}
+
+// Build the right embed URL for a single video, a playlist, or a video queued within a playlist.
+export function getYouTubeEmbedURL(url) {
+    const videoID = getYouTubeVideoID(url);
+    const playlistID = getYouTubePlaylistID(url);
+    if (videoID && playlistID) return `https://www.youtube.com/embed/${videoID}?list=${playlistID}`;
+    if (videoID) return `https://www.youtube.com/embed/${videoID}`;
+    if (playlistID) return `https://www.youtube.com/embed/videoseries?list=${playlistID}`;
+    return null;
 }
 
 // Convert a release date from whatever format the API returns (e.g. "September 12th, 1975")
