@@ -29,8 +29,18 @@ module.exports = defineConfig({
 
   component: {
     devServer: {
-      framework: "create-react-app",
+      framework: "react",
       bundler: "webpack",
+
+      webpackConfig: () => {
+        process.env.NODE_ENV = process.env.NODE_ENV || "development";
+        process.env.BABEL_ENV = process.env.BABEL_ENV || "development";
+        return require("react-scripts/config/webpack.config")("development");
+      },
     },
+    // react-scripts' un-ejected webpack config only runs babel-loader (JSX
+    // support) and allows imports for files inside src/, so component specs
+    // are co-located there rather than under cypress/component.
+    specPattern: "src/**/*.cy.{js,jsx}",
   },
 });
