@@ -6,6 +6,8 @@ import { useAuthToken } from './AuthTokenContext';
 
 const AuthorizationContext = createContext();
 
+export default AuthorizationContext;
+
 export const useAuthorization = () => {
     const context = useContext(AuthorizationContext);
     if (!context) {

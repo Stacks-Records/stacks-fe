@@ -5,7 +5,7 @@ import { useContext, useState, useEffect } from 'react';
 import AuthAlbumContext from '../Context/AuthAlbumContext';
 import { useAuthorization } from '../Context/AuthorizationContext';
 import { PERMISSIONS } from '../utils/permissions';
-import { getYouTubeVideoID } from '../utils/validation';
+import { getYouTubeEmbedURL } from '../utils/validation';
 import { getAlbumGenreNames } from '../utils/genres';
 import { deleteAlbum, getRecordById } from './APICalls';
 
@@ -57,7 +57,7 @@ const RecordPage = () => {
         albumsSold = 0
     } = record;
 
-    const videoID = getYouTubeVideoID(youTubeAlbumURL)
+    const embedURL = getYouTubeEmbedURL(youTubeAlbumURL)
 
     const addToStack = (album) => {
         setMyStack([...myStack, album])
@@ -89,11 +89,11 @@ const RecordPage = () => {
 
     return (
         <div className="record-page">
-            {youTubeAlbumURL && (
+            {embedURL && (
                 <iframe
                     width="560"
                     height="315"
-                    src={`https://www.youtube.com/embed/${videoID}`}
+                    src={embedURL}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
