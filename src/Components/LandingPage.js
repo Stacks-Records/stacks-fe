@@ -1,39 +1,25 @@
 import Album from './Record'
 import GenreRow from './GenreRow'
 import AlbumCarousel from './AlbumCarousel'
-import { addStack, getGenres, searchAlbums, getAlbums } from './APICalls'
+import { addStack, searchAlbums, getAlbums } from './APICalls'
 import { useState, useEffect, useContext, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Select from 'react-select'
 import '../CSS/LandingPage.css'
 import MyStackContext from '../Context/MyStack'
 import AuthAlbumContext from '../Context/AuthAlbumContext'
+import GenreContext from '../Context/GenreContext'
+import LandingFilterContext from '../Context/LandingFilterContext'
 import { useAuth0 } from "@auth0/auth0-react";
 import usePaginatedAlbums from '../hooks/usePaginatedAlbums'
-import useUserPreferences from '../hooks/useUserPreferences'
-
-// Single source of truth for the sort dropdown: the <option> list and the
-// query mapping. The first entry is the "no sort" default. rollingStoneReview
-// requires the backend ALBUM_SORTABLE whitelist to include it.
-const SORT_OPTIONS = [
-    { value: '', label: 'Sort by…', sortBy: '', order: '' },
-    { value: 'name-asc', label: 'Album name (A–Z)', sortBy: 'albumName', order: 'asc' },
-    { value: 'name-desc', label: 'Album name (Z–A)', sortBy: 'albumName', order: 'desc' },
-    { value: 'sales', label: 'Best selling', sortBy: 'albumsSold', order: 'desc' },
-    { value: 'rating', label: 'Highest rated', sortBy: 'rollingStoneReview', order: 'desc' },
-]
-
-// Module-level so it's a stable reference across renders (avoids re-firing
-// the preferences fetch effect on every LandingPage render).
-const DEFAULT_PREFERENCES = { selectedGenres: [], selectedSort: '', genreOrder: 'asc', viewMode: 'carousel' }
 
 function LandingPage() {
 
     const {myStack, setMyStack} = useContext(MyStackContext)
     const {authCode} = useContext(AuthAlbumContext)
-    const [genres, setGenres] = useState([])
-    const [search, setSearch] = useState('')
-    const [debouncedSearch, setDebouncedSearch] = useState('')
+    const { genres } = useContext(GenreContext)
+    const {
+        search, debouncedSearch, selectedGenres, selectedSort, sortOpt, genreOrder, viewMode,
+    } = useContext(LandingFilterContext)
     const [searchResults, setSearchResults] = useState([])
     const [searchLoading, setSearchLoading] = useState(false)
     const [searchError, setSearchError] = useState('')
@@ -42,18 +28,9 @@ function LandingPage() {
     const [browseResults, setBrowseResults] = useState([])
     const [browseLoading, setBrowseLoading] = useState(false)
     const [browseError, setBrowseError] = useState('')
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
     const {user} = useAuth0()
 
     const navigate = useNavigate()
-
-    // Sort/filter/view-mode choices, persisted server-side per user (see
-    // user_preferences table) so they follow the user across devices.
-    const { preferences, setPreferences } = useUserPreferences(user?.email, authCode, DEFAULT_PREFERENCES)
-    const { selectedGenres, selectedSort, genreOrder, viewMode } = preferences
-    const setSelectedGenres = (value) => setPreferences({ selectedGenres: value })
-    const setSelectedSort = (value) => setPreferences({ selectedSort: value })
 
     // View precedence: search grid > browse Swiper > canonical carousels.
     const isSearching = search.trim().length > 0
@@ -63,14 +40,8 @@ function LandingPage() {
     const isBrowsingGrid = isBrowsing && viewMode === 'grid'
     const isBrowsingCarousel = isBrowsing && viewMode !== 'grid'
 
-    const sortOpt = useMemo(
-        () => SORT_OPTIONS.find(o => o.value === selectedSort) || SORT_OPTIONS[0],
-        [selectedSort]
-    )
-
-    // Canonical genres drive the carousels; every genre (incl. user-contributed)
-    // populates the filter dropdown. The carousels sort alphabetically and flip
-    // with the genre-order toggle; the dropdown order is left as the API returns.
+    // Canonical genres drive the carousels; the carousels sort alphabetically
+    // and flip with the genre-order toggle.
     const canonicalGenres = useMemo(() => {
         const names = genres
             .filter(g => g.isCanonical)
@@ -78,34 +49,6 @@ function LandingPage() {
             .sort((a, b) => a.localeCompare(b))
         return genreOrder === 'desc' ? names.reverse() : names
     }, [genres, genreOrder])
-    const allGenreNames = useMemo(() => genres.map(g => g.name), [genres])
-
-    // Fetch only the lightweight list of genres up front; each genre's albums
-    // load lazily via its own GenreRow. The response is { name, isCanonical }
-    // objects; the string fallback keeps us working through a deploy skew where
-    // the API still serves the old bare-string array (treat those as canonical).
-    useEffect(() => {
-        if (!authCode) return
-        setLoading(true)
-        getGenres(authCode)
-            .then(data => {
-                const normalized = data.map(g =>
-                    typeof g === 'string' ? { name: g, isCanonical: true } : g
-                )
-                setGenres(normalized)
-            })
-            .catch(err => {
-                console.log(err)
-                setError('Could not load records.')
-            })
-            .finally(() => setLoading(false))
-    }, [authCode])
-
-    // Debounce the raw input so we don't fire a request on every keystroke.
-    useEffect(() => {
-        const id = setTimeout(() => setDebouncedSearch(search.trim()), 300)
-        return () => clearTimeout(id)
-    }, [search])
 
     // Server-side search across the whole catalog (matches album name + artist).
     // The `active` flag drops stale responses if the query changes mid-flight.
@@ -192,67 +135,6 @@ function LandingPage() {
 
     return (
         <div className="landing-page">
-            {loading && <p className="loading-message">Loading up your records on the turntable... </p>}
-            {error && <p className="error-message">Error: {error}</p>}
-            <div className="filters">
-                <div className="search-container">
-                    <input
-                        type="text"
-                        placeholder="What would you like to listen to?"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-                
-                <Select
-                    inputId="genre-filter-select"
-                    classNamePrefix="genre-select"
-                    aria-label="Filter by genre"
-                    isClearable
-                    isMulti
-                    placeholder="Genre multi-select..."
-                    value={selectedGenres.map(name => ({ value: name, label: name }))}
-                    onChange={(selected) => setSelectedGenres((selected ?? []).map(o => o.value))}
-                    options={allGenreNames.map(name => ({ value: name, label: name }))}
-                />
-                <select
-                    className="sort-select"
-                    value={selectedSort}
-                    onChange={(e) => setSelectedSort(e.target.value)}
-                    aria-label="Sort albums"
-                >
-                    {SORT_OPTIONS.map(o => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                </select>
-                <div className="view-toggles">
-                    {viewMode === 'carousel' && (
-                        <button
-                            type="button"
-                            className={`switch-toggle genre-order-toggle ${genreOrder === 'desc' ? 'is-on' : ''}`}
-                            onClick={() => setPreferences({ genreOrder: genreOrder === 'asc' ? 'desc' : 'asc' })}
-                            aria-pressed={genreOrder === 'desc'}
-                            aria-label="Flip genre order"
-                        >
-                            <span className="switch-toggle-option">Genres A–Z</span>
-                            <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
-                            <span className="switch-toggle-option">Z-A</span>
-                        </button>
-                    )}
-                    <button
-                        type="button"
-                        className={`switch-toggle view-mode-toggle ${viewMode === 'grid' ? 'is-on' : ''}`}
-                        onClick={() => setPreferences({ viewMode: viewMode === 'carousel' ? 'grid' : 'carousel' })}
-                        aria-pressed={viewMode === 'grid'}
-                        aria-label="Toggle grid or carousel view"
-                    >
-                        <span className="switch-toggle-option">Carousel</span>
-                        <span className="switch-toggle-track"><span className="switch-toggle-thumb" /></span>
-                        <span className="switch-toggle-option">Grid</span>
-                    </button>
-                </div>
-            </div>
-
             {isSearching && (
                 <div className="search-view">
                     {searchLoading && <p className="loading-message">Searching the crates...</p>}
@@ -313,7 +195,7 @@ function LandingPage() {
             {/* Kept mounted (just hidden) while searching/browsing/grid-viewing so
                 already-loaded rows don't refetch when those views are dismissed. */}
             <div className="genre-rows" style={{ display: (isSearching || isBrowsing || viewMode === 'grid') ? 'none' : 'contents' }}>
-                {!loading && canonicalGenres.length === 0 && (
+                {canonicalGenres.length === 0 && (
                     <p className="loading-message">No records to display.</p>
                 )}
                 {canonicalGenres.map(genre => (
