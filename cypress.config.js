@@ -35,6 +35,7 @@ module.exports = defineConfig({
       webpackConfig: () => {
         process.env.NODE_ENV = process.env.NODE_ENV || "development";
         process.env.BABEL_ENV = process.env.BABEL_ENV || "development";
+        process.env.FAST_REFRESH = "false";
         return require("react-scripts/config/webpack.config")("development");
       },
     },
