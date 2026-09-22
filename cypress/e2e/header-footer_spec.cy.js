@@ -60,6 +60,29 @@ describe('Header — authenticated', () => {
   })
 })
 
+describe('Header — search/sort/filter bar visibility', () => {
+  beforeEach(() => {
+    cy.interceptBackend()
+  })
+
+  it('is absent when unauthenticated', () => {
+    cy.visit('/landing')
+    cy.get('.filters').should('not.exist')
+  })
+
+  it('appears on /landing and /my-stack when authenticated, and is absent elsewhere', () => {
+    cy.stubGoogleLogin('/landing')
+    cy.wait('@getAlbums')
+    cy.get('.filters').should('exist')
+
+    cy.visit('/my-stack')
+    cy.get('.filters').should('exist')
+
+    cy.visit('/add-stack')
+    cy.get('.filters').should('not.exist')
+  })
+})
+
 describe('Footer', () => {
   beforeEach(() => {
     cy.interceptBackend()
@@ -69,11 +92,11 @@ describe('Footer', () => {
   it('credits every team member with working GitHub and LinkedIn links', () => {
     const credits = [
       { name: 'Kyle Boomer', github: 'https://www.github.com/kylemboomer', linkedin: 'https://www.linkedin.com/in/kylemboomer' },
-      { name: 'Peter Kim', github: 'https://www.github.com/peterkimpk1', linkedin: 'https://www.linkedin.com/in/pk-2403fee' },
-      { name: 'Adam Konber', github: 'https://www.github.com/Sterling47', linkedin: 'https://www.linkedin.com/in/adam-konber' },
+      // { name: 'Peter Kim', github: 'https://www.github.com/peterkimpk1', linkedin: 'https://www.linkedin.com/in/pk-2403fee' },
+      // { name: 'Adam Konber', github: 'https://www.github.com/Sterling47', linkedin: 'https://www.linkedin.com/in/adam-konber' },
     ]
 
-    cy.get('.footer .created-by').should('contain', 'Created by:')
+    cy.get('.footer .created-by').should('contain', 'Developed by:')
     cy.get('.footer .person').should('have.length', credits.length)
 
     credits.forEach((person, i) => {

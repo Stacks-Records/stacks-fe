@@ -6,7 +6,7 @@ import linkedin from '../Images/linkedin-icon.png'
 function Footer() {
     return (
         <footer className="footer">
-            <h2 className="created-by">Created by:</h2>
+            <h2 className="created-by">Developed by:</h2>
             <div className="info-section">
                 <div className="person">
                     <h3 className="name">Kyle Boomer</h3>
@@ -17,7 +17,7 @@ function Footer() {
                         <img src={linkedin} className="linkedin" alt="LinkedIn Logo" />
                     </a>
                 </div>
-                <div className="person">
+                {/* <div className="person">
                     <h3 className="name">Peter Kim</h3>
                     <a href='https://www.github.com/peterkimpk1' className="github-link" target="_blank" rel="noreferrer">
                         <img src={github} className="github" alt="Github Logo" /></a>
@@ -32,7 +32,7 @@ function Footer() {
                     <a href='https://www.linkedin.com/in/adam-konber' className='linkedin-link' target="_blank" rel="noreferrer">
                         <img src={linkedin} className="linkedin" alt="LinkedIn Logo" />
                     </a>
-                </div>
+                </div> */}
             </div>
         </footer>
     )
