@@ -14,6 +14,22 @@ const discovery = {
   imgURL: 'https://upload.wikimedia.org/wikipedia/en/2/27/Daft_Punk_-_Discovery.png',
 }
 
+// GET /api/v1/stacks now serves two shapes from the same URL: App.js's own
+// unfiltered preload (no query params) still gets the legacy
+// [{ mystack: [...] }] wrapper, while MyStackPage's grid always fetches
+// through the filtered endpoint (always sends page/limit, and search/genre/
+// sortBy/order when active), which gets a flat album array back. A request
+// is routed to the filtered shape whenever it carries a `page` param.
+function interceptStack(mystack) {
+  cy.intercept('GET', '**/api/v1/stacks', (req) => {
+    if (req.query.page) {
+      req.reply(mystack)
+    } else {
+      req.reply([{ mystack }])
+    }
+  }).as('getStack')
+}
+
 describe('MyStackPage', () => {
   beforeEach(() => {
     cy.interceptBackend()
@@ -21,7 +37,7 @@ describe('MyStackPage', () => {
 
   it('shows the empty state and links back to landing when the stack is empty', () => {
     cy.stubGoogleLogin('/my-stack')
-    cy.wait('@getStack')
+    cy.wait(['@getStack', '@getStack'])
 
     cy.contains('No records in your stack...').should('exist')
     cy.contains('button', 'Go Pick Some Out!').click()
@@ -29,9 +45,9 @@ describe('MyStackPage', () => {
   })
 
   it('shows every saved album and a link to add more', () => {
-    cy.intercept('GET', '**/api/v1/stacks', { body: [{ mystack: [wishYouWereHere, discovery] }] }).as('getStack')
+    interceptStack([wishYouWereHere, discovery])
     cy.stubGoogleLogin('/my-stack')
-    cy.wait('@getStack')
+    cy.wait(['@getStack', '@getStack'])
 
     cy.get('.my-stack-card').should('have.length', 2)
     cy.contains('.my-stack-card', 'Wish You Were Here').should('exist')
@@ -40,10 +56,10 @@ describe('MyStackPage', () => {
   })
 
   it('removes one album and keeps the remaining album displayed', () => {
-    cy.intercept('GET', '**/api/v1/stacks', { body: [{ mystack: [wishYouWereHere, discovery] }] }).as('getStack')
+    interceptStack([wishYouWereHere, discovery])
     cy.intercept('PATCH', '**/api/v1/stacks/delete', { body: { user: { mystack: [discovery] } } }).as('deleteStack')
     cy.stubGoogleLogin('/my-stack')
-    cy.wait('@getStack')
+    cy.wait(['@getStack', '@getStack'])
 
 
     cy.contains('.my-stack-card', 'Wish You Were Here').realHover()
@@ -58,10 +74,10 @@ describe('MyStackPage', () => {
   })
 
   it('transitions to the empty state after removing the last album', () => {
-    cy.intercept('GET', '**/api/v1/stacks', { body: [{ mystack: [wishYouWereHere] }] }).as('getStack')
+    interceptStack([wishYouWereHere])
     cy.intercept('PATCH', '**/api/v1/stacks/delete', { body: { user: { mystack: [] } } }).as('deleteStack')
     cy.stubGoogleLogin('/my-stack')
-    cy.wait('@getStack')
+    cy.wait(['@getStack', '@getStack'])
     cy.get('.my-stack-card').realHover()
     cy.get('.delete-button').click()
     cy.wait('@deleteStack')
@@ -73,11 +89,55 @@ describe('MyStackPage', () => {
   })
 
   it('navigates to the record detail page when a card is clicked', () => {
-    cy.intercept('GET', '**/api/v1/stacks', { body: [{ mystack: [wishYouWereHere] }] }).as('getStack')
+    interceptStack([wishYouWereHere])
     cy.stubGoogleLogin('/my-stack')
-    cy.wait('@getStack')
+    cy.wait(['@getStack', '@getStack'])
 
     cy.contains('.my-stack-card', 'Wish You Were Here').click()
     cy.url().should('include', `/${wishYouWereHere.id}`)
+  })
+})
+
+describe('MyStackPage — search/sort/filter', () => {
+  beforeEach(() => {
+    cy.interceptBackend()
+    interceptStack([wishYouWereHere, discovery])
+    cy.stubGoogleLogin('/my-stack')
+    cy.wait(['@getStack', '@getStack'])
+  })
+
+  it('filters the stack by search text', () => {
+    cy.intercept('GET', '**/api/v1/stacks?search=*', { body: [discovery] }).as('search')
+
+    cy.get('.search-container input[type="text"]').type('Daft Punk')
+    cy.wait('@search')
+
+    cy.get('.my-stack-card').should('have.length', 1)
+    cy.contains('.my-stack-card', 'Discovery').should('exist')
+  })
+
+  it('shows a "no records match" message when the search has no hits', () => {
+    cy.intercept('GET', '**/api/v1/stacks?search=*', { body: [] }).as('search')
+
+    cy.get('.search-container input[type="text"]').type('Kill Em All')
+    cy.wait('@search')
+
+    cy.contains('No records match this search/filter.').should('exist')
+  })
+
+  it('filters the stack by genre via the genre multi-select', () => {
+    cy.wait('@getGenres')
+    cy.intercept('GET', '**/api/v1/stacks?genre=Rock*', { body: [wishYouWereHere] }).as('getRock')
+
+    cy.get('#genre-filter-select').type('Rock{enter}')
+    cy.wait('@getRock')
+
+    cy.get('.my-stack-card').should('have.length', 1)
+    cy.contains('.my-stack-card', 'Wish You Were Here').should('exist')
+  })
+
+  it('does not render the genre-order or view-mode toggles', () => {
+    cy.get('.genre-order-toggle').should('not.exist')
+    cy.get('.view-mode-toggle').should('not.exist')
   })
 })
