@@ -8,8 +8,12 @@ import { getAlbums } from '../Components/APICalls'
 // IntersectionObserver approach GenreRow.js uses for lazy row loading, but
 // re-armed after each page instead of one-shot, since more pages may
 // follow). requestIdRef guards against a stale in-flight page landing after
-// the filters changed underneath it. `fetcher` defaults to getAlbums (the
-// catalog); pass getStackAlbums to page through the user's stack instead.
+// the filters changed underneath it, or after the component unmounts
+// entirely (e.g. a route change away from the page mid-fetch) — the cleanup
+// below bumps it so an in-flight response from a now-gone instance is a
+// no-op instead of calling setState on stale closures. `fetcher` defaults to
+// getAlbums (the catalog); pass getStackAlbums to page through the user's
+// stack instead.
 function usePaginatedAlbums(authCode, { genre, sortBy, order, search, enabled, pageSize = 40, fetcher = getAlbums } = {}) {
     const [albums, setAlbums] = useState([])
     const [page, setPage] = useState(1)
@@ -24,6 +28,10 @@ function usePaginatedAlbums(authCode, { genre, sortBy, order, search, enabled, p
 
     useEffect(() => {
         const requestId = ++requestIdRef.current
+        // Guards a response landing after this effect run is superseded —
+        // either by a dep change (cleanup runs before the next run's fetch)
+        // or, since there's no next run in that case, by unmount.
+        let cancelled = false
         if (!enabled || !authCode) {
             setAlbums([])
             setPage(1)
@@ -35,19 +43,20 @@ function usePaginatedAlbums(authCode, { genre, sortBy, order, search, enabled, p
         setError('')
         fetcher(authCode, { search, genre, sortBy, order, page: 1, limit: pageSize })
             .then(results => {
-                if (requestIdRef.current !== requestId) return
+                if (cancelled || requestIdRef.current !== requestId) return
                 setAlbums(results)
                 setPage(1)
                 setHasMore(results.length === pageSize)
             })
             .catch(err => {
-                if (requestIdRef.current !== requestId) return
+                if (cancelled || requestIdRef.current !== requestId) return
                 console.log(err)
                 setError('Could not load records.')
             })
             .finally(() => {
-                if (requestIdRef.current === requestId) setLoading(false)
+                if (!cancelled && requestIdRef.current === requestId) setLoading(false)
             })
+        return () => { cancelled = true }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [enabled, authCode, genreKey, sortBy, order, search, pageSize, fetcher])
 

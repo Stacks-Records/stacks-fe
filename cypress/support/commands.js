@@ -29,7 +29,12 @@
 // set of intercepts or it'll hit the real (likely unrunning) backend.
 Cypress.Commands.add('interceptBackend', () => {
   cy.intercept('GET', '**/albums', { fixture: 'albums.json' }).as('getAlbums')
-  cy.intercept('GET', '**/api/v1/stacks', { fixture: 'userStack.json' }).as('getStack')
+  // Trailing ** (not just '**/api/v1/stacks') is required: a plain-string
+  // cy.intercept() pattern must match the full URL including the query
+  // string, and MyStackPage's grid always fetches this route with
+  // ?page=&limit= (see usePaginatedAlbums/getStackAlbums) — without the
+  // wildcard suffix, that request falls through to the real backend.
+  cy.intercept('GET', '**/api/v1/stacks**', { fixture: 'userStack.json' }).as('getStack')
   cy.intercept('POST', '**/api/v1/users', { fixture: 'user.json' }).as('postUser')
   cy.intercept('GET', '**/api/v1/users/me', { fixture: 'userRole.json' }).as('getUserRole')
   cy.intercept('GET', '**/api/v1/users/me/preferences', { fixture: 'preferences.json' }).as('getPreferences')

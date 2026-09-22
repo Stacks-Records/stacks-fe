@@ -20,8 +20,11 @@ const discovery = {
 // through the filtered endpoint (always sends page/limit, and search/genre/
 // sortBy/order when active), which gets a flat album array back. A request
 // is routed to the filtered shape whenever it carries a `page` param.
+// The trailing ** is required for the same reason as interceptBackend's
+// default stub: a plain-string pattern must match the whole URL including
+// the query string, or the paginated request falls through un-mocked.
 function interceptStack(mystack) {
-  cy.intercept('GET', '**/api/v1/stacks', (req) => {
+  cy.intercept('GET', '**/api/v1/stacks**', (req) => {
     if (req.query.page) {
       req.reply(mystack)
     } else {
