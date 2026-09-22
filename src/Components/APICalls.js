@@ -1,5 +1,5 @@
-const BASE_URL = process.env.REACT_APP_API_URL
-// const BASE_URL = 'http://localhost:3001'
+// const BASE_URL = process.env.REACT_APP_API_URL
+const BASE_URL = 'http://localhost:3001'
 
 export const getUserRole = async (email, token) => {
     const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
@@ -268,6 +268,34 @@ export const getStack = async (email, token) => {
         }
         return resp.json()
     })
+}
+
+// Filtered/sorted/paginated view of the user's stack. Mirrors getAlbums's
+// param-building exactly. Omits the legacy email/Email-header args getStack
+// uses — the backend authenticates this route via the JWT, not that header.
+export const getStackAlbums = async (token, { search, genre, sortBy, order, page, limit } = {}) => {
+    try {
+        const params = new URLSearchParams()
+        if (search) params.set('search', search)
+        const genreList = [].concat(genre ?? []).filter(Boolean)
+        genreList.forEach(g => params.append('genre', g))
+        if (sortBy) params.set('sortBy', sortBy)
+        if (order) params.set('order', order)
+        if (page) params.set('page', page)
+        if (limit) params.set('limit', limit)
+        const qs = params.toString()
+        const res = await fetch(`${BASE_URL}/api/v1/stacks${qs ? `?${qs}` : ''}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (!res.ok) throw new Error('Failed to fetch stack.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to fetch stack.', error.message)
+        throw error
+    }
 }
 
 export const addStack = async (email, newAlbum, token) => {
