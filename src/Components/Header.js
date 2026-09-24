@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import '../CSS/Header.css';
 import Profile from './Profile';
 import SearchSortFilterBar from './SearchSortFilterBar';
@@ -13,16 +13,12 @@ import LandingFilterContext from '../Context/LandingFilterContext';
 import StackFilterContext from '../Context/StackFilterContext';
 
 const Header = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const { isAuthenticated } = useAuth0();
     const { checkPermission } = useAuthorization();
     const location = useLocation();
     const { genres } = useContext(GenreContext);
     const landingFilter = useContext(LandingFilterContext);
     const stackFilter = useContext(StackFilterContext);
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-    };
 
     const genreOptions = useMemo(() => genres.map(g => g.name), [genres]);
     // Hardcoded two-route allowlist (not a denylist), so any future route
@@ -38,40 +34,16 @@ const Header = () => {
                     <h1 className='logo'>STACKS</h1>
                 </Link>
 
-                {isAuthenticated &&
-                <button id="hamburger-button" className="hamburger-button" onClick={toggleMenu}>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                </button>
-                }
-                {isOpen  && (
-                    <div className="dropdown">
-                        <ul className="dropdown-list">
-                            <div className='stack-wrapper'>
-                                <li className='dropdown-item-profile'>
-                                    <Profile/>
-                                </li>
-                                <li className="dropdown-item">
-                                    <Link to="/my-stack" onClick={() => setIsOpen(false)}>My Stack</Link>
-                                </li>
-                                <li className="dropdown-item">
-                                    <Link to="/add-stack" onClick={() => setIsOpen(false)}>Add to Stacks</Link>
-                                </li>
-                                {checkPermission(PERMISSIONS.MANAGE_USERS) && (
-                                    <li className="dropdown-item">
-                                        <Link to="/admin/users" onClick={() => setIsOpen(false)}>Admin: Users</Link>
-                                    </li>
-                                )}
-                            </div>
-                            <div>
-
-                            </div>
-                            <li>
-                                    <LogoutButton/>
-                                </li>
-                        </ul>
-                    </div>
+                {isAuthenticated && (
+                    <nav className="header-nav">
+                        <Profile/>
+                        <Link to="/my-stack" className="header-nav-link">My Stack</Link>
+                        <Link to="/add-stack" className="header-nav-link">Add to Stacks</Link>
+                        {checkPermission(PERMISSIONS.MANAGE_USERS) && (
+                            <Link to="/admin/users" className="header-nav-link">Admin</Link>
+                        )}
+                        <LogoutButton/>
+                    </nav>
                 )}
             </header>
             {showFilters && (
