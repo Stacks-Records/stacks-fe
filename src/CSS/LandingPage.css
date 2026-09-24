@@ -22,7 +22,7 @@ select {
 }
 
 .genre-row {
-    width: 90vw;
+    width: 100vw;
     max-width: 75rem;
     margin-bottom: 1.5rem;
 }

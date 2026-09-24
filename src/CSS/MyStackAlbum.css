@@ -53,3 +53,9 @@
 .my-stack-card-info .delete-button {
     margin-top: 0.5rem;
 }
+
+.my-stack-card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    z-index: 10;
+}
