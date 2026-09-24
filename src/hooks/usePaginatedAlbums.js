@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { getAlbums } from '../Components/APICalls'
 
+// Plain array-splice reorder, kept local so this fetch/state hook doesn't
+// need a dnd-kit dependency (dnd-kit's own arrayMove is imported instead by
+// the UI callers that already depend on it, e.g. MyStackPage's onDragEnd).
+function moveItem(arr, from, to) {
+    const next = arr.slice()
+    const [moved] = next.splice(from, 1)
+    next.splice(to, 0, moved)
+    return next
+}
+
 // Infinite-scroll pagination shared by the flat "all albums" grid, the
 // genre-filtered/sorted browse grid, and (via `fetcher`) the personal-stack
 // grid. Resets to page 1 whenever the filter/sort/enabled inputs change;
@@ -101,7 +111,15 @@ function usePaginatedAlbums(authCode, { genre, sortBy, order, search, enabled, p
         setAlbums(current => current.filter(a => a.id !== albumId))
     }, [])
 
-    return { albums, loading, loadingMore, error, hasMore, sentinelRef, removeAlbum }
+    const reorderAlbums = useCallback((oldIndex, newIndex) => {
+        setAlbums(current => moveItem(current, oldIndex, newIndex))
+    }, [])
+
+    const addAlbum = useCallback((album) => {
+        setAlbums(current => current.some(a => a.id === album.id) ? current : [...current, album])
+    }, [])
+
+    return { albums, loading, loadingMore, error, hasMore, sentinelRef, removeAlbum, reorderAlbums, addAlbum }
 }
 
 export default usePaginatedAlbums
