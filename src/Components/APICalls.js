@@ -314,6 +314,27 @@ export const addStack = async (email, newAlbum, token) => {
     
 }
 
+// Persists a manual reorder of the user's stack. `order` is the list of
+// album ids in the desired display order for the currently-loaded subset
+// only; ids not included keep their existing relative position server-side.
+export const reorderStack = async (order, token) => {
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/stacks/reorder`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ order })
+        })
+        if (!res.ok) throw new Error('Failed to save new stack order.')
+        return res.json()
+    } catch (error) {
+        console.error('Failed to save new stack order.', error.message)
+        throw error
+    }
+}
+
 export const deleteStack = async (email, albumToDelete, token) => {
     const userStackDelete = {email, albumToDelete}
     return await fetch(`${BASE_URL}/api/v1/stacks/delete`, {
